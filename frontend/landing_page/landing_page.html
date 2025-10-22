@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athlix</title>
+  <link rel="stylesheet" href="landing_page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+    <!--add logo-->
+  <div class="navbar">
+    <div class="logo">
+      <img src="" alt="logo" height="40">
+      <div class="logo-text">Athlix</div>
+    </div>
+    <div class="login-buttons">
+      <button class="btn btn-dark student-login">Student Login</button>
+      <button class="btn btn-dark university-login">University Login</button>
+    </div>
+  </div>
+
+
+  <div class="intro-section">
+    <div class="intro-content">
+      <h1>Match Your Sports Achievement with University Discounts</h1>
+      <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
+      <div class="buttons-container">
+        <button class="btn btn-primary get-started-student">I'm a Student</button>
+        <button class="btn btn-outline get-started-uni">I'm a University</button>
+      </div>
+    </div>
+    <div class="intro-image">
+      <!-- add image -->
+      </div>
+    </div>
+  </div>
+
+
+  <div class="how-it-works-section">
+    <h2>How It Works</h2>
+    <p>A simple three-step process to connect student athletes with university discounts</p>
+    <div class="steps-container">
+      <div class="step">
+        <i class="fa-solid fa-file-upload"></i>
+        <h3>Students Submit Proof</h3>
+        <p>Upload evidence of your sports participation, achievements, or team membership</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>Universities Verify</h3>
+        <p>Partner universities review and verify your sports credentials securely</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <h3>Unlock Discounts</h3>
+        <p>Get matched with exclusive university discounts and special offers</p>
+      </div>
+    </div>
+  </div>
+
+<div class="student-section">
+    <div class="student-content">
+      <h2>For Students</h2>
+      <div class="student-text">
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Access exclusive university discounts</li>
+          <li><i class="fa-solid fa-check"></i> Get rewarded for your athlete achievements</li>
+          <li><i class="fa-solid fa-check"></i> Simple verification process</li>
+          <li><i class="fa-solid fa-check"></i> Upload proof once, use everywhere</li>
+          <li><i class="fa-solid fa-check"></i> Track all your offers in one place</li>
+          <li><i class="fa-solid fa-check"></i> Easy dashboard to manage benefits</li>
+        </ul>
+      </div>
+    </div>
+    <div class="student-image">
+      <!-- add image -->
+    </div>
+  </div>
+  
+  <div class="university-section">
+    <div class="university-content">
+      <h2>For Universities</h2>
+      <div class="university-text">
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Attract top athlete talent</li>
+          <li><i class="fa-solid fa-check"></i> Connect with student athletes who meet your criteria</li>
+          <li><i class="fa-solid fa-check"></i> Streamlined verification system</li>
+          <li><i class="fa-solid fa-check"></i> Easily review and approve student credentials</li>
+          <li><i class="fa-solid fa-check"></i> Manage discount programs</li>
+          <li><i class="fa-solid fa-check"></i> Create and track your offers from one dashboard</li>
+        </ul>
+      </div>
+    </div>
+    <div class="university-image">
+      <!-- add image -->
+    </div>
+  </div>
+
+
+  <div class="motivation-section">
+    <h2>Ready to Get Started?</h2>
+    <p>Join hundreds of students and universities already using SportMatch.</p>
+    <div class="motivation-buttons-container">
+      <button class="btn btn-outline get-started-student">Sign Up as Student</button>
+      <button class="btn btn-primary get-started-uni">Sign Up as University</button>
+    </div>
+  </div>
+
+  <div class="footer-section">
+    <div class="footer-container">
+        <!--add icon-->
+        <h3><i></i> Athlix</h3>
+        <h4>Developers</h4>
+        <div class="developers-grid">
+          <div class="developer-card">
+            <div class="developer-name">Joanne Zawaideh</div>
+            <div class="developer-role">Backend Developer</div>
+            <a href="https://www.linkedin.com/in/joanne-zawaideh-136602326?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" class="developer-linkedin">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+          <div class="developer-card">
+            <div class="developer-name">Marwan Shashtari</div>
+            <div class="developer-role">Frontend Developer</div>
+            <a href="#" class="developer-linkedin">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+          <div class="developer-card">
+            <div class="developer-name">Tala Hudhud</div>
+            <div class="developer-role">Database Developer</div>
+            <a href="#" class="developer-linkedin">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+          <div class="developer-card">
+            <div class="developer-name">Bushra Abuhantash</div>
+            <div class="developer-role">UI/UX Designer</div>
+            <a href="#" class="developer-linkedin">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+        <p>© 2025 Athlix. Connecting athletes with opportunities.</p>
+      </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const studentButtons = document.querySelectorAll('.get-started-student');
+      const uniButtons = document.querySelectorAll('.get-started-uni');
+      const loginButtons = document.querySelectorAll('.student-login, .university-login');
+      
+      studentButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          window.location.href = 'student-signup.html';
+        });
+      });
+      
+      uniButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          window.location.href = 'university-signup.html';
+        });
+      });
+      
+      loginButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          window.location.href = 'login.html';
+        });
+      });
+    });
+</script>
+</body>
+</html>
