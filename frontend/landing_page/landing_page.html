@@ -16,8 +16,19 @@
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
-      <button class="btn btn-dark student-login">Student Login</button>
-      <button class="btn btn-dark university-login">University Login</button>
+
+      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
+      <form action="" method="post">
+        <input type="hidden" name="type" value="student">
+        <button class="btn btn-dark student-login">Student Login</button>
+      </form>
+
+      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
+      <form action="" method="post">
+        <input type="hidden" name="type" value="university">
+        <button class="btn btn-dark university-login">University Login</button>
+      </form>
+
     </div>
   </div>
 
@@ -76,10 +87,14 @@
     </div>
     <div class="student-image">
       <!-- add image -->
+      <img src="landing_images/student_sport_landing.bmp" alt="student sport image">
     </div>
   </div>
   
   <div class="university-section">
+    <div class="university-image">
+      <img src="landing_images/university_image_landing.jpg" alt="student sport image">
+    </div>
     <div class="university-content">
       <h2>For Universities</h2>
       <div class="university-text">
@@ -93,9 +108,6 @@
         </ul>
       </div>
     </div>
-    <div class="university-image">
-      <!-- add image -->
-    </div>
   </div>
 
 
@@ -103,8 +115,16 @@
     <h2>Ready to Get Started?</h2>
     <p>Join hundreds of students and universities already using SportMatch.</p>
     <div class="motivation-buttons-container">
-      <button class="btn btn-outline get-started-student">Sign Up as Student</button>
-      <button class="btn btn-primary get-started-uni">Sign Up as University</button>
+    <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
+      <form action="../signup_page/singup.html" method="post">
+        <input type="hidden" name="type" value="student">
+        <button class="btn btn-outline get-started-student">Sign Up as Student</button>
+      </form>
+    <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
+      <form action="../signup_page/singup.html" method="post">
+        <input type="hidden" name="type" value="student">
+        <button class="btn btn-primary get-started-uni">Sign Up as University</button>
+      </form>
     </div>
   </div>
 
@@ -147,12 +167,16 @@
       </div>
   </div>
 
-  <script>
+  <script>/*
     document.addEventListener('DOMContentLoaded', function() {
       const studentButtons = document.querySelectorAll('.get-started-student');
       const uniButtons = document.querySelectorAll('.get-started-uni');
       const loginButtons = document.querySelectorAll('.student-login, .university-login');
-      
+          //i suggest using a form method (e.g. post) is better than using js redirection because we can handle values from $_POST across pages,
+          //I put each button in a separate form and added input tag that gives the post global array and key value pair it needs (type= student/university)
+          //depending on that we generate or show and hide the appropriate html code needed for each usertype and hide what isnt needed.
+          //(note that typically signup/login pages are .php files and not html)
+          //this is better because it makes for less files made and removes redundancy on our work
       studentButtons.forEach(button => {
         button.addEventListener('click', function() {
           window.location.href = 'student-signup.html';
@@ -170,7 +194,7 @@
           window.location.href = 'login.html';
         });
       });
-    });
+    });*/
 </script>
 </body>
 </html>
