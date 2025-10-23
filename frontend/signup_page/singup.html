@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athlix</title>
+  <link rel="stylesheet" href="signup.css">
+</head>
+<!--must do require('request_signup_type.php'); to know usertype -->
+<body>
+    <!--add logo-->
+  <div class="navbar">
+    <div class="logo">
+      <img src="" alt="logo" height="40">
+      <div class="logo-text">Athlix</div>
+    </div>
+    <div class="login-buttons">
+    <form action="login.php" method="post">
+        <input type="hidden" name="type" value="<?php echo $type?>">
+        <button type="submit" class="btn btn-dark">I already have an account</button>
+    </form>
+    </div>
+  </div>
+
+  <!--I'll make two form right now but with the backend code, one will show and the other wont-->
+  <div class="signup-window">
+    <div class="signup-form">
+    <form action="" method="post" enctype="multipart/form-data">
+        <label for="email">Email:
+        <input  class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
+        </label>
+        <br>
+        <!--php code: check if type is student and open braces-->
+        <label for="fname">First Name: 
+        <input class="text" type="text" id="fname" name="fname" placeholder="jane doe" required>
+        </label>
+        <br>
+        <label for="lname">Last Name:
+        <input class="text" type="text" id="lname" name="lname" required>
+        </label>
+        <br>
+        <label for="birthdate">date of birth:
+        <input class="birthdate" type="date" id="birthdate" name="birthdate" required>
+        </label>
+        <br>
+        <label for="file">Upload your CV:
+        <input class="file" type="file" id="file" name="file" required>
+        </label>
+        <br>
+        <label class="gender" for="gender">Gender:
+        <input class="check" type="radio" id="gender" name="gender" value="female">
+        <label for="female">female</label>
+        <input class="check" type="radio" id="gender" name="gender" value="male">
+        <label for="male">male</label>
+        </label>
+        <br>
+        <label>select your sports:
+        <label class="radio" for="football">football</label><input type="checkbox" id="football" value="football" name="sports[]">
+        <label class="radio" for="volleyball">volleyball</label><input type="checkbox" id="volleyball" value="volleyball" name="sports[]">
+        <label class="radio" for="tennis">tennis</label><input type="checkbox" id="tennis" value="tennis" name="sports[]">
+        <label class="radio" for="others">others</label><input type="checkbox" id="others" value="others" name="sports[]">
+        </label>
+        <br>
+        <!--close braces-->
+
+        <!--else if type equals to university: open braces-->
+        <label for="universities_menu">Choose the university
+        <select id="universities_menu" name="universities_menu">
+          <option value="">Choose...</option>
+          <option value="PSUT">princess sumaya university for technology</option>
+          <option value="GJU">german jordanian university</option>
+          <option value="JU">jordanian university</option>
+          <option value="JUST">jordan university of science and technology</option>
+        </select>
+        </label>
+        <!--close braces-->
+    </form>
+    </div>
+  </div>
+
+</div>
+
+
+</body>
