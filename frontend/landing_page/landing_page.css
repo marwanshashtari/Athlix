@@ -216,16 +216,18 @@
 
 .student-section {
     padding: 4rem 2rem;
-    display: flex;
-    align-items: center;
     gap: 3rem;
     max-width: 1200px;
     margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
   
   .student-content {
     flex: 1;
     text-align: left;
+    display: table-row;
   }
   
   .student-section h2 {
@@ -252,12 +254,6 @@
     margin-top: 0.25rem;
   }
   
-  .student-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-  }
-  
   .student-image img {
     width: 100%;
     max-width: 400px;
@@ -267,23 +263,24 @@
   
   .university-section {
     padding: 4rem 2rem;
-    background-color: var(--light);
-    display: flex;
-    align-items: center;
     gap: 3rem;
     max-width: 1200px;
     margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
   
   .university-content {
     flex: 1;
     text-align: right;
+    display: table-row;
   }
   
   .university-section h2 {
     font-size: 2rem;
     margin-bottom: 2rem;
-    text-align: right;
+    text-align: left;
   }
   
   .university-text ul {
