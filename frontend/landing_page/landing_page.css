@@ -1,8 +1,12 @@
 :root {
-    --primary: #4b6cb7;
-    --secondary: #182848;
-    --light: #f9f9f9;
+    --primary: #DE5126;
+    --secondary: #ba3a14;
+    --third: #8b2607;
+    --darkishgrey: #332e2f;
     --dark: #111;
+    --white: #fffff0e6;
+    --font-family-primary: 'ariel black', sans-serif;
+    --font-weight-primary: 900;
   }
   
   * {
@@ -11,14 +15,19 @@
   
   body {
     margin: 0;
-    font-family: "Poppins", sans-serif;
-    background-color: #fff;
-    color: var(--dark);
+    font-family: var(--font-family-primary);
+    background-color: var(--darkishgrey);
+    color: var(--white);
     line-height: 1.6;
+
+    height: 100vh;
+    padding-top: 50px;
+    margin: 0;
   }
   
   h1, h2, h3, h4 {
     margin: 0;
+    font-weight: var(--font-weight-primary);
   }
   
   p {
@@ -30,9 +39,9 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.25rem;
-    cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
+    cursor: pointer;
     font-size: 1rem;
   }
   
@@ -41,8 +50,13 @@
     color: white;
   }
   
-  .btn-primary:hover {
-    background: #3a5ca0;
+  .btn:hover {
+    background: var(--third);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .developer-card:hover{
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
@@ -80,23 +94,24 @@
   
  
   .navbar {
-    background: white;
-    color: black;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  margin: 0 auto;
+  width: 93%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeIn 1s ease-out forwards;
   }
-  
+
   .logo {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
   }
   
   .logo img {
@@ -107,7 +122,7 @@
     font-weight: 700;
     font-size: 1.5rem;
     margin-left: 0.5rem;
-    color: var(--primary);
+    color: var(--white);
   }
   
   .login-buttons {
@@ -118,14 +133,30 @@
 
   .intro-section {
     padding: 120px 2rem 60px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     display: flex;
+    position: relative; /* or absolute */
+    top: -15%; /* moves it 20px up */
     align-items: center;
     gap: 3rem;
     min-height: 80vh;
+    width: 93%;
+    margin: 0 auto;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
+    background-image: url(landing_images/trackfield.jpg);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn 1s ease-out forwards;
+ }
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
+
   .intro-content {
     flex: 1;
     max-width: 600px;
@@ -168,7 +199,7 @@
   .how-it-works-section {
     text-align: center;
     padding: 4rem 2rem;
-    background-color: var(--light);
+    background-color: var(--darkishgrey);
   }
   
   .how-it-works-section h2 {
@@ -197,6 +228,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    color: var(--darkishgrey);
   }
   
   .step:hover {
@@ -258,7 +290,7 @@
     width: 100%;
     max-width: 400px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
   }
   
   .university-section {
@@ -311,7 +343,7 @@
     width: 100%;
     max-width: 400px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
   }
   
 
@@ -320,6 +352,10 @@
     padding: 4rem 2rem;
     background: linear-gradient(135deg, var(--secondary), var(--primary));
     color: white;
+     width: 93%;
+    margin: 50px auto;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
   }
   
   .motivation-section h2 {
