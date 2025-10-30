@@ -9,14 +9,14 @@
 </head>
 
 <body>
-
-       <!--add logo-->
+  <!--add logo-->
   <div class="navbar">
     <div class="logo">
       <img src="landing_images/logo.png" alt="logo" height="40">
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
+        <button type="button" class="btn btn-dark learn-more">More about us</button>
       <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
       <form action="" method="post">
         <input type="hidden" name="type" value="student">
@@ -30,6 +30,7 @@
       </form>
 
     </div>
+    
   </div>
   <div class="intro-section">
     <div class="intro-content">
@@ -127,7 +128,7 @@
   </div>
 
   <div class="footer-section">
-    <div class="footer-container">
+    <div id="footer-container" class="footer-container">
         <!--add icon-->
         <h3><i></i> Athlix</h3>
         <h4>Developers</h4>
@@ -165,7 +166,39 @@
       </div>
   </div>
 
-  <script>/*
+  <script>
+    //scroll down button (about us)
+  document.addEventListener('DOMContentLoaded', () => {
+  const scrollBtn = document.querySelector('.learn-more');
+  scrollBtn.addEventListener('click', () => {
+    document.querySelector('.footer-container').scrollIntoView({ behavior: 'smooth'});
+  });
+
+   const contents = document.querySelectorAll('.student-content, .university-content, .motivation-section');
+  const images = document.querySelectorAll('.student-image, .university-image');
+
+  function checkSlide() {
+    const trigger = window.innerHeight * 0.85;
+
+    
+    contents.forEach(content => {
+      if(content.getBoundingClientRect().top < trigger){
+        content.classList.add('active');
+      }
+    });
+
+    images.forEach(image => {
+      if(image.getBoundingClientRect().top < trigger){
+        image.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', checkSlide);
+  checkSlide();
+ });
+
+  /*
     document.addEventListener('DOMContentLoaded', function() {
       const studentButtons = document.querySelectorAll('.get-started-student');
       const uniButtons = document.querySelectorAll('.get-started-uni');
