@@ -36,9 +36,9 @@
   
 
   .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.70rem 1.5rem;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 0.75rem;
     font-weight: 600;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -60,18 +60,7 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
-  
-  .btn-secondary {
-    background: var(--secondary);
-    color: white;
-  }
-  
-  .btn-secondary:hover {
-    background: #0f1c32;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
+
   .btn-outline {
     background: transparent;
     color: white;
@@ -79,39 +68,42 @@
   }
   
   .btn-outline:hover {
-    background: white;
+    background: var(--white);
     color: var(--primary);
   }
   
-  .btn-dark {
+  .btn-dark, .learn-more {
     background: var(--dark);
-    color: white;
+    color: var(--white);
+    border:2px solid var(--dark);
   }
   
   .btn-dark:hover {
-    background: #444;
+    background: var(--third);
+    color: var(--dark);
   }
-  
  
-  .navbar {
-  position: sticky;
-  top: 0px;
-  left: 0px;
-  margin: 0 auto;
+ .navbar{
+  position:fixed;
+  top: 0.5rem;
+  z-index: 1000;
+  margin: 0 auto 0 3rem;
   width: 93%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  z-index: 10;
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeIn 1s ease-out forwards;
-  }
+  padding: 0.1rem;
+  background: var(--dark);
+  border: 1px solid var(--dark);
+  border-radius:2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+ }
+
 
   .logo {
     display: grid;
     grid-template-columns: 1fr;
+    padding:0.15rem 1rem;
   }
   
   .logo img {
@@ -120,7 +112,7 @@
   
   .logo-text {
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-left: 0.5rem;
     color: var(--white);
   }
@@ -128,20 +120,21 @@
   .login-buttons {
     display: flex;
     gap: 10px;
+    padding: 0 1.85rem;
+
   }
   
 
   .intro-section {
     padding: 120px 2rem 60px;
-    color: white;
+    color: var(--white);
     display: flex;
-    position: relative; /* or absolute */
-    top: -15%; /* moves it 20px up */
+    position: relative;
     align-items: center;
     gap: 3rem;
     min-height: 80vh;
     width: 93%;
-    margin: 0 auto;
+    margin: 3rem auto;
     border-radius: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,1);
     background-image: url(landing_images/trackfield.jpg);
@@ -164,7 +157,7 @@
   }
   
   .intro-section h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: 1.5rem;
     line-height: 1.2;
   }
@@ -172,7 +165,7 @@
   .intro-section p {
     font-size: 1.2rem;
     margin-bottom: 2rem;
-    opacity: 0.9;
+    
   }
   
   .intro-image {
@@ -199,11 +192,17 @@
   .how-it-works-section {
     text-align: center;
     padding: 4rem 2rem;
-    background-color: var(--darkishgrey);
+    min-height: 80vh;
+    width: 93%;
+    margin: 0 auto;
+    padding: 2.4rem 60px;
+    color:var(--white);
+
+
   }
   
   .how-it-works-section h2 {
-    font-size: 2rem;
+    font-size: 4rem;
     margin-bottom: 1rem;
   }
   
@@ -224,15 +223,22 @@
   .step {
     width: 280px;
     padding: 1.5rem;
-    background: white;
+    background: var(--white);
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    color: var(--darkishgrey);
+    color: var(--dark);
+    transition: background-color 0.5s ease-out;
+  }
+  
+  .step:hover{
+    background-color: var(--third);
+    color:var(--white);
   }
   
   .step:hover {
     transform: translateY(-5px);
+
   }
   
   .step i {
@@ -256,12 +262,37 @@
     gap: 20px;
   }
   
+  .student-image{
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(100px);
+  }
+
   .student-content {
     flex: 1;
     text-align: left;
     display: table-row;
+
+    margin: 0 auto 2.5rem;
+    opacity: 0; 
+    position: relative;
+    transition: all 1s ease-out;
+    transform: translateX(-100px);
   }
   
+    .student-content.active, .student-image.active {
+  transform: translateX(0);
+  opacity: 1;
+}
+    .university-content.active, .university-image.active {
+  transform: translateX(0);
+  opacity: 1;
+}
+.motivation-section.active{
+  transform: scaleX(1);
+  opacity: 1; 
+}
   .student-section h2 {
     font-size: 2rem;
     margin-bottom: 2rem;
@@ -290,6 +321,7 @@
     width: 100%;
     max-width: 400px;
     border-radius: 10px;
+    margin: 0 auto 2.5rem;
     box-shadow: 0 5px 15px rgba(0,0,0,1);
   }
   
@@ -307,6 +339,23 @@
     flex: 1;
     text-align: right;
     display: table-row;
+    margin: 0 auto 2.5rem;
+
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(-100px);
+  }
+    .university-image {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    margin: 0 auto 2.5rem;
+
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(100px);
   }
   
   .university-section h2 {
@@ -333,12 +382,7 @@
     margin-top: 0.25rem;
   }
   
-  .university-image {
-    flex: 1;
-    display: flex;
-    justify-content: left;
-  }
-  
+
   .university-image img {
     width: 100%;
     max-width: 400px;
@@ -350,9 +394,13 @@
 .motivation-section {
     text-align: center;
     padding: 4rem 2rem;
-    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    background: radial-gradient(circle, var(--primary), var(--secondary));
     color: white;
-     width: 93%;
+    width: 93%;
+     
+    opacity: 0;
+    transition: all 1s ease-out;
+    transform: translateX(-100px);
     margin: 50px auto;
     border-radius: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,1);
