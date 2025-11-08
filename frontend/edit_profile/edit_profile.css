@@ -1,3 +1,12 @@
+:root {
+    --primary: #530101;
+    --secondary: #fff1e9;
+    --third: #d2c0aedd;
+    --grey: #6b6b6b;
+    --darkgrey:#252424;
+    --font-weight-primary: 900;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +15,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(135deg, var(--grey) 0%, var(--darkgrey) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,7 +26,7 @@ body {
 .profile_container {
     width: 100%;
     max-width: 850px;
-    background-color: white;
+    background-color: var(--secondary);
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     overflow: hidden;
@@ -36,15 +45,17 @@ body {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid #e0e0e0;
-    background-color: #f5f5f5;
+    border: 5px solid var(--third);
+    background-color: #fffbf9;
     margin-bottom: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    
 }
 
 .change-picture-btn {
     background-color: transparent;
-    color: #4a6cf7;
-    border: 1px solid #4a6cf7;
+    color: var(--primary);
+    border: 1px solid var(--primary);
     padding: 8px 15px;
     border-radius: 20px;
     cursor: pointer;
@@ -53,7 +64,7 @@ body {
 }
 
 .change-picture-btn:hover {
-    background-color: #4a6cf7;
+    background-color: var(--primary);
     color: white;
 }
 
@@ -66,7 +77,7 @@ body {
 
 .tab {
     padding: 12px 30px;
-    background-color: #f0f0f0;
+    background-color: #fffbf9;
     border-radius: 50px;
     margin: 0 10px;
     cursor: pointer;
@@ -78,13 +89,13 @@ body {
 }
 
 .tab.active {
-    background-color: #4a6cf7;
-    color: white;
-    box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+    background-color: var(--primary);
+    color: var(--secondary);
+    box-shadow: 0 4px 10px rgba(247, 74, 74, 0.3);
 }
 
 .tab:hover:not(.active) {
-    background-color: #e0e0e0;
+    background-color: #d2c0aeae;
     transform: translateY(-2px);
 }
 
@@ -106,7 +117,7 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #333;
+    color: var(--grey);
 }
 
 .form-group input, 
@@ -114,7 +125,7 @@ body {
 .form-group textarea {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--secondary);
     border-radius: 8px;
     font-size: 16px;
     transition: all 0.3s;
@@ -123,9 +134,9 @@ body {
 .form-group input:focus, 
 .form-group select:focus, 
 .form-group textarea:focus {
-    border-color: #4a6cf7;
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+    box-shadow: 0 0 0 2px rgba(247, 74, 74, 0.3);
 }
 
 .form-group textarea {
@@ -148,8 +159,8 @@ body {
 
 .section h2 {
     margin-bottom: 25px;
-    color: #333;
-    border-bottom: 2px solid #f0f0f0;
+    color: var(--grey);
+    border-bottom: 2px solid var(--third);
     padding-bottom: 10px;
 }
 
@@ -171,35 +182,37 @@ body {
 }
 
 .btn-cancel {
-    background-color: #f0f0f0;
-    color: #555;
+    background-color: var(--secondary);
+    color: var(--darkgrey);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .btn-cancel:hover {
-    background-color: #e0e0e0;
+    background-color: var(--third);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(247, 74, 74, 0.3);
 }
 
 .btn-save {
-    background-color: #4a6cf7;
-    color: white;
+    background-color: var(--secondary);
+    color: var(--darkgrey);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .btn-save:hover {
-    background-color: #3a5cd8;
+    background-color: var(--third);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+    box-shadow: 0 4px 10px rgba(247, 74, 74, 0.3);
 }
 
 .btn-secondary {
-    background-color: #f8f9fa;
-    color: #495057;
-    border: 1px solid #dee2e6;
+    background-color: var(--secondary);
+    color: var(--darkgrey);
+    border: 1px solid var(--secondary);
 }
 
 .btn-secondary:hover {
-    background-color: #e9ecef;
+    background-color: var(--third);
 }
 
 @keyframes fadeIn {
