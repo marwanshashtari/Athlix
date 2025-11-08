@@ -10,6 +10,7 @@
 
 * {
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -211,3 +212,4 @@ input[type="button"]:hover{
     grid-template-columns: 1fr;
   }
 }
+
