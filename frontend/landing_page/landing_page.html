@@ -30,42 +30,63 @@
       </form>
 
     </div>
-    
   </div>
+
   <div class="intro-section">
     <div class="intro-content">
       <h1>Match Your Sports Achievement with University Discounts</h1>
       <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
       <div class="buttons-container">
+           <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
+      <form action="../signup_page/singup.html" method="post">
+        <input type="hidden" name="type" value="student">
         <button class="btn btn-primary get-started-student">I'm a Student</button>
+      </form>
+         <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
+      <form action="../signup_page/singup.html" method="post">
+        <input type="hidden" name="type" value="university">
         <button class="btn btn-outline get-started-uni">I'm a University</button>
+      </form>
       </div>
     </div>
     <div class="intro-image">
       <!-- add image -->
       </div>
     </div>
+
+
+  <div class="university-grid-text">
+    <h1 >Enroll to your dream university</h1>
   </div>
-
-
-  <div class="how-it-works-section">
-    <h2>How It Works</h2>
-    <p>A simple three-step process to connect student athletes with university discounts</p>
-    <div class="steps-container">
-      <div class="step">
-        <i class="fa-solid fa-file-upload"></i>
-        <h3>Students Submit Proof</h3>
-        <p>Upload evidence of your sports participation, achievements, or team membership</p>
+  <div class="university-grid-section">
+    <div class="university-grid-content">
+      <div class="university-logo psut">
+        <div class="slideshow">
+          <img src="landing_images/PSUT_Logo.png" alt="psut" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
       </div>
-      <div class="step">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <h3>Universities Verify</h3>
-        <p>Partner universities review and verify your sports credentials securely</p>
+      <div class="university-logo gju">
+        <div class="slideshow">
+          <img src="landing_images/GJU_Logo.png" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
       </div>
-      <div class="step">
-        <i class="fa-solid fa-graduation-cap"></i>
-        <h3>Unlock Discounts</h3>
-        <p>Get matched with exclusive university discounts and special offers</p>
+      <div class="university-logo ju">
+        <div class="slideshow">
+          <img src="landing_images/JU_Logo.png" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
+      </div>
+      <div class="university-logo htu">
+        <div class="slideshow">
+          <img src="landing_images/htu_logo.ico" alt="htu" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div> 
       </div>
     </div>
   </div>
@@ -109,6 +130,29 @@
     </div>
   </div>
 
+  
+  <div class="how-it-works-section">
+    <h2>Kickstart Your Athlete Journey!</h2>
+    <p>Just three simple steps to connect our student athletes with their best opportunities</p>
+    <div class="steps-container">
+      <div class="step">
+        <i class="fa-solid fa-file-upload"></i>
+        <h3>Students Submit Proof</h3>
+        <p>Upload evidence of your sports participation, achievements, or team membership</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>Universities Verify</h3>
+        <p>Partner universities review and verify your sports credentials securely</p>
+      </div>
+      <div class="step">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <h3>Unlock Discounts</h3>
+        <p>Get matched with exclusive university discounts and special offers</p>
+      </div>
+    </div>
+  </div>
+
 
   <div class="motivation-section">
     <h2>Ready to Get Started?</h2>
@@ -128,42 +172,19 @@
   </div>
 
   <div class="footer-section">
+      <h3><i></i> Athlix</h3>
     <div id="footer-container" class="footer-container">
         <!--add icon-->
-        <h3><i></i> Athlix</h3>
-        <h4>Developers</h4>
-        <div class="developers-grid">
-          <div class="developer-card">
-            <div class="developer-name">Joanne Zawaideh</div>
-            <div class="developer-role">Backend Developer</div>
-            <a href="https://www.linkedin.com/in/joanne-zawaideh-136602326?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" class="developer-linkedin">
-              <i class="fab fa-linkedin"></i> LinkedIn
-            </a>
-          </div>
-          <div class="developer-card">
-            <div class="developer-name">Marwan Shashtari</div>
-            <div class="developer-role">Frontend Developer</div>
-            <a href="#" class="developer-linkedin">
-              <i class="fab fa-linkedin"></i> LinkedIn
-            </a>
-          </div>
-          <div class="developer-card">
-            <div class="developer-name">Tala Hudhud</div>
-            <div class="developer-role">Database Developer</div>
-            <a href="#" class="developer-linkedin">
-              <i class="fab fa-linkedin"></i> LinkedIn
-            </a>
-          </div>
-          <div class="developer-card">
-            <div class="developer-name">Bushra Abuhantash</div>
-            <div class="developer-role">UI/UX Designer</div>
-            <a href="#" class="developer-linkedin">
-              <i class="fab fa-linkedin"></i> LinkedIn
-            </a>
-          </div>
+        <div class="about-us">
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
         </div>
-        <p>© 2025 Athlix. Connecting athletes with opportunities.</p>
+        <div class="contact-us">
+          <p>instagram</p>
+          <p>facebook</p>
+          <p>email</p>
+        </div>
       </div>
+       <p>© 2025 Athlix. Connecting athletes with opportunities.</p>
   </div>
 
   <script>
@@ -196,36 +217,42 @@
 
   window.addEventListener('scroll', checkSlide);
   checkSlide();
- });
 
-  /*
-    document.addEventListener('DOMContentLoaded', function() {
-      const studentButtons = document.querySelectorAll('.get-started-student');
-      const uniButtons = document.querySelectorAll('.get-started-uni');
-      const loginButtons = document.querySelectorAll('.student-login, .university-login');
-          //i suggest using a form method (e.g. post) is better than using js redirection because we can handle values from $_POST across pages,
-          //I put each button in a separate form and added input tag that gives the post global array and key value pair it needs (type= student/university)
-          //depending on that we generate or show and hide the appropriate html code needed for each usertype and hide what isnt needed.
-          //(note that typically signup/login pages are .php files and not html)
-          //this is better because it makes for less files made and removes redundancy on our work
-      studentButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          window.location.href = 'student-signup.html';
-        });
-      });
-      
-      uniButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          window.location.href = 'university-signup.html';
-        });
-      });
-      
-      loginButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          window.location.href = 'login.html';
-        });
-      });
-    });*/
+  const logos = document.querySelectorAll('.university-logo');
+
+  logos.forEach(unilogo => {
+    const slideshow = unilogo.querySelector('.slideshow');
+    const slideImages = slideshow.querySelectorAll('img');
+    let current = 0;
+    let interval = null;
+
+    function startSlideshow() {
+     let firstCycle = true;
+
+    interval = setTimeout(() => {
+    slideImages[current].classList.remove('active');
+    current = 1;
+    slideImages[current].classList.add('active');
+
+    interval = setInterval(() => {
+      slideImages[current].classList.remove('active');
+      current++;
+      if (current >= slideImages.length) current = 1; 
+      slideImages[current].classList.add('active');
+    }, 2000); 
+    }, 1000); 
+    }
+
+    function stopSlideshow() {
+    clearInterval(interval);
+    slideImages[current].classList.remove('active');
+    current = 0;
+    slideImages[current].classList.add('active');    }
+
+    unilogo.addEventListener('mouseenter', startSlideshow);
+    unilogo.addEventListener('mouseleave', stopSlideshow);
+  });
+ });
 </script>
 </body>
 </html>
