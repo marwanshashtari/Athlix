@@ -16,7 +16,7 @@ body {
     margin-top: 0;
   }
   
-  /* ===== Status Cards ===== */
+  
   .status-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -50,7 +50,7 @@ body {
     margin: 10px 0 0;
   }
   
-  /* ===== Tabs ===== */
+  
   .tabs {
     display: flex;
     border-bottom: 2px solid #ddd;
@@ -75,7 +75,7 @@ body {
     border-color: #c00;
   }
   
-  /* ===== Content ===== */
+  
   .tab-content {
     display: none;
     margin-top: 20px;
@@ -85,7 +85,7 @@ body {
     display: block;
   }
   
-  /* ===== Tables ===== */
+  
   table {
     width: 100%;
     border-collapse: collapse;
@@ -109,7 +109,7 @@ body {
     background-color: #f9f9f9;
   }
   
-  /* ===== Form ===== */
+  
   form {
     background: white;
     padding: 20px;
@@ -145,7 +145,7 @@ body {
     background-color: #a00;
   }
   
-  /* ===== Search Bar ===== */
+  
   #studentSearch {
     margin-bottom: 15px;
     padding: 10px;
@@ -154,7 +154,6 @@ body {
     border: 1px solid #ccc;
   }
   
-  /* ===== Responsive ===== */
   @media (max-width: 600px) {
     .status-cards {
       grid-template-columns: 1fr;
