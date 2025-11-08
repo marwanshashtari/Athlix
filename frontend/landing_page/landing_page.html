@@ -32,6 +32,21 @@
     </div>
   </div>
 
+  <div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm" action="request_login_type.php" method="post">
+      <input type="hidden" name="type" id="userType" value="">
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" placeholder="Enter your email" required>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      <button type="submit" class="btn btn-dark">Login</button>
+    </form>
+  </div>
+</div>
+
   <div class="intro-section">
     <div class="intro-content">
       <h1>Match Your Sports Achievement with University Discounts</h1>
@@ -253,6 +268,43 @@
     unilogo.addEventListener('mouseleave', stopSlideshow);
   });
  });
+
+ document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('loginModal');
+  const closeBtn = modal.querySelector('.close');
+  const userTypeInput = document.getElementById('userType');
+
+
+  const studentLoginBtn = document.querySelector('.student-login');
+  const universityLoginBtn = document.querySelector('.university-login');
+
+  function openModal(type) {
+    userTypeInput.value = type; 
+    modal.style.display = 'block';
+  }
+
+  studentLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent form submission
+    openModal('student');
+  });
+
+  universityLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('university');
+  });
+
+  // Close modal
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // Close when clicking outside modal content
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
 </script>
 </body>
 </html>
