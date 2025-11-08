@@ -4,19 +4,18 @@
     --third: #d2c0aedd;
     --grey: #6b6b6b;
     --darkgrey:#252424;
-    --font-family-primary: 'ariel black', sans-serif;
     --font-weight-primary: 900;
 }
 
 * {
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
 }
 
 body {
   margin: 0;
-  font-family: var(--font-family-primary);
-  background-color: var(--grey);
+  background: linear-gradient(135deg, var(--grey) 0%, var(--darkgrey) 100%);
   color: var(--darkgrey);
   line-height: 1.6;
 }
@@ -82,7 +81,7 @@ body {
 }
 
 .signup-window {
-  background-color: var(--grey);
+  background: linear-gradient(135deg, var(--grey) 0%, var(--darkgrey) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -159,10 +158,13 @@ label {
 
 label[for="file"]{
   border: 2px solid #332e2f;
-  border-radius: 5px;
+  border-radius: 50px;
   padding: 5px 10px; 
   cursor: pointer;
-  width:fit-content
+  width:fit-content;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  background-color: #fffbf9;
+
 }
 
 label[for="file"]:hover{
@@ -171,18 +173,24 @@ label[for="file"]:hover{
 }
 
 input[type="button"]{
- border: 2px solid #332e2f;
-  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 2px solid #332e2f;
+  border-radius: 50px;
   padding: 5px 10px; 
   cursor: pointer;
   width:100%;
-  background-color: #fdf4ee;
+  background-color: #fffbf9;
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  margin:5px;
 }
 
 input[type="button"]:hover{
-    background-color: var(--darkgrey);
+  background-color: var(--darkgrey);
   color: var(--secondary);
+  transform: translateY(-3px);
+
 }
 .gender-options, .sport-options {
   display: grid;
@@ -212,4 +220,3 @@ input[type="button"]:hover{
     grid-template-columns: 1fr;
   }
 }
-
