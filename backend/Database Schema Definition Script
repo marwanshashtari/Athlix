@@ -1,0 +1,291 @@
+USE [master]
+GO
+/****** Object:  Database [AthlixDB]    Script Date: 11/8/2025 11:20:38 PM ******/
+CREATE DATABASE [AthlixDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'AthlixDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\AthlixDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'AthlixDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\AthlixDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [AthlixDB] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [AthlixDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [AthlixDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [AthlixDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [AthlixDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [AthlixDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [AthlixDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [AthlixDB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [AthlixDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [AthlixDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [AthlixDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [AthlixDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [AthlixDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [AthlixDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [AthlixDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [AthlixDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [AthlixDB] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [AthlixDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [AthlixDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [AthlixDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [AthlixDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [AthlixDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [AthlixDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [AthlixDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [AthlixDB] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [AthlixDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [AthlixDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [AthlixDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [AthlixDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [AthlixDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [AthlixDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [AthlixDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [AthlixDB] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [AthlixDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [AthlixDB]
+GO
+/****** Object:  Table [dbo].[Scholarship]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Scholarship](
+	[Scholarship_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Uni_ID] [int] NOT NULL,
+	[Percentage] [decimal](5, 2) NOT NULL,
+	[Active] [bit] NOT NULL,
+	[Deadline] [date] NULL,
+	[Eligibility_Criteria] [text] NOT NULL,
+	[Description] [text] NULL,
+ CONSTRAINT [PK_Scholarship] PRIMARY KEY CLUSTERED 
+(
+	[Scholarship_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Scholarship_Sport]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Scholarship_Sport](
+	[Sport_ID] [int] NOT NULL,
+	[Uni_ID] [int] NOT NULL,
+	[Scholarship_ID] [int] NOT NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Sports]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Sports](
+	[Sport_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Sports] PRIMARY KEY CLUSTERED 
+(
+	[Sport_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Sports_Student]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Sports_Student](
+	[Std_ID] [int] NOT NULL,
+	[Sport_ID] [int] NOT NULL,
+	[Number_of_Tournaments_Won] [int] NOT NULL,
+	[Tournaments_Description] [text] NOT NULL,
+	[Achievements] [text] NOT NULL,
+	[Years_of_Experience] [int] NOT NULL,
+ CONSTRAINT [PK_Sports_Student] PRIMARY KEY CLUSTERED 
+(
+	[Std_ID] ASC,
+	[Sport_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Student]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Student](
+	[User_ID] [int] NOT NULL,
+	[Name] [nvarchar](150) NOT NULL,
+	[Date_of_Birth] [date] NOT NULL,
+	[Gender] [bit] NOT NULL,
+	[GPA] [decimal](5, 2) NOT NULL,
+	[School] [nvarchar](150) NOT NULL,
+	[University] [nvarchar](150) NULL,
+	[City] [nvarchar](100) NOT NULL,
+	[Weight] [decimal](5, 2) NULL,
+	[Height] [decimal](5, 2) NOT NULL,
+	[Status] [bit] NOT NULL,
+	[Phone_Number] [nvarchar](20) NOT NULL,
+	[Bio] [text] NULL,
+	[Expected_Graduation_Year] [int] NOT NULL,
+	[Applicant_Type] [bit] NOT NULL,
+	[Primary_Sport_ID] [int] NOT NULL,
+	[Health_Issues] [text] NULL,
+	[Major_1] [nvarchar](100) NOT NULL,
+	[Major_2] [nvarchar](100) NOT NULL,
+	[Major_3] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Student] PRIMARY KEY CLUSTERED 
+(
+	[User_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[University_]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[University_](
+	[User_ID] [int] NOT NULL,
+	[Name] [nchar](150) NOT NULL,
+	[Location] [nvarchar](150) NULL,
+	[Website_URL] [nvarchar](255) NULL,
+	[Contact_Number] [nvarchar](20) NULL,
+	[Contact_Email] [nvarchar](150) NULL,
+	[Scholarship_Available] [bit] NULL,
+ CONSTRAINT [PK_University_] PRIMARY KEY CLUSTERED 
+(
+	[User_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[User]    Script Date: 11/8/2025 11:20:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[User](
+	[User_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Email] [nvarchar](255) NOT NULL,
+	[Password] [nvarchar](255) NOT NULL,
+	[Role] [nvarchar](50) NULL,
+ CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+(
+	[User_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [IX_User] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Scholarship] ADD  CONSTRAINT [DF_Scholarship_Active]  DEFAULT ((1)) FOR [Active]
+GO
+ALTER TABLE [dbo].[Student] ADD  CONSTRAINT [DF_Student_Status]  DEFAULT ((0)) FOR [Status]
+GO
+ALTER TABLE [dbo].[University_] ADD  CONSTRAINT [DF_University__Scholarship_Available]  DEFAULT ((0)) FOR [Scholarship_Available]
+GO
+ALTER TABLE [dbo].[Scholarship]  WITH CHECK ADD  CONSTRAINT [FK_Scholarship_Uni_ID] FOREIGN KEY([Scholarship_ID])
+REFERENCES [dbo].[University_] ([User_ID])
+GO
+ALTER TABLE [dbo].[Scholarship] CHECK CONSTRAINT [FK_Scholarship_Uni_ID]
+GO
+ALTER TABLE [dbo].[Scholarship_Sport]  WITH CHECK ADD  CONSTRAINT [FK_Scholarship_Sport_Scholarship_ID] FOREIGN KEY([Scholarship_ID])
+REFERENCES [dbo].[Scholarship] ([Scholarship_ID])
+GO
+ALTER TABLE [dbo].[Scholarship_Sport] CHECK CONSTRAINT [FK_Scholarship_Sport_Scholarship_ID]
+GO
+ALTER TABLE [dbo].[Scholarship_Sport]  WITH CHECK ADD  CONSTRAINT [FK_Scholarship_Sport_Sport_ID] FOREIGN KEY([Sport_ID])
+REFERENCES [dbo].[Sports] ([Sport_ID])
+GO
+ALTER TABLE [dbo].[Scholarship_Sport] CHECK CONSTRAINT [FK_Scholarship_Sport_Sport_ID]
+GO
+ALTER TABLE [dbo].[Scholarship_Sport]  WITH CHECK ADD  CONSTRAINT [FK_Scholarship_Sport_Uni_ID] FOREIGN KEY([Uni_ID])
+REFERENCES [dbo].[University_] ([User_ID])
+GO
+ALTER TABLE [dbo].[Scholarship_Sport] CHECK CONSTRAINT [FK_Scholarship_Sport_Uni_ID]
+GO
+ALTER TABLE [dbo].[Sports_Student]  WITH CHECK ADD  CONSTRAINT [FK_Sports_ID] FOREIGN KEY([Sport_ID])
+REFERENCES [dbo].[Sports] ([Sport_ID])
+GO
+ALTER TABLE [dbo].[Sports_Student] CHECK CONSTRAINT [FK_Sports_ID]
+GO
+ALTER TABLE [dbo].[Sports_Student]  WITH CHECK ADD  CONSTRAINT [FK_Std_ID] FOREIGN KEY([Std_ID])
+REFERENCES [dbo].[Student] ([User_ID])
+GO
+ALTER TABLE [dbo].[Sports_Student] CHECK CONSTRAINT [FK_Std_ID]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [FK_Student_PrimarySport] FOREIGN KEY([Primary_Sport_ID])
+REFERENCES [dbo].[Sports] ([Sport_ID])
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [FK_Student_PrimarySport]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [FK_Student_User] FOREIGN KEY([User_ID])
+REFERENCES [dbo].[User] ([User_ID])
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [FK_Student_User]
+GO
+ALTER TABLE [dbo].[University_]  WITH CHECK ADD  CONSTRAINT [FK_University__ID] FOREIGN KEY([User_ID])
+REFERENCES [dbo].[User] ([User_ID])
+GO
+ALTER TABLE [dbo].[University_] CHECK CONSTRAINT [FK_University__ID]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_GPA] CHECK  (([GPA]>=(0.00) AND [GPA]<=(100.00)))
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_GPA]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_PhoneNumber] CHECK  (([Phone_Number] like '+962%'))
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_PhoneNumber]
+GO
+ALTER TABLE [dbo].[User]  WITH CHECK ADD  CONSTRAINT [CK_User_Role] CHECK  (([Role]='University' OR [Role]='Student'))
+GO
+ALTER TABLE [dbo].[User] CHECK CONSTRAINT [CK_User_Role]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = male, 1 = female' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Gender'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = Available, 1 = Unavailable' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Status'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = school, 1 = university' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Applicant_Type'
+GO
+USE [master]
+GO
+ALTER DATABASE [AthlixDB] SET  READ_WRITE 
+GO
