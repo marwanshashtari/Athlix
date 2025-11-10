@@ -4,162 +4,663 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>University Athlete Discount Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="dashboard.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel ="stylesheet" href="dashboard.css">
 </head>
 
 <body>
-    <!--retrieve from the database the university name and display it-->
-  <h1></h1>
-  <p class="subtitle">University Athlete Discount System</p>
+  <div class="container">
+    <header>
+      <!--retrieve form the db-->
+      <h1 id="universityName"></h1>
+      <p class="subtitle">Review student submissions and manage your discount programs</p>
+    </header>
 
-  
-  <div class="status-cards">
-    <div class="status-card">
-      <h2>Total Offers</h2>
-      <p id="offerCount">0</p>
+    <!-- Status Cards -->
+    <div class="status-cards">
+      <div class="status-card">
+        <h2>Pending Reviews</h2>
+        <p id="pendingCount">0</p>
+      </div>
+      <div class="status-card">
+        <h2>Approved</h2>
+        <p id="approvedCount">0</p>
+      </div>
+      <div class="status-card">
+        <h2>Active Offers</h2>
+        <p id="activeOffersCount">0</p>
+      </div>
+      <div class="status-card">
+        <h2>Total Students</h2>
+        <p id="totalStudentsCount">0</p>
+      </div>
     </div>
-    <div class="status-card">
-      <h2>Total Students</h2>
-      <p id="studentCount">0</p>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="submissions">Student Submissions</div>
+      <div class="tab" data-tab="offers">Discount Offers</div>
+      <div class="tab" data-tab="students">Available Students</div>
+      <div class="tab" data-tab="create">Create New Offer</div>
     </div>
-    <div class="status-card">
-      <h2>Active Discounts</h2>
-      <p id="discountCount">0</p>
+
+    <!-- Student Submissions Tab -->
+    <div id="submissions" class="tab-content active">
+      <div class="tab-header">
+        <h2>Student Submissions</h2>
+        <span id="pendingBadge" class="status-badge status-pending" style="display: none;">0 Pending Review</span>
+      </div>
+      <table id="submissionsTable">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Sport</th>
+            <th>Level</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Student data will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Discount Offers Tab -->
+    <div id="offers" class="tab-content">
+      <div class="tab-header">
+        <h2>Discount Offers</h2>
+        <button class="btn-primary" id="createOfferBtn">Create New Offer</button>
+      </div>
+      <div id="offersContainer">
+        <!-- Offer cards will be populated here -->
+      </div>
+    </div>
+
+    <!-- Available Students Tab -->
+    <div id="students" class="tab-content">
+      <h2>Available Students</h2>
+      <input type="text" id="studentSearch" class="search-box" placeholder="Search by name or sport...">
+      <table id="studentsTable">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Sport</th>
+            <th>Level</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Student data will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Create Offer Tab -->
+    <div id="create" class="tab-content">
+      <h2>Create New Offer</h2>
+      <form id="offerForm">
+        <div class="form-group">
+          <label class="form-label" for="offerTitle">Offer Title</label>
+          <input type="text" id="offerTitle" class="form-control" placeholder="e.g. 25% Tuition Discount" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="offerDiscount">Discount</label>
+          <input type="text" id="offerDiscount" class="form-control" placeholder="e.g. 25% OFF" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="offerDescription">Description</label>
+          <textarea id="offerDescription" class="form-control" placeholder="Describe the offer..." rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="offerValid">Valid Until</label>
+          <input type="date" id="offerValid" class="form-control" required>
+        </div>
+        <div class="scholarship-option">
+          <div class="checkbox-group">
+            <input type="checkbox" id="isScholarship">
+            <label for="isScholarship">This is a scholarship offer</label>
+          </div>
+          <div id="scholarshipDetails" class="scholarship-details">
+            <div class="form-group">
+              <label class="form-label" for="scholarshipAmount">Scholarship Amount</label>
+              <input type="text" id="scholarshipAmount" class="form-control" placeholder="e.g. $5,000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="scholarshipCriteria">Eligibility Criteria</label>
+              <textarea id="scholarshipCriteria" class="form-control" placeholder="Describe eligibility criteria..." rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Create Offer</button>
+      </form>
     </div>
   </div>
 
-  
-  <div class="tabs">
-    <div class="tab active" data-tab="offers">Offers</div>
-    <div class="tab" data-tab="students">Available Students</div>
-    <div class="tab" data-tab="create">Create New Offer</div>
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Review Student Submission</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="student-info">
+          <div class="info-row">
+            <div class="info-label">Student:</div>
+            <div class="info-value" id="modalStudentName">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Sport:</div>
+            <div class="info-value" id="modalStudentSport">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Level:</div>
+            <div class="info-value" id="modalStudentLevel">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Description:</div>
+            <div class="info-value" id="modalStudentDescription">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Submitted:</div>
+            <div class="info-value" id="modalStudentSubmitted">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Status:</div>
+            <div class="info-value" id="modalStudentStatus">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="action-btn btn-success" id="approveBtn">Approve</button>
+        <button class="action-btn btn-danger" id="rejectBtn">Reject</button>
+        <button class="action-btn btn-secondary" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
   </div>
 
-  
-  <div id="offers" class="tab-content active">
-    <table id="offersTable">
-      <thead>
-        <tr>
-          <th>Offer ID</th>
-          <th>Title</th>
-          <th>Discount</th>
-          <th>Valid Until</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  
-  <div id="students" class="tab-content">
-    <input type="text" id="studentSearch" placeholder="Search by name or sport...">
-    <table id="studentsTable">
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Sport</th>
-          <th>Level</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div id="create" class="tab-content">
-    <form id="offerForm">
-      <h3>Create New Offer</h3>
-      <input type="text" id="offerTitle" placeholder="Offer Title" required>
-      <input type="text" id="offerDiscount" placeholder="Discount (e.g. 20%)" required>
-      <input type="date" id="offerValid" required>
-      <button type="submit">Add Offer</button>
-    </form>
-  </div>
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
 
   <script>
-    //jsut hard code stuff will be deleted 
-    const offers = [
-      { id: 1, title: "Gym Membership", discount: "25%", valid: "2025-12-30" },
-      { id: 2, title: "Sports Gear", discount: "15%", valid: "2025-09-15" },
+    // Database simulation
+    const universityData = {
+      name: "Stanford University",
+      pendingCount: 2,
+      approvedCount: 1,
+      activeOffersCount: 2,
+      totalStudentsCount: 3
+    };
+
+    const studentSubmissions = [
+      { 
+        id: 1, 
+        name: "Sarah Johnson", 
+        sport: "Track & Field", 
+        level: "Varsity", 
+        description: "State champion in 400m hurdles",
+        submitted: "2025-03-01", 
+        status: "Pending" 
+      },
+      { 
+        id: 2, 
+        name: "Michael Chen", 
+        sport: "Soccer", 
+        level: "Club", 
+        description: "Team captain, 3 years experience",
+        submitted: "2025-03-05", 
+        status: "Pending" 
+      },
+      { 
+        id: 3, 
+        name: "Emma Davis", 
+        sport: "Volleyball", 
+        level: "Varsity", 
+        description: "All-state team member",
+        submitted: "2025-02-28", 
+        status: "Approved" 
+      }
     ];
 
-    const students = [
-      { name: "Ava Johnson", sport: "Basketball", level: "Advanced" },
-      { name: "Liam Smith", sport: "Football", level: "Intermediate" },
-      { name: "Sophia Davis", sport: "Tennis", level: "Beginner" },
-      { name: "Ethan Brown", sport: "Swimming", level: "Advanced" },
+    const availableStudents = [
+      { id: 1, name: "Sarah Johnson", sport: "Track & Field", level: "Varsity", status: "Pending Review" },
+      { id: 2, name: "Michael Chen", sport: "Soccer", level: "Club", status: "Pending Review" },
+      { id: 3, name: "Emma Davis", sport: "Volleyball", level: "Varsity", status: "Approved" },
+      { id: 4, name: "James Wilson", sport: "Basketball", level: "Varsity", status: "Approved" },
+      { id: 5, name: "Olivia Brown", sport: "Tennis", level: "Club", status: "Pending Review" }
     ];
 
-    // just to see how it will look
-    function loadData() {
-      const offerTable = document.querySelector("#offersTable tbody");
-      offerTable.innerHTML = "";
-      offers.forEach(o => {
-        const row = `<tr>
-          <td>${o.id}</td>
-          <td>${o.title}</td>
-          <td>${o.discount}</td>
-          <td>${o.valid}</td>
-        </tr>`;
-        offerTable.innerHTML += row;
-      });
+    const discountOffers = [
+      { 
+        id: 1, 
+        title: "25% Tuition Discount", 
+        discount: "25% OFF", 
+        description: "For verified varsity athletes",
+        validUntil: "2025-08-30", 
+        studentsClaimed: 15, 
+        status: "Active",
+        isScholarship: false
+      },
+      { 
+        id: 2, 
+        title: "Free Athletic Facility Access", 
+        discount: "100% OFF", 
+        description: "Full access to all athletic facilities",
+        validUntil: "2025-12-31", 
+        studentsClaimed: 32, 
+        status: "Active",
+        isScholarship: false
+      }
+    ];
 
-      const studentTable = document.querySelector("#studentsTable tbody");
-      studentTable.innerHTML = "";
-      students.forEach(s => {
-        const row = `<tr>
-          <td>${s.name}</td>
-          <td>${s.sport}</td>
-          <td>${s.level}</td>
-        </tr>`;
-        studentTable.innerHTML += row;
-      });
+    // DOM Elements
+    const universityNameElement = document.getElementById('universityName');
+    const pendingCountElement = document.getElementById('pendingCount');
+    const approvedCountElement = document.getElementById('approvedCount');
+    const activeOffersCountElement = document.getElementById('activeOffersCount');
+    const totalStudentsCountElement = document.getElementById('totalStudentsCount');
+    const submissionsTableBody = document.querySelector('#submissionsTable tbody');
+    const offersContainer = document.getElementById('offersContainer');
+    const studentsTableBody = document.querySelector('#studentsTable tbody');
+    const studentSearch = document.getElementById('studentSearch');
+    const offerForm = document.getElementById('offerForm');
+    const reviewModal = document.getElementById('reviewModal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const approveBtn = document.getElementById('approveBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const isScholarshipCheckbox = document.getElementById('isScholarship');
+    const scholarshipDetails = document.getElementById('scholarshipDetails');
+    const createOfferBtn = document.getElementById('createOfferBtn');
+    const pendingBadge = document.getElementById('pendingBadge');
 
-      // updating stuff when adding stuff 
-      document.getElementById("offerCount").textContent = offers.length;
-      document.getElementById("studentCount").textContent = students.length;
-      document.getElementById("discountCount").textContent = offers.length; 
+    // Current student being reviewed
+    let currentStudentReview = null;
+
+    // Initialize dashboard
+    function initDashboard() {
+      // Set university name
+      universityNameElement.textContent = universityData.name;
+      
+      // Update status cards
+      updateStatusCards();
+      
+      // Load student submissions
+      loadStudentSubmissions();
+      
+      // Load discount offers
+      loadDiscountOffers();
+      
+      // Load available students
+      loadAvailableStudents();
+      
+      // Set up event listeners
+      setupEventListeners();
     }
 
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.tab).classList.add("active");
-      });
-    });
+    // Update status cards
+    function updateStatusCards() {
+      pendingCountElement.textContent = universityData.pendingCount;
+      approvedCountElement.textContent = universityData.approvedCount;
+      activeOffersCountElement.textContent = universityData.activeOffersCount;
+      totalStudentsCountElement.textContent = universityData.totalStudentsCount;
+      
+      // Update pending badge
+      if (universityData.pendingCount > 0) {
+        pendingBadge.textContent = `${universityData.pendingCount} Pending Review`;
+        pendingBadge.style.display = 'inline-block';
+      } else {
+        pendingBadge.style.display = 'none';
+      }
+    }
 
-    document.getElementById("offerForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const title = document.getElementById("offerTitle").value;
-      const discount = document.getElementById("offerDiscount").value;
-      const valid = document.getElementById("offerValid").value;
+    // Load student submissions
+    function loadStudentSubmissions() {
+      submissionsTableBody.innerHTML = '';
+      
+      studentSubmissions.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.sport}</td>
+          <td>${student.level}</td>
+          <td>${student.submitted}</td>
+          <td><span class="status-badge ${student.status === 'Pending' ? 'status-pending' : 'status-approved'}">${student.status}</span></td>
+          <td><button class="action-btn btn-review" data-id="${student.id}">${student.status === 'Pending' ? 'Review' : 'View'}</button></td>
+        `;
+        submissionsTableBody.appendChild(row);
+      });
+      
+      // Add event listeners to review buttons
+      document.querySelectorAll('.btn-review').forEach(button => {
+        button.addEventListener('click', function() {
+          const studentId = parseInt(this.getAttribute('data-id'));
+          openReviewModal(studentId);
+        });
+      });
+    }
+
+    // Load discount offers
+    function loadDiscountOffers() {
+      offersContainer.innerHTML = '';
+      
+      discountOffers.forEach(offer => {
+        const offerCard = document.createElement('div');
+        offerCard.className = 'offer-card';
+        offerCard.innerHTML = `
+          <div class="offer-header">
+            <div class="offer-title">${offer.title}</div>
+            <div class="offer-discount">${offer.discount}</div>
+          </div>
+          <div class="offer-description">${offer.description}</div>
+          <div class="offer-details">
+            <div class="offer-detail-item">
+              <div class="detail-label">Students Claimed</div>
+              <div class="detail-value">${offer.studentsClaimed}</div>
+            </div>
+            <div class="offer-detail-item">
+              <div class="detail-label">Expires</div>
+              <div class="detail-value">${offer.validUntil}</div>
+            </div>
+          </div>
+          <div class="offer-actions">
+            <button class="action-btn btn-edit" data-id="${offer.id}">Edit</button>
+            <button class="action-btn btn-deactivate" data-id="${offer.id}">${offer.status === 'Active' ? 'Deactivate' : 'Activate'}</button>
+          </div>
+        `;
+        offersContainer.appendChild(offerCard);
+      });
+      
+      // Add event listeners to offer action buttons
+      document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+          const offerId = parseInt(this.getAttribute('data-id'));
+          editOffer(offerId);
+        });
+      });
+      
+      document.querySelectorAll('.btn-deactivate').forEach(button => {
+        button.addEventListener('click', function() {
+          const offerId = parseInt(this.getAttribute('data-id'));
+          toggleOfferStatus(offerId);
+        });
+      });
+    }
+
+    // Load available students
+    function loadAvailableStudents() {
+      studentsTableBody.innerHTML = '';
+      
+      availableStudents.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.sport}</td>
+          <td>${student.level}</td>
+          <td><span class="status-badge ${student.status === 'Pending Review' ? 'status-pending' : 'status-approved'}">${student.status}</span></td>
+        `;
+        studentsTableBody.appendChild(row);
+      });
+    }
+
+    // Open review modal
+    function openReviewModal(studentId) {
+      const student = studentSubmissions.find(s => s.id === studentId);
+      if (!student) return;
+      
+      currentStudentReview = student;
+      
+      // Populate modal with student data
+      document.getElementById('modalStudentName').textContent = student.name;
+      document.getElementById('modalStudentSport').textContent = student.sport;
+      document.getElementById('modalStudentLevel').textContent = student.level;
+      document.getElementById('modalStudentDescription').textContent = student.description;
+      document.getElementById('modalStudentSubmitted').textContent = student.submitted;
+      document.getElementById('modalStudentStatus').textContent = student.status;
+      
+      // Show appropriate buttons based on status
+      if (student.status === 'Pending') {
+        approveBtn.style.display = 'inline-block';
+        rejectBtn.style.display = 'inline-block';
+      } else {
+        approveBtn.style.display = 'none';
+        rejectBtn.style.display = 'none';
+      }
+      
+      // Show modal
+      reviewModal.classList.add('active');
+    }
+
+    // Close review modal
+    function closeReviewModal() {
+      reviewModal.classList.remove('active');
+      currentStudentReview = null;
+    }
+
+    // Approve student
+    function approveStudent() {
+      if (!currentStudentReview) return;
+      
+      // Update student status
+      const studentIndex = studentSubmissions.findIndex(s => s.id === currentStudentReview.id);
+      if (studentIndex !== -1) {
+        studentSubmissions[studentIndex].status = 'Approved';
+      }
+      
+      // Update available students
+      const availableStudentIndex = availableStudents.findIndex(s => s.id === currentStudentReview.id);
+      if (availableStudentIndex !== -1) {
+        availableStudents[availableStudentIndex].status = 'Approved';
+      }
+      
+      // Update counts
+      universityData.pendingCount -= 1;
+      universityData.approvedCount += 1;
+      
+      // Reload data
+      updateStatusCards();
+      loadStudentSubmissions();
+      loadAvailableStudents();
+      
+      // Close modal
+      closeReviewModal();
+      
+      showToast('Student approved successfully!', 'success');
+    }
+
+    // Reject student
+    function rejectStudent() {
+      if (!currentStudentReview) return;
+      
+      // Remove student from submissions
+      const studentIndex = studentSubmissions.findIndex(s => s.id === currentStudentReview.id);
+      if (studentIndex !== -1) {
+        studentSubmissions.splice(studentIndex, 1);
+      }
+      
+      // Remove student from available students
+      const availableStudentIndex = availableStudents.findIndex(s => s.id === currentStudentReview.id);
+      if (availableStudentIndex !== -1) {
+        availableStudents.splice(availableStudentIndex, 1);
+      }
+      
+      // Update counts
+      universityData.pendingCount -= 1;
+      universityData.totalStudentsCount -= 1;
+      
+      // Reload data
+      updateStatusCards();
+      loadStudentSubmissions();
+      loadAvailableStudents();
+      
+      // Close modal
+      closeReviewModal();
+      
+      showToast('Student rejected successfully!', 'error');
+    }
+
+    // Edit offer
+    function editOffer(offerId) {
+      showToast(`Edit functionality for offer ${offerId} would be implemented here.`, 'info');
+    }
+
+    // Toggle offer status
+    function toggleOfferStatus(offerId) {
+      const action = confirm('Are you sure you want to change the status of this offer?');
+      if (!action) return;
+      
+      // Find and update offer status
+      const offerIndex = discountOffers.findIndex(o => o.id === offerId);
+      if (offerIndex !== -1) {
+        discountOffers[offerIndex].status = discountOffers[offerIndex].status === 'Active' ? 'Inactive' : 'Active';
+      }
+      
+      // Update counts
+      universityData.activeOffersCount = discountOffers.filter(o => o.status === 'Active').length;
+      
+      // Reload data
+      updateStatusCards();
+      loadDiscountOffers();
+      
+      showToast('Offer status updated successfully!', 'success');
+    }
+
+    // Create new offer
+    function createNewOffer(event) {
+      event.preventDefault();
+      
+      const title = document.getElementById('offerTitle').value;
+      const discount = document.getElementById('offerDiscount').value;
+      const description = document.getElementById('offerDescription').value;
+      const validUntil = document.getElementById('offerValid').value;
+      const isScholarship = document.getElementById('isScholarship').checked;
+      const scholarshipAmount = document.getElementById('scholarshipAmount').value;
+      const scholarshipCriteria = document.getElementById('scholarshipCriteria').value;
+      
+      // Create new offer object
       const newOffer = {
-        id: offers.length + 1,
+        id: discountOffers.length + 1,
         title,
         discount,
-        valid
+        description,
+        validUntil,
+        studentsClaimed: 0,
+        status: 'Active',
+        isScholarship
       };
-      offers.push(newOffer);
-      loadData();
-      e.target.reset();
-      alert("✅ Offer added successfully!");
-    });
+      
+      // Add scholarship details if applicable
+      if (isScholarship) {
+        newOffer.scholarshipAmount = scholarshipAmount;
+        newOffer.scholarshipCriteria = scholarshipCriteria;
+      }
+      
+      // Add to offers array
+      discountOffers.push(newOffer);
+      
+      // Update counts
+      universityData.activeOffersCount += 1;
+      
+      // Reload data
+      updateStatusCards();
+      loadDiscountOffers();
+      
+      // Reset form
+      offerForm.reset();
+      scholarshipDetails.classList.remove('active');
+      
+      // Switch to offers tab
+      switchTab('offers');
+      
+      showToast('Offer created successfully!', 'success');
+    }
 
-    // search filter but will be changed
-    document.getElementById("studentSearch").addEventListener("input", e => {
-      const query = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll("#studentsTable tbody tr");
+    // Filter students
+    function filterStudents() {
+      const query = studentSearch.value.toLowerCase();
+      const rows = document.querySelectorAll('#studentsTable tbody tr');
+      
       rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? "" : "none";
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
       });
-    });
+    }
 
-    // loading stuff
-    loadData();
+    // Toggle scholarship details
+    function toggleScholarshipDetails() {
+      if (isScholarshipCheckbox.checked) {
+        scholarshipDetails.classList.add('active');
+      } else {
+        scholarshipDetails.classList.remove('active');
+      }
+    }
+
+    // Switch tab
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    // Show toast message
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      
+      toastContainer.appendChild(toast);
+      
+      // Show toast
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toastContainer.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          switchTab(tab.dataset.tab);
+        });
+      });
+      
+      // Modal events
+      closeModalBtn.addEventListener('click', closeReviewModal);
+      cancelBtn.addEventListener('click', closeReviewModal);
+      approveBtn.addEventListener('click', approveStudent);
+      rejectBtn.addEventListener('click', rejectStudent);
+      
+      // Form submission
+      offerForm.addEventListener('submit', createNewOffer);
+      
+      // Student search
+      studentSearch.addEventListener('input', filterStudents);
+      
+      // Scholarship checkbox
+      isScholarshipCheckbox.addEventListener('change', toggleScholarshipDetails);
+      
+      // Create offer button
+      createOfferBtn.addEventListener('click', () => {
+        switchTab('create');
+      });
+    }
+
+    // Initialize the dashboard when the page loads
+    document.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 </html>
