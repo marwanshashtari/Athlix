@@ -1,3 +1,13 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
+    header('Location: ../landing_page/landing_page.html');
+    exit();
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -568,7 +578,7 @@
                         <span>SportMatch</span>
                         <div class="badge badge-outline ml-2">Student</div>
                     </div>
-                    <button class="btn btn-outline" id="logout-btn">
+                    <button href="../../../backend/logout.php"  class="btn btn-outline" id="logout-btn">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
                     </button>

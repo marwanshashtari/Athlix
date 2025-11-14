@@ -1,3 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'University') {
+    header('Location: ../landing_page/landing_page.html');
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -6,8 +6,15 @@
   <title>Sign up with Athlix</title>
   <link rel="stylesheet" href="signup.css">
 </head>
-<!--must do require('request_signup_type.php'); to know usertype -->
+
+
 <body>
+<!--must do require('request_signup_type.php'); to know usertype -->
+<?php
+require_once '../../../backend/config.php';
+$type = $_POST['type'] ; 
+?>
+
     <!--add logo-->
   <div class="navbar">
     <div class="logo">
@@ -16,7 +23,7 @@
     </div>
     <div class="login-buttons">
     <form action="login.php" method="post">
-        <input type="hidden" name="type" value="<?php echo $type?>">
+        <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         <button type="submit" class="btn btn-dark">I already have an account</button>
     </form>
     </div>
@@ -25,14 +32,16 @@
   <!--I'll make two form right now but with the backend code, one will show and the other wont-->
   <div class="signup-window">
     <div class="signup-form">
-    <form action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         <div class="input-div">
             <label for="email">Email</label>
             <input  class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
         </div>
         <br>
         <!--php code: check if type is student and open braces-->
-        <div class="input-div">
+        <?php if ($type === 'student'): ?>
+        
+            <div class="input-div">
             <label for="fname">First Name</label>
             <input class="text" type="text" id="fname" name="fname" placeholder="jane doe" required>
         </div>
@@ -129,8 +138,12 @@
         </div>
         <br>
         <!--close braces-->
+    <?php endif; ?>
+
 
         <!--else if type equals to university: open braces-->
+    <?php if ($type === 'university'): ?>
+
         <label for="universities_menu">Choose the university
         <select id="universities_menu" name="universities_menu">
           <option value="">Choose...</option>
@@ -140,7 +153,11 @@
           <option value="JUST">jordan university of science and technology</option>
         </select>
         </label>
-        <!--close braces-->
+    
+    <?php endif; ?>
+    <!--close braces-->
+        
+
     <input type="button" value="Sign up">
     </form>
     </div>
@@ -205,3 +222,4 @@
 });
 </script>
 </body>
+</html>
