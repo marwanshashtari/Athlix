@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [AthlixDB]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Database [AthlixDB]    Script Date: 11/15/2025 12:23:06 AM ******/
 CREATE DATABASE [AthlixDB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -82,7 +82,7 @@ ALTER DATABASE [AthlixDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_
 GO
 USE [AthlixDB]
 GO
-/****** Object:  Table [dbo].[Scholarship]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[Scholarship]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -101,24 +101,22 @@ CREATE TABLE [dbo].[Scholarship](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Scholarship_Sport]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[Scholarship_Sport]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Scholarship_Sport](
 	[Sport_ID] [int] NOT NULL,
-	[Uni_ID] [int] NOT NULL,
 	[Scholarship_ID] [int] NOT NULL,
- CONSTRAINT [PK_Scholarship_Sport] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_Scholarship_Sport_1] PRIMARY KEY CLUSTERED 
 (
 	[Sport_ID] ASC,
-	[Uni_ID] ASC,
 	[Scholarship_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sports]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[Sports]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -132,7 +130,7 @@ CREATE TABLE [dbo].[Sports](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sports_Student]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[Sports_Student]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -151,7 +149,7 @@ CREATE TABLE [dbo].[Sports_Student](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Student]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[Student]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -160,7 +158,7 @@ CREATE TABLE [dbo].[Student](
 	[User_ID] [int] NOT NULL,
 	[Name] [nvarchar](150) NOT NULL,
 	[Date_of_Birth] [date] NOT NULL,
-	[Gender] [nvarchar](10) NOT NULL,
+	[Gender] [bit] NOT NULL,
 	[GPA] [decimal](5, 2) NOT NULL,
 	[School] [nvarchar](150) NOT NULL,
 	[University] [nvarchar](150) NULL,
@@ -171,7 +169,7 @@ CREATE TABLE [dbo].[Student](
 	[Phone_Number] [nvarchar](20) NOT NULL,
 	[Bio] [nvarchar](max) NULL,
 	[Expected_Graduation_Year] [int] NOT NULL,
-	[Applicant_Type] [nvarchar](20) NOT NULL,
+	[Student_Type] [bit] NOT NULL,
 	[Primary_Sport_ID] [int] NOT NULL,
 	[Health_Issues] [nvarchar](max) NULL,
 	[Major_1] [nvarchar](100) NOT NULL,
@@ -183,7 +181,7 @@ CREATE TABLE [dbo].[Student](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[University_]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[University_]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -202,7 +200,7 @@ CREATE TABLE [dbo].[University_](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 11/10/2025 8:22:47 PM ******/
+/****** Object:  Table [dbo].[User]    Script Date: 11/15/2025 12:23:06 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -211,7 +209,7 @@ CREATE TABLE [dbo].[User](
 	[User_ID] [int] IDENTITY(1,1) NOT NULL,
 	[Email] [nvarchar](255) NOT NULL,
 	[Password] [nvarchar](255) NOT NULL,
-	[Role] [nvarchar](50) NULL,
+	[Role] [bit] NOT NULL,
  CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
 (
 	[User_ID] ASC
@@ -243,11 +241,6 @@ REFERENCES [dbo].[Sports] ([Sport_ID])
 GO
 ALTER TABLE [dbo].[Scholarship_Sport] CHECK CONSTRAINT [FK_Scholarship_Sport_Sport_ID]
 GO
-ALTER TABLE [dbo].[Scholarship_Sport]  WITH CHECK ADD  CONSTRAINT [FK_Scholarship_Sport_Uni_ID] FOREIGN KEY([Uni_ID])
-REFERENCES [dbo].[University_] ([User_ID])
-GO
-ALTER TABLE [dbo].[Scholarship_Sport] CHECK CONSTRAINT [FK_Scholarship_Sport_Uni_ID]
-GO
 ALTER TABLE [dbo].[Sports_Student]  WITH CHECK ADD  CONSTRAINT [FK_Sports_ID] FOREIGN KEY([Sport_ID])
 REFERENCES [dbo].[Sports] ([Sport_ID])
 GO
@@ -273,10 +266,6 @@ REFERENCES [dbo].[User] ([User_ID])
 GO
 ALTER TABLE [dbo].[University_] CHECK CONSTRAINT [FK_University__ID]
 GO
-ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_Gender] CHECK  (([Gender]='Female' OR [Gender]='Male'))
-GO
-ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_Gender]
-GO
 ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_GPA] CHECK  (([GPA]>=(0.00) AND [GPA]<=(100.00)))
 GO
 ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_GPA]
@@ -285,19 +274,11 @@ ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_PhoneNumber]
 GO
 ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_PhoneNumber]
 GO
-ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [CK_Student_Type] CHECK  (([Applicant_Type]='University' OR [Applicant_Type]='School'))
-GO
-ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [CK_Student_Type]
-GO
-ALTER TABLE [dbo].[User]  WITH CHECK ADD  CONSTRAINT [CK_User_Role] CHECK  (([Role]='Student' OR [Role]='University'))
-GO
-ALTER TABLE [dbo].[User] CHECK CONSTRAINT [CK_User_Role]
-GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Gender'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = male, 1 = female' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Gender'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = Available, 1 = Unavailable' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Status'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Applicant_Type'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0 = school student, 1 = university student' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Student', @level2type=N'COLUMN',@level2name=N'Student_Type'
 GO
 USE [master]
 GO
