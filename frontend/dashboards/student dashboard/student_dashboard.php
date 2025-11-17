@@ -574,8 +574,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
             <div class="container">
                 <div class="header-content">
                     <div class="logo">
+                        <!--put original logo-->
                         <i class="fas fa-trophy"></i>
-                        <span>SportMatch</span>
+                        <span>Athlix</span>
                         <div class="badge badge-outline ml-2">Student</div>
                     </div>
                     <button href="../../../backend/logout.php"  class="btn btn-outline" id="logout-btn">
@@ -589,7 +590,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
         <div class="container py-8">
           
             <div class="mb-8">
-                <h1 class="text-4xl mb-2">Welcome back, Alex!</h1>
+                <!--retrive user name from the DB-->
+                <h1 class="text-4xl mb-2">Welcome back, </h1>
                 <p class="text-gray-600">Manage your sports credentials and discover university discounts</p>
             </div>
 
