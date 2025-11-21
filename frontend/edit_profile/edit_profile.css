@@ -1,9 +1,9 @@
 :root {
-    --primary: #530101;
-    --secondary: #fff1e9;
-    --third: #d2c0aedd;
-    --grey: #6b6b6b;
-    --darkgrey:#252424;
+    --primary: #19183B;
+    --secondary: #E7F2EF;
+    --third: #A1C2BD;
+    --grey: #708993;
+    --darkgrey:#1b1b1b;
     --font-weight-primary: 900;
 }
 
@@ -23,6 +23,67 @@ body {
     padding: 20px;
 }
 
+.navbar {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  background: var(--primary);
+  border-radius: 2rem;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--secondary);
+}
+
+.btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-dark {
+  background: var(--primary);
+  color: var(--secondary);
+  border: 2px solid var(--primary);
+}
+
+.btn-dark:hover {
+  background: var(--third);
+  color: var(--darkgrey);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.login-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
 .profile_container {
     width: 100%;
     max-width: 850px;
@@ -31,6 +92,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     padding: 40px;
+    margin-top: 100px;
 }
 
 .profile_picture {
