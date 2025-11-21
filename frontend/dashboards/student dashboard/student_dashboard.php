@@ -114,21 +114,64 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
         }
 
         
-        header {
-            background-color: var(--card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+    .navbar{
+    position:fixed;
+    top: 0.5rem;
+    z-index: 1000;
+    margin: 0 auto 0 3rem;
+    width: 93%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.1rem;
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius:1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 0;
-        }
 
+    .logo {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding:0.15rem 1rem;
+    }
+    
+    .logo img {
+        height: 40px;
+    }
+    
+    .logo-text {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-left: 0.5rem;
+        color: var(--white);
+    }
+    
+.btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-dark {
+  background: var(--primary);
+  color: var(--secondary);
+  border: 2px solid var(--primary);
+}
+
+.btn-dark:hover {
+  background: var(--third);
+  color: var(--darkgrey);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+    
         .logo {
             display: flex;
             align-items: center;
@@ -296,7 +339,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
         }
 
         .grid-cols-1 {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
         }
 
         .grid-cols-2 {
@@ -570,28 +613,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
 </head>
 <body>
     <div class="min-h-screen bg-gray-50">
-        <header class="bg-white border-b sticky top-0 z-10">
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <!--put original logo-->
-                        <i class="fas fa-trophy"></i>
-                        <span>Athlix</span>
-                        <div class="badge badge-outline ml-2">Student</div>
-                    </div>
-                    <button href="../../../backend/logout.php"  class="btn btn-outline" id="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </button>
-                </div>
-            </div>
-        </header>
+        
+     <!--add logo-->
+  <div class="navbar">
+    <div class="logo">
+      <img src="" alt="logo" height="40">
+      <div class="logo-text">Athlix</div>
+    </div>
+    <div class="login-buttons">
+    <form action="/xampp/htdocs/Athlix-main/Athlix-main/frontend/edit_profile/edit_profile.html" method="post">
+        <input type="hidden" name="type">
+        <button type="submit" class="btn btn-dark loginButton">Edit profile</button>
+    </form>
+    </div>
+  </div>
+
 
         <div class="container py-8">
           
             <div class="mb-8">
-                <!--retrive user name from the DB-->
-                <h1 class="text-4xl mb-2">Welcome back, </h1>
+                <h1 class="text-4xl mb-2">Welcome back, Alex!</h1>
                 <p class="text-gray-600">Manage your sports credentials and discover university discounts</p>
             </div>
 
