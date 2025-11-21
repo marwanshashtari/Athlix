@@ -1,9 +1,9 @@
 :root {
-    --primary: #530101;
-    --secondary: #fff1e9;
-    --third: #d2c0aedd;
-    --grey: #6b6b6b;
-    --darkgrey:#252424;
+    --primary: #19183B;
+    --secondary: #E7F2EF;
+    --third: #A1C2BD;
+    --grey: #708993;
+    --darkgrey:#1b1b1b;
     --font-weight-primary: 900;
   }
   
@@ -126,20 +126,39 @@
 
   }
   
+  .video-background {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 
   .intro-section {
-    padding: 120px 2rem 60px;
+    padding: 120px 2rem 0px;
     color: var(--secondary);
     display: flex;
     position: relative;
-    align-items: center;
+    align-items: end;
     gap: 3rem;
+    justify-content: left;
     min-height: 80vh;
     width: 93%;
     margin: 3rem auto;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,1);
-    background-image: url(landing_images/trackfield_coloured.jpeg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
     opacity: 0;
     transform: translateY(30px);
     animation: fadeIn 1s ease-out forwards;
@@ -153,9 +172,14 @@
 }
 
   .intro-content {
-    flex: 1;
-    max-width: 600px;
+    position: relative;
+    z-index: 1;
+    color: var(--secondary);
+    top: 50%;
+    width: 50%;
+    transform: translateY(-50%);
     text-align: left;
+    margin: 15rem 0 0 0;
   }
   
   .intro-section h1 {
@@ -245,7 +269,7 @@
   
   .university-grid-text{
     text-align: center;
-    margin:15rem 0 0 0;
+    margin:10rem 0 0 0;
     font-size: 2rem;
     color: var(--primary);
   }
@@ -257,32 +281,31 @@
     justify-content: center;
     gap: 3rem;
     padding:10px;
-    width: 90%;
+    width: 70%;
     margin: 0 auto 10rem;
   }
 
   .university-grid-content{
-    display:grid;
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    width: 100%;
-    height: 24rem;
+    width: 80%;
+    height: 15rem;
   }
 
   .university-logo{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    padding: 3px;
     border: solid 1px var(--secondary);
     border-radius: 5px;
     margin: 5px;
-    background: linear-gradient(to bottom, var(--secondary), var(--third));
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background-color: var(--secondary);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   }
 
   .university-logo:hover{
-        transform: translateY(-10px);
-
+    transform: translateY(-10px);
   }
 
 /*STARTS HERE*/
