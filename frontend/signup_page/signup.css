@@ -1,9 +1,9 @@
 :root {
-    --primary: #530101;
-    --secondary: #fff1e9;
-    --third: #d2c0aedd;
-    --grey: #6b6b6b;
-    --darkgrey:#252424;
+    --primary: #19183B;
+    --secondary: #E7F2EF;
+    --third: #A1C2BD;
+    --grey: #708993;
+    --darkgrey:#1b1b1b;
     --font-weight-primary: 900;
 }
 
@@ -21,7 +21,7 @@ body {
 }
 
 .navbar {
-  position: fixed;
+  position: absolute;
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
@@ -34,6 +34,59 @@ body {
   border-radius: 2rem;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
   z-index: 1000;
+}
+
+
+
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 2000; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.6); 
+}
+
+
+.modal-content {
+  background-color: var(--secondary);
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: center;
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: var(--darkgrey);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal input[type="email"],
+.modal input[type="password"] {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0 1rem 0;
+  border: 1px solid var(--grey);
+  border-radius: 20px;
+}
+
+.modal label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  margin-top: 1rem;
 }
 
 .logo {
@@ -107,7 +160,7 @@ body {
 form {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .input-div {
@@ -192,11 +245,14 @@ input[type="button"]:hover{
   transform: translateY(-3px);
 
 }
-.gender-options, .sport-options {
+.gender-options, .sport-options, .height, .weight, .family-income,
+.exp-years {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 0.75rem;
 }
+
+
 
 .gender-option, .sport-option {
   display: flex;
