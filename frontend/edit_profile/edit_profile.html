@@ -7,6 +7,21 @@
     <title>Edit Profile</title>
 </head>
 <body>
+
+     <!--add logo-->
+  <div class="navbar">
+    <div class="logo">
+      <img src="" alt="logo" height="40">
+      <div class="logo-text">Athlix</div>
+    </div>
+    <div class="login-buttons">
+    <form action="/xampp/htdocs/Athlix-main/Athlix-main/frontend/dashboards/student_dashboard.html" method="post">
+        <input type="hidden" name="type">
+        <button type="submit" class="btn btn-dark loginButton">Back to dashboard</button>
+    </form>
+    </div>
+  </div>
+
     <div class="profile_container">
         <div class="profile_picture">
             <img src="">
@@ -20,8 +35,8 @@
         </div>
         
        <!--need to add height and weight-->
-       <form class="profile-form" id="profileForm" action="../../../backend/edit_profile.php" method="post">
-        <div class="section active" id="section-0">
+        <form class="profile-form" id="profileForm">
+            <div class="section active" id="section-0">
                 <h2>Basic Information</h2>
                 <div class="content-grid">
                     <div class="form-group">
