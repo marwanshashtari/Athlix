@@ -12,19 +12,19 @@
   <!--add logo-->
   <div class="navbar">
     <div class="logo">
-      <img src="landing_images/logo.png" alt="logo" height="40">
+      <img src="landing_images/logo_athlix.jpg" alt="logo" height="40">
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
         <button type="button" class="btn btn-dark learn-more">More about us</button>
       <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="../../../backend/request_login_type.php" method="post">
+      <form action="" method="post">
         <input type="hidden" name="type" value="student">
         <button class="btn btn-dark student-login">Student Login</button>
       </form>
 
       <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="../../../backend/request_login_type.php" method="post">
+      <form action="" method="post">
         <input type="hidden" name="type" value="university">
         <button class="btn btn-dark university-login">University Login</button>
       </form>
@@ -48,26 +48,26 @@
 </div>
 
   <div class="intro-section">
-    <div class="intro-content">
+      <video autoplay muted loop playsinline class="bg-video">
+        <source src="landing_images/sample_video.mp4" type="video/mp4">
+      </video>
+      <div class="intro-content">
       <h1>Match Your Sports Achievement with University Discounts</h1>
       <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
       <div class="buttons-container">
            <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../../backend/request_signup_type.php" method="post">
+      <form action="../signup_page/singup.html" method="post">
         <input type="hidden" name="type" value="student">
         <button class="btn btn-primary get-started-student">I'm a Student</button>
       </form>
          <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../../backend/request_signup_type.php" method="post">
+      <form action="../signup_page/singup.html" method="post">
         <input type="hidden" name="type" value="university">
         <button class="btn btn-outline get-started-uni">I'm a University</button>
       </form>
       </div>
     </div>
-    <div class="intro-image">
-      <!-- add image -->
-      </div>
-    </div>
+  </div>
 
 
   <div class="university-grid-text">
@@ -174,13 +174,13 @@
     <p>Join hundreds of students and universities already using SportMatch.</p>
     <div class="motivation-buttons-container">
     <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../../backend/request_signup_type.php" method="post">
+      <form action="../signup_page/singup.html" method="post">
         <input type="hidden" name="type" value="student">
         <button class="btn btn-outline get-started-student">Sign Up as Student</button>
       </form>
     <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../../backend/request_signup_type.php" method="post">
-        <input type="hidden" name="type" value="university">
+      <form action="../signup_page/singup.html" method="post">
+        <input type="hidden" name="type" value="student">
         <button class="btn btn-primary get-started-uni">Sign Up as University</button>
       </form>
     </div>
