@@ -6,15 +6,11 @@
   <title>Sign up with Athlix</title>
   <link rel="stylesheet" href="signup.css">
 </head>
-
-
-<body>
 <!--must do require('request_signup_type.php'); to know usertype -->
-<?php
-require_once '../../../backend/config.php';
-$type = $_POST['type'] ; 
+<body>
+  <?php
+require_once '../../../backend/config.php';$type = $_POST['type'] ; 
 ?>
-
     <!--add logo-->
   <div class="navbar">
     <div class="logo">
@@ -23,25 +19,38 @@ $type = $_POST['type'] ;
     </div>
     <div class="login-buttons">
     <form action="login.php" method="post">
-        <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
-        <button type="submit" class="btn btn-dark">I already have an account</button>
+        <input type="hidden" name="type" value="<?php echo $type?>">
+        <button type="submit" class="btn btn-dark loginButton">I already have an account</button>
     </form>
     </div>
   </div>
 
+    <div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm" action="request_login_type.php" method="post">
+      <input type="hidden" name="type" id="userType" value="">
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" placeholder="Enter your email" required>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      <button type="submit" class="btn btn-dark">Login</button>
+    </form>
+  </div>
+</div>
+
   <!--I'll make two form right now but with the backend code, one will show and the other wont-->
   <div class="signup-window">
     <div class="signup-form">
-        <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
+    <form action="" method="post" enctype="multipart/form-data">
         <div class="input-div">
             <label for="email">Email</label>
             <input  class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
         </div>
         <br>
         <!--php code: check if type is student and open braces-->
-        <?php if ($type === 'student'): ?>
-        
-            <div class="input-div">
+        <div class="input-div">
             <label for="fname">First Name</label>
             <input class="text" type="text" id="fname" name="fname" placeholder="jane doe" required>
         </div>
@@ -128,22 +137,52 @@ $type = $_POST['type'] ;
         </div>
         <br>
         <div class="input-div">
-        <label>select your sports</label>
+            <label>Select your sports</label>
             <div class="sport-options">
-                <div class="sport-option"><label class="radio" for="football">football</label><input type="checkbox" id="football" value="football" name="sports[]"></div>
-                <div class="sport-option"><label class="radio" for="volleyball">volleyball</label><input type="checkbox" id="volleyball" value="volleyball" name="sports[]"></div>
-                <div class="sport-option"><label class="radio" for="tennis">tennis</label><input type="checkbox" id="tennis" value="tennis" name="sports[]"></div>
-                <div class="sport-option"><label class="radio" for="others">others</label><input type="checkbox" id="others" value="others" name="sports[]"></div>
+            <div><input type="checkbox" id="football" value="football"><label for="football">Football</label></div>
+            <div><input type="checkbox" id="volleyball" value="volleyball"><label for="volleyball">Volleyball</label></div>
+            <div><input type="checkbox" id="tennis" value="tennis"><label for="tennis">Tennis</label></div>
+            <div><input type="checkbox" id="basketball" value="basketball"><label for="basketball">Basketball</label></div>
+            <div><input type="checkbox" id="handball" value="handball"><label for="handball">Handball</label></div>
+            <div><input type="checkbox" id="table-tennis" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
+            <div><input type="checkbox" id="others" value="others"><label for="others">Others</label></div>
+
+            <div id="other-sports">
+                <label for="other-sport">What's your sport? </label>
+                <input type="text" id="other-sport">
+            </div>
+            </div>
+        </div>
+        <br>
+        <div class="input-div">
+            <div class="height"><label for="height">Height</label><input type="number" id="height"></div>
+        </div>
+        <br>
+        <div class="input-div">
+            <div class="weight"><label for="weight">Weight</label><input type="number" id="weight"></div>
+        </div>
+        <br>
+        <div class="input-div">
+            <div class="family-income"><label for="family-income">Family income</label><input type="number" id="family-income"></div>
+        </div>
+        <br>
+       <div class="input-div">
+            <div class="exp-years"><label for="exp-years">How many years have you played sports</label><input type="number" id="exp-years"></div>
+        </div>
+        <br>
+        <div class="input-div">
+            <label class="competition" for="competition">Have you participated in competitions before</label>
+            <div class="gender-options">
+                <div class="gender-option"><input class="check" type="radio" id="competition" name="competition" value="yes">
+                <label for="female">Yes</label></div>
+                <div class="gender-option"><input class="check" type="radio" id="competition" name="competition" value="no">
+                <label for="male">No</label></div>
             </div>
         </div>
         <br>
         <!--close braces-->
-    <?php endif; ?>
-
 
         <!--else if type equals to university: open braces-->
-    <?php if ($type === 'university'): ?>
-
         <label for="universities_menu">Choose the university
         <select id="universities_menu" name="universities_menu">
           <option value="">Choose...</option>
@@ -153,11 +192,7 @@ $type = $_POST['type'] ;
           <option value="JUST">jordan university of science and technology</option>
         </select>
         </label>
-    
-    <?php endif; ?>
-    <!--close braces-->
-        
-
+        <!--close braces-->
     <input type="button" value="Sign up">
     </form>
     </div>
@@ -219,7 +254,45 @@ $type = $_POST['type'] ;
             day31.hidden = true;
             break;
     }
+
+});
+
+const othersport = document.getElementById("other-sports");
+othersport.hidden = true;
+
+const textother = document.getElementById("others");
+textother.addEventListener("change", function() {
+  othersport.hidden = !textother.checked;
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const alreadyloginin = document.querySelector('.loginButton');
+    const modal = document.getElementById('loginModal');
+    const closeBtn = modal.querySelector('.close');
+    const userTypeInput = document.getElementById('userType');
+
+  function openModal(type) {
+    userTypeInput.value = type; 
+    modal.style.display = 'block';
+  }
+
+    alreadyloginin.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('university','student');
+  });
+
+  // Close modal
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // Close when clicking outside modal content
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
 });
 </script>
 </body>
-</html>
