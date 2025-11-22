@@ -1,12 +1,100 @@
 <?php
+//Path: frontend/dashboards/student_dashboard/student_dashboard.php
+
+// ==========================================
+// 1. CONFIG & SESSION
+// ==========================================
 session_start();
+
+// Path Correction: Go up 3 levels to backend
+require_once '../../../backend/config.php';
+
+// Security Check
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
-    header('Location: ../landing_page/landing_page.html');
+    header('Location: ../../landing_page/landing_page.html');
     exit();
 }
+
+$user_id = $_SESSION['user_id'];
+
+// ==========================================
+// 2. HANDLE "ADD NEW SPORT" FORM SUBMISSION
+// ==========================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_sport') {
+    $sportName = trim($_POST['sport']);
+    $level = $_POST['level']; 
+    $description = $_POST['description'];
+    
+    // Combine Level and Description
+    $fullAchievements = "Level: $level. " . $description;
+    
+    // A. Check if Sport exists using helper q_row()
+    $row = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
+
+    if ($row) {
+        $sportID = $row['Sport_ID'];
+    } else {
+        // Insert Sport using helper q()
+        q("INSERT INTO Sports (Name) VALUES (?)", [$sportName]);
+        
+        // Get the ID (SQL Server specific: SCOPE_IDENTITY)
+        $idRes = q_row("SELECT SCOPE_IDENTITY() as id");
+        $sportID = $idRes['id'];
+    }
+
+    // B. Link to Student
+    q("INSERT INTO Sports_Student 
+       (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
+       VALUES (?, ?, 0, '', ?, 0)", 
+       [$user_id, $sportID, $fullAchievements]
+    );
+
+    // Refresh page
+    header("Location: student_dashboard.php");
+    exit();
+}
+
+// ==========================================
+// 3. FETCH DATA FOR DASHBOARD
+// ==========================================
+
+// A. Get Student Name
+$row = q_row("SELECT Name FROM Student WHERE User_ID = ?", [$user_id]);
+$studentName = $row['Name'] ?? 'Student';
+$firstName = explode(' ', trim($studentName))[0];
+
+// B. Get Student's Sports Submissions
+$sql_subs = "SELECT ss.*, s.Name as SportName 
+             FROM Sports_Student ss 
+             JOIN Sports s ON ss.Sport_ID = s.Sport_ID 
+             WHERE ss.Std_ID = ?";
+             
+// Execute query using helper
+$stmt_subs = q($sql_subs, [$user_id]);
+
+$mySubmissions = [];
+// Use sqlsrv_fetch_array instead of PDO fetch
+while ($r = sqlsrv_fetch_array($stmt_subs, SQLSRV_FETCH_ASSOC)) {
+    $mySubmissions[] = $r;
+}
+
+// C. Get Available Discounts (Active Scholarships)
+$sql_offers = "SELECT sch.*, u.Name as UniName 
+               FROM Scholarship sch 
+               JOIN University_ u ON sch.Uni_ID = u.User_ID 
+               WHERE sch.Active = 1";
+$stmt_offers = q($sql_offers);
+
+$availableDiscounts = [];
+while ($r = sqlsrv_fetch_array($stmt_offers, SQLSRV_FETCH_ASSOC)) {
+    $availableDiscounts[] = $r;
+}
+
+// D. Calculate Stats
+$totalSubs = count($mySubmissions);
+$activeDiscountCount = count($availableDiscounts);
+$approvedCount = 0; // Logic for counting approved status can be added here later
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,629 +102,31 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SportMatch - Student Dashboard</title>
+    <link rel="stylesheet" href="student_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
- 
-        :root {
-            --font-size: 16px;
-            --background: #ffffff;
-            --foreground: #252525;
-            --card: #ffffff;
-            --card-foreground: #252525;
-            --popover: #ffffff;
-            --popover-foreground: #252525;
-            --primary: #030213;
-            --primary-foreground: #ffffff;
-            --secondary: #f2f2f7;
-            --secondary-foreground: #030213;
-            --muted: #ececf0;
-            --muted-foreground: #717182;
-            --accent: #e9ebef;
-            --accent-foreground: #030213;
-            --destructive: #d4183d;
-            --destructive-foreground: #ffffff;
-            --border: rgba(0, 0, 0, 0.1);
-            --input: transparent;
-            --input-background: #f3f3f5;
-            --switch-background: #cbced4;
-            --font-weight-medium: 500;
-            --font-weight-normal: 400;
-            --ring: #b4b4b4;
-            --chart-1: #a55c1b;
-            --chart-2: #0d9488;
-            --chart-3: #3b82f6;
-            --chart-4: #d97706;
-            --chart-5: #c2410c;
-            --radius: 0.625rem;
-            --sidebar: #fcfcfc;
-            --sidebar-foreground: #252525;
-            --sidebar-primary: #030213;
-            --sidebar-primary-foreground: #fcfcfc;
-            --sidebar-accent: #f7f7f7;
-            --sidebar-accent-foreground: #343434;
-            --sidebar-border: #ebebeb;
-            --sidebar-ring: #b4b4b4;
-        }
-
-        .dark {
-            --background: #252525;
-            --foreground: #fcfcfc;
-            --card: #252525;
-            --card-foreground: #fcfcfc;
-            --popover: #252525;
-            --popover-foreground: #fcfcfc;
-            --primary: #fcfcfc;
-            --primary-foreground: #343434;
-            --secondary: #424242;
-            --secondary-foreground: #fcfcfc;
-            --muted: #424242;
-            --muted-foreground: #b4b4b4;
-            --accent: #424242;
-            --accent-foreground: #fcfcfc;
-            --destructive: #8b1e2e;
-            --destructive-foreground: #fca5a5;
-            --border: #424242;
-            --input: #424242;
-            --ring: #707070;
-            --chart-1: #3b82f6;
-            --chart-2: #10b981;
-            --chart-3: #d97706;
-            --chart-4: #8b5cf6;
-            --chart-5: #dc2626;
-            --sidebar: #343434;
-            --sidebar-foreground: #fcfcfc;
-            --sidebar-primary: #3b82f6;
-            --sidebar-primary-foreground: #fcfcfc;
-            --sidebar-accent: #424242;
-            --sidebar-accent-foreground: #fcfcfc;
-            --sidebar-border: #424242;
-            --sidebar-ring: #707070;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--foreground);
-            line-height: 1.5;
-            font-size: var(--font-size);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        
-    .navbar{
-    position:fixed;
-    top: 0.5rem;
-    z-index: 1000;
-    margin: 0 auto 0 3rem;
-    width: 93%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.1rem;
-    background-color: var(--primary);
-    border: 1px solid var(--primary);
-    border-radius:1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    }
-
-
-    .logo {
-        display: grid;
-        grid-template-columns: 1fr;
-        padding:0.15rem 1rem;
-    }
-    
-    .logo img {
-        height: 40px;
-    }
-    
-    .logo-text {
-        font-weight: 700;
-        font-size: 1rem;
-        margin-left: 0.5rem;
-        color: var(--white);
-    }
-    
-.btn {
-  padding: 0.6rem 1.5rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-dark {
-  background: var(--primary);
-  color: var(--secondary);
-  border: 2px solid var(--primary);
-}
-
-.btn-dark:hover {
-  background: var(--third);
-  color: var(--darkgrey);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-    
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo i {
-            font-size: 1.75rem;
-            color: #3b82f6;
-        }
-
-        .logo span {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-       
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border: 1px solid transparent;
-        }
-
-        .badge-outline {
-            background-color: transparent;
-            border-color: var(--border);
-            color: var(--foreground);
-        }
-
-        .badge-success {
-            background-color: #10b981;
-            color: white;
-        }
-
-        .badge-warning {
-            background-color: #f59e0b;
-            color: white;
-        }
-
-        .badge-destructive {
-            background-color: var(--destructive);
-            color: white;
-        }
-
-        .badge i {
-            margin-right: 0.25rem;
-            font-size: 0.75rem;
-        }
-
-  
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius);
-            font-weight: 500;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .btn i {
-            margin-right: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--primary-foreground);
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border-color: var(--border);
-            color: var(--foreground);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--accent);
-        }
-
-        .btn-sm {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.75rem;
-        }
-
-     
-        .card {
-            background-color: var(--card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 1.5rem 1.5rem 0;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .card-description {
-            color: var(--muted-foreground);
-            font-size: 0.875rem;
-        }
-
-        
-        .tabs {
-            width: 100%;
-        }
-
-        .tabs-list {
-            display: flex;
-            background-color: var(--muted);
-            border-radius: var(--radius);
-            padding: 0.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tabs-trigger {
-            flex: 1;
-            padding: 0.5rem 1rem;
-            background-color: transparent;
-            border: none;
-            border-radius: calc(var(--radius) - 2px);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tabs-trigger.active {
-            background-color: var(--background);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .tabs-content {
-            display: none;
-        }
-
-        .tabs-content.active {
-            display: block;
-        }
-
-     
-        .grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .grid-cols-1 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        .grid-cols-2 {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        @media (max-width: 768px) {
-            .grid-cols-2, .grid-cols-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-  
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 50;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--card);
-            border-radius: var(--radius);
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            margin-bottom: 1rem;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-description {
-            color: var(--muted-foreground);
-            font-size: 0.875rem;
-        }
-
-     
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .input, .textarea, .select {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background-color: var(--input-background);
-            font-size: 0.875rem;
-            transition: border-color 0.2s;
-        }
-
-        .input:focus, .textarea:focus, .select:focus {
-            outline: none;
-            border-color: var(--ring);
-        }
-
-        .textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-        }
-
-
-        .text-sm {
-            font-size: 0.875rem;
-        }
-
-        .text-lg {
-            font-size: 1.125rem;
-        }
-
-        .text-xl {
-            font-size: 1.25rem;
-        }
-
-        .text-2xl {
-            font-size: 1.5rem;
-        }
-
-        .text-3xl {
-            font-size: 1.875rem;
-        }
-
-        .text-4xl {
-            font-size: 2.25rem;
-        }
-
-        .text-gray-600 {
-            color: #6b7280;
-        }
-
-        .text-green-600 {
-            color: #10b981;
-        }
-
-        .text-purple-600 {
-            color: #8b5cf6;
-        }
-
-        .text-blue-600 {
-            color: #3b82f6;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-
-        .mb-8 {
-            margin-bottom: 2rem;
-        }
-
-        .mt-1 {
-            margin-top: 0.25rem;
-        }
-
-        .mr-1 {
-            margin-right: 0.25rem;
-        }
-
-        .mr-2 {
-            margin-right: 0.5rem;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .justify-end {
-            justify-content: flex-end;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .gap-3 {
-            gap: 0.75rem;
-        }
-
-        .gap-4 {
-            gap: 1rem;
-        }
-
-        .gap-6 {
-            gap: 1.5rem;
-        }
-
-        .space-y-4 > * + * {
-            margin-top: 1rem;
-        }
-
-        .space-y-6 > * + * {
-            margin-top: 1.5rem;
-        }
-
-        .hover\:shadow-lg:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .transition-shadow {
-            transition: box-shadow 0.2s;
-        }
-
-        .sticky {
-            position: sticky;
-        }
-
-        .top-0 {
-            top: 0;
-        }
-
-        .z-10 {
-            z-index: 10;
-        }
-
-        .min-h-screen {
-            min-height: 100vh;
-        }
-
-        .py-4 {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-
-        .py-8 {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        .px-4 {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .w-4 {
-            width: 1rem;
-        }
-
-        .h-4 {
-            height: 1rem;
-        }
-
-        .w-8 {
-            width: 2rem;
-        }
-
-        .h-8 {
-            height: 2rem;
-        }
-    </style>
 </head>
 <body>
     <div class="min-h-screen bg-gray-50">
         
-     <!--add logo-->
-  <div class="navbar">
-    <div class="logo">
-      <img src="" alt="logo" height="40">
-      <div class="logo-text">Athlix</div>
-    </div>
-    <div class="login-buttons">
-    <form action="/xampp/htdocs/Athlix-main/Athlix-main/frontend/edit_profile/edit_profile.html" method="post">
-        <input type="hidden" name="type">
-        <button type="submit" class="btn btn-dark loginButton">Edit profile</button>
-    </form>
-    </div>
-  </div>
-
+        <div class="navbar">
+            <div class="logo">
+                <img src="../../landing_page/landing_images/logo_athlix.jpg" alt="logo" height="40">
+                <div class="logo-text">Athlix</div>
+            </div>
+            <div class="login-buttons">
+                <form action="../../edit_profile/edit_profile.php" method="post">
+                    <button type="submit" class="btn btn-dark loginButton">Edit profile</button>
+                </form>
+            </div>
+        </div>
 
         <div class="container py-8">
-          
+            
             <div class="mb-8">
-                <h1 class="text-4xl mb-2">Welcome back, Alex!</h1>
+                <h1 class="text-4xl mb-2">Welcome back, <?php echo htmlspecialchars($firstName); ?>!</h1>
                 <p class="text-gray-600">Manage your sports credentials and discover university discounts</p>
             </div>
 
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="card">
                     <div class="card-header flex items-center justify-between">
@@ -644,7 +134,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         <i class="fas fa-upload text-gray-500"></i>
                     </div>
                     <div class="card-content">
-                        <div class="text-2xl" id="total-submissions">2</div>
+                        <div class="text-2xl" id="total-submissions"><?php echo $totalSubs; ?></div>
                     </div>
                 </div>
                 <div class="card">
@@ -653,7 +143,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         <i class="fas fa-check-circle text-green-600"></i>
                     </div>
                     <div class="card-content">
-                        <div class="text-2xl text-green-600" id="approved-count">1</div>
+                        <div class="text-2xl text-green-600" id="approved-count"><?php echo $approvedCount; ?></div>
                     </div>
                 </div>
                 <div class="card">
@@ -662,12 +152,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         <i class="fas fa-percent text-purple-600"></i>
                     </div>
                     <div class="card-content">
-                        <div class="text-2xl text-purple-600" id="discounts-count">3</div>
+                        <div class="text-2xl text-purple-600" id="discounts-count"><?php echo $activeDiscountCount; ?></div>
                     </div>
                 </div>
             </div>
 
-          
             <div class="tabs">
                 <div class="tabs-list">
                     <button class="tabs-trigger active" data-tab="submissions">My Submissions</button>
@@ -685,7 +174,32 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         </div>
 
                         <div class="grid gap-4" id="submissions-list">
-                            <!-- Submissions will be populated by JavaScript -->
+                            <?php if (empty($mySubmissions)): ?>
+                                <p class="text-gray-600">You haven't submitted any sports yet.</p>
+                            <?php else: ?>
+                                <?php foreach ($mySubmissions as $sub): ?>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <div class="card-title"><?php echo htmlspecialchars($sub['SportName']); ?></div>
+                                                <div class="card-description">
+                                                    <?php echo htmlspecialchars($sub['Years_of_Experience']); ?> Years Experience
+                                                </div>
+                                            </div>
+                                            <div class="badge badge-success">
+                                                <i class="fas fa-check-circle"></i> Active
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <p class="text-sm text-gray-600 mb-2">
+                                            <?php echo htmlspecialchars($sub['Achievements'] ?: 'No details provided.'); ?>
+                                        </p>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -695,7 +209,31 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         <h2 class="text-2xl">Available University Discounts</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="discounts-list">
-                            <!-- Discounts will be populated by JavaScript -->
+                            <?php if (empty($availableDiscounts)): ?>
+                                <p class="text-gray-600">No scholarships available at the moment.</p>
+                            <?php else: ?>
+                                <?php foreach ($availableDiscounts as $offer): ?>
+                                <div class="card hover:shadow-lg transition-shadow">
+                                    <div class="card-header">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div class="badge badge-outline"><?php echo htmlspecialchars($offer['UniName']); ?></div>
+                                            <div class="badge badge-success"><?php echo htmlspecialchars((string)$offer['Percentage']); ?>% OFF</div>
+                                        </div>
+                                        <div class="card-title"><?php echo htmlspecialchars($offer['Title']); ?></div>
+                                        <div class="card-description"><?php echo htmlspecialchars($offer['Description']); ?></div>
+                                    </div>
+                                    <div class="card-content flex justify-between items-center">
+                                        <span class="text-sm text-gray-500">
+                                            Expires: <?php 
+                                                // Your config has "ReturnDatesAsStrings" => true, so we just echo it
+                                                echo htmlspecialchars($offer['Deadline']); 
+                                            ?>
+                                        </span>
+                                        <button class="btn btn-primary btn-sm">Claim Discount</button>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -703,23 +241,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal" id="submission-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Submit Sport Participation</h3>
                 <p class="modal-description">
-                    Upload proof of your sports achievement or participation for university verification
+                    Upload proof of your sports achievement or participation.
                 </p>
             </div>
-            <form id="submission-form">
+            
+            <form id="submission-form" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="add_sport">
+                
                 <div class="form-group">
                     <label for="sport">Sport</label>
-                    <input type="text" id="sport" class="input" placeholder="e.g., Basketball, Soccer, Tennis" required>
+                    <input type="text" id="sport" name="sport" class="input" placeholder="e.g., Basketball" required>
                 </div>
+                
                 <div class="form-group">
                     <label for="level">Level</label>
-                    <select id="level" class="select" required>
+                    <select id="level" name="level" class="select" required>
                         <option value="">Select level</option>
                         <option value="Recreational">Recreational</option>
                         <option value="Club">Club</option>
@@ -727,17 +268,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
                         <option value="Professional">Professional</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" class="textarea" placeholder="Describe your achievements, role, duration..." rows="4" required></textarea>
+                    <label for="description">Description / Achievements</label>
+                    <textarea id="description" name="description" class="textarea" placeholder="Describe your role and achievements..." rows="4" required></textarea>
                 </div>
+                
                 <div class="form-group">
-                    <label for="proof">Upload Proof</label>
-                    <input type="file" id="proof" class="input" accept="image/*,.pdf">
+                    <label for="proof">Upload Proof (Optional)</label>
+                    <input type="file" id="proof" name="proof" class="input" accept="image/*,.pdf">
                     <p class="text-sm text-gray-500 mt-1">
-                        Upload certificates, photos, or documents
+                        Upload certificates or photos.
                     </p>
                 </div>
+                
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
                     <button type="submit" class="btn btn-primary">Submit for Verification</button>
@@ -747,237 +291,49 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
     </div>
 
     <script>
-        //just to check if it work
-        // Sample data
-        let submissions = [
-            {
-                id: '1',
-                sport: 'Basketball',
-                level: 'Varsity',
-                description: 'Team captain for 2 years',
-                status: 'approved',
-                submittedDate: '2025-01-15',
-                university: 'Stanford University'
-            },
-            {
-                id: '2',
-                sport: 'Swimming',
-                level: 'Club',
-                description: 'Regional championship participant',
-                status: 'pending',
-                submittedDate: '2025-02-10'
-            }
-        ];
-
-        let discounts = [
-            {
-                id: '1',
-                university: 'Stanford University',
-                title: '25% Tuition Discount',
-                discount: '25%',
-                description: 'For verified varsity athletes',
-                expiryDate: '2025-08-30',
-                available: true
-            },
-            {
-                id: '2',
-                university: 'MIT',
-                title: 'Free Athletic Facility Access',
-                discount: '100%',
-                description: 'Full access to all athletic facilities',
-                expiryDate: '2025-12-31',
-                available: true
-            },
-            {
-                id: '3',
-                university: 'UC Berkeley',
-                title: '15% Housing Discount',
-                discount: '15%',
-                description: 'Campus housing discount for athletes',
-                expiryDate: '2025-09-01',
-                available: true
-            }
-        ];
-
-        // DOM Elements
-        const tabsTriggers = document.querySelectorAll('.tabs-trigger');
-        const tabsContents = document.querySelectorAll('.tabs-content');
-        const modal = document.getElementById('submission-modal');
-        const openModalBtn = document.getElementById('open-modal-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
-        const submissionForm = document.getElementById('submission-form');
-        const submissionsList = document.getElementById('submissions-list');
-        const discountsList = document.getElementById('discounts-list');
-        const totalSubmissionsEl = document.getElementById('total-submissions');
-        const approvedCountEl = document.getElementById('approved-count');
-        const discountsCountEl = document.getElementById('discounts-count');
-        const logoutBtn = document.getElementById('logout-btn');
-
-        // Tab switching
-        tabsTriggers.forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const tabId = trigger.getAttribute('data-tab');
-                
-                // Update active tab trigger
-                tabsTriggers.forEach(t => t.classList.remove('active'));
-                trigger.classList.add('active');
-                
-                // Show active tab content
-                tabsContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === `${tabId}-tab`) {
-                        content.classList.add('active');
-                    }
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab Switching Logic
+            const tabsTriggers = document.querySelectorAll('.tabs-trigger');
+            const tabsContents = document.querySelectorAll('.tabs-content');
+            
+            tabsTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const tabId = trigger.getAttribute('data-tab');
+                    
+                    // Reset active states
+                    tabsTriggers.forEach(t => t.classList.remove('active'));
+                    tabsContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Set new active state
+                    trigger.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
                 });
             });
-        });
 
-        // Modal controls
-        openModalBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-        });
+            // Modal Logic
+            const modal = document.getElementById('submission-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
 
-        cancelBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        // Close modal when clicking outside
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
+            if(openModalBtn) {
+                openModalBtn.addEventListener('click', () => {
+                    modal.classList.add('active');
+                });
             }
-        });
 
-        // Form submission
-        submissionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const sport = document.getElementById('sport').value;
-            const level = document.getElementById('level').value;
-            const description = document.getElementById('description').value;
-            
-            const newSubmission = {
-                id: Date.now().toString(),
-                sport,
-                level,
-                description,
-                status: 'pending',
-                submittedDate: new Date().toISOString().split('T')[0]
-            };
-            
-            submissions.unshift(newSubmission);
-            renderSubmissions();
-            updateStats();
-            
-            // Reset form and close modal
-            submissionForm.reset();
-            modal.classList.remove('active');
-        });
-
-        // Logout button
-        logoutBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to logout?')) {
-                alert('Redirecting to login page...');
-                // In a real app, you would redirect to the login page
+            if(cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
             }
-        });
 
-        // Helper function to get status badge HTML
-        function getStatusBadge(status) {
-            switch (status) {
-                case 'approved':
-                    return `<div class="badge badge-success">
-                        <i class="fas fa-check-circle"></i>Approved
-                    </div>`;
-                case 'pending':
-                    return `<div class="badge badge-warning">
-                        <i class="fas fa-clock"></i>Pending
-                    </div>`;
-                case 'rejected':
-                    return `<div class="badge badge-destructive">
-                        <i class="fas fa-times-circle"></i>Rejected
-                    </div>`;
-            }
-        }
-
-        // Render submissions
-        function renderSubmissions() {
-            submissionsList.innerHTML = '';
-            
-            submissions.forEach(submission => {
-                const submissionEl = document.createElement('div');
-                submissionEl.className = 'card';
-                submissionEl.innerHTML = `
-                    <div class="card-header">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <div class="card-title">${submission.sport}</div>
-                                <div class="card-description">${submission.level} Level</div>
-                            </div>
-                            ${getStatusBadge(submission.status)}
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <p class="text-sm text-gray-600 mb-2">${submission.description}</p>
-                        <div class="flex gap-4 text-sm text-gray-500">
-                            <span>Submitted: ${submission.submittedDate}</span>
-                            ${submission.university ? 
-                                `<span class="text-blue-600">Verified by: ${submission.university}</span>` : 
-                                ''}
-                        </div>
-                    </div>
-                `;
-                
-                submissionsList.appendChild(submissionEl);
+            // Close modal when clicking background
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
             });
-        }
-
-        // Render discounts
-        function renderDiscounts() {
-            discountsList.innerHTML = '';
-            
-            discounts.forEach(discount => {
-                const discountEl = document.createElement('div');
-                discountEl.className = 'card hover:shadow-lg transition-shadow';
-                discountEl.innerHTML = `
-                    <div class="card-header">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="badge badge-outline">${discount.university}</div>
-                            <div class="badge badge-success">${discount.discount} OFF</div>
-                        </div>
-                        <div class="card-title">${discount.title}</div>
-                        <div class="card-description">${discount.description}</div>
-                    </div>
-                    <div class="card-content">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">
-                                Expires: ${discount.expiryDate}
-                            </span>
-                            <button class="btn btn-primary btn-sm">Claim Discount</button>
-                        </div>
-                    </div>
-                `;
-                
-                discountsList.appendChild(discountEl);
-            });
-        }
-
-        // Update stats
-        function updateStats() {
-            totalSubmissionsEl.textContent = submissions.length;
-            approvedCountEl.textContent = submissions.filter(s => s.status === 'approved').length;
-            discountsCountEl.textContent = discounts.filter(d => d.available).length;
-        }
-
-        // Initialize the dashboard
-        function initDashboard() {
-            renderSubmissions();
-            renderDiscounts();
-            updateStats();
-        }
-
-        // Run initialization when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        });
     </script>
 </body>
 </html>
