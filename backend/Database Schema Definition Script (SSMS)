@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [AthlixDB]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Database [AthlixDB]    Script Date: 11/22/2025 1:43:56 PM ******/
 CREATE DATABASE [AthlixDB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -82,7 +82,7 @@ ALTER DATABASE [AthlixDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_
 GO
 USE [AthlixDB]
 GO
-/****** Object:  Table [dbo].[Scholarship]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[Scholarship]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -95,13 +95,14 @@ CREATE TABLE [dbo].[Scholarship](
 	[Deadline] [date] NULL,
 	[Eligibility_Criteria] [nvarchar](max) NOT NULL,
 	[Description] [nvarchar](max) NULL,
+	[Title] [nvarchar](max) NOT NULL,
  CONSTRAINT [PK_Scholarship] PRIMARY KEY CLUSTERED 
 (
 	[Scholarship_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Scholarship_Sport]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[Scholarship_Sport]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -116,7 +117,7 @@ CREATE TABLE [dbo].[Scholarship_Sport](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sports]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[Sports]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -130,7 +131,7 @@ CREATE TABLE [dbo].[Sports](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sports_Student]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[Sports_Student]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -149,7 +150,7 @@ CREATE TABLE [dbo].[Sports_Student](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Student]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[Student]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -181,7 +182,7 @@ CREATE TABLE [dbo].[Student](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[University_]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[University_]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -189,18 +190,18 @@ GO
 CREATE TABLE [dbo].[University_](
 	[User_ID] [int] NOT NULL,
 	[Name] [nvarchar](150) NOT NULL,
-	[Location] [nvarchar](150) NULL,
-	[Website_URL] [nvarchar](255) NULL,
-	[Contact_Number] [nvarchar](20) NULL,
-	[Contact_Email] [nvarchar](150) NULL,
-	[Scholarship_Available] [bit] NULL,
+	[Location] [nvarchar](150) NOT NULL,
+	[Website_URL] [nvarchar](255) NOT NULL,
+	[Contact_Number] [nvarchar](20) NOT NULL,
+	[Contact_Email] [nvarchar](150) NOT NULL,
+	[Scholarship_Available] [bit] NOT NULL,
  CONSTRAINT [PK_University_] PRIMARY KEY CLUSTERED 
 (
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 11/15/2025 12:23:06 AM ******/
+/****** Object:  Table [dbo].[User]    Script Date: 11/22/2025 1:43:56 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
