@@ -1,672 +1,291 @@
 <?php
+// Path: frontend/dashboards/university_dashboard/uni_dashboard.php
+
+// ==========================================
+// 1. CONFIG & SESSION
+// ==========================================
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'University') {
-    header('Location: ../landing_page/landing_page.html');
+// Path Correction: Up 3 levels to backend
+require_once '../../../backend/config.php'; 
+
+// Security Check
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../landing_page/landing_page.html');
     exit();
 }
+
+$user_id = $_SESSION['user_id'];
+
+// ==========================================
+// 2. API HANDLER (AJAX Requests)
+// ==========================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    header('Content-Type: application/json');
+    $action = $_POST['action'];
+
+    try {
+        // --- ACTION A: Update Student Status ---
+        if ($action === 'update_status') {
+            $app_id = $_POST['app_id'];
+            $status = $_POST['status'];
+            
+            // Use q() helper from config
+            q("UPDATE [Application] SET Status = ? WHERE App_ID = ? AND Uni_ID = ?", [$status, $app_id, $user_id]);
+            
+            echo json_encode(['success' => true]);
+            exit;
+        }
+
+        // --- ACTION B: Create New Offer ---
+        if ($action === 'create_offer') {
+            $title      = $_POST['title'];
+            $percentage = $_POST['percentage'];
+            $criteria   = $_POST['criteria'];
+            $desc       = $_POST['description'];
+            $deadline   = $_POST['deadline'];
+
+            // Use q() helper from config
+            q("INSERT INTO [Scholarship] (Uni_ID, Title, Percentage, Eligibility_Criteria, Description, Deadline, Active) 
+               VALUES (?, ?, ?, ?, ?, ?, 1)", 
+               [$user_id, $title, $percentage, $criteria, $desc, $deadline]);
+            
+            echo json_encode(['success' => true]);
+            exit;
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        exit;
+    }
+}
+
+// ==========================================
+// 3. FETCH DATA FOR DASHBOARD
+// ==========================================
+
+// A. Get University Name
+$row = q_row("SELECT Name FROM [University_] WHERE User_ID = ?", [$user_id]);
+$uniName = $row['Name'] ?? "University Dashboard";
+
+// B. Get Stats (Using q_row for counts)
+$pendingCount = q_row("SELECT COUNT(*) as c FROM [Application] WHERE Uni_ID = ? AND Status = 'Pending'", [$user_id])['c'];
+$approvedCount = q_row("SELECT COUNT(*) as c FROM [Application] WHERE Uni_ID = ? AND Status = 'Approved'", [$user_id])['c'];
+$activeOffersCount = q_row("SELECT COUNT(*) as c FROM [Scholarship] WHERE Uni_ID = ? AND Active = 1", [$user_id])['c'];
+// Total students in the whole system
+$totalStudents = q_row("SELECT COUNT(*) as c FROM [Student]")['c'];
+
+// C. Get Submissions
+$sql_subs = "SELECT a.App_ID, a.Status, a.Submission_Date, s.Name, s.Bio, s.GPA, sp.Name as SportName
+             FROM [Application] a
+             JOIN [Student] s ON a.Student_ID = s.User_ID
+             JOIN [Sports] sp ON s.Primary_Sport_ID = sp.Sport_ID
+             WHERE a.Uni_ID = ? ORDER BY a.Submission_Date DESC";
+$stmt_subs = q($sql_subs, [$user_id]);
+
+$submissions = [];
+while ($r = sqlsrv_fetch_array($stmt_subs, SQLSRV_FETCH_ASSOC)) {
+    $submissions[] = $r;
+}
+
+// D. Get Offers
+$stmt_off = q("SELECT * FROM [Scholarship] WHERE Uni_ID = ? ORDER BY Scholarship_ID DESC", [$user_id]);
+
+$offers = [];
+while ($r = sqlsrv_fetch_array($stmt_off, SQLSRV_FETCH_ASSOC)) {
+    $offers[] = $r;
+}
 ?>
-    
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>University Athlete Discount Dashboard</title>
+  <title>University Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel ="stylesheet" href="uni_dashboard.css">
+  <link rel="stylesheet" href="uni_dashboard.css">
 </head>
 
 <body>
   <div class="container">
     <header>
-      <!--retrieve form the db-->
-      <h1 id="universityName"></h1>
+      <h1 id="universityName"><?php echo htmlspecialchars($uniName); ?></h1>
       <p class="subtitle">Review student submissions and manage your discount programs</p>
     </header>
 
-   
     <div class="status-cards">
-      <div class="status-card">
-        <h2>Pending Reviews</h2>
-        <p id="pendingCount">0</p>
-      </div>
-      <div class="status-card">
-        <h2>Approved</h2>
-        <p id="approvedCount">0</p>
-      </div>
-      <div class="status-card">
-        <h2>Active Offers</h2>
-        <p id="activeOffersCount">0</p>
-      </div>
-      <div class="status-card">
-        <h2>Total Students</h2>
-        <p id="totalStudentsCount">0</p>
-      </div>
+      <div class="status-card"><h2>Pending Reviews</h2><p><?php echo $pendingCount; ?></p></div>
+      <div class="status-card"><h2>Approved</h2><p><?php echo $approvedCount; ?></p></div>
+      <div class="status-card"><h2>Active Offers</h2><p><?php echo $activeOffersCount; ?></p></div>
+      <div class="status-card"><h2>Total Students</h2><p><?php echo $totalStudents; ?></p></div>
     </div>
 
     <div class="tabs">
       <div class="tab active" data-tab="submissions">Student Submissions</div>
       <div class="tab" data-tab="offers">Discount Offers</div>
-      <div class="tab" data-tab="students">Available Students</div>
       <div class="tab" data-tab="create">Create New Offer</div>
     </div>
 
     <div id="submissions" class="tab-content active">
       <div class="tab-header">
         <h2>Student Submissions</h2>
-        <span id="pendingBadge" class="status-badge status-pending" style="display: none;">0 Pending Review</span>
+        <?php if($pendingCount > 0): ?>
+            <span class="status-badge status-pending"><?php echo $pendingCount; ?> Pending Review</span>
+        <?php endif; ?>
       </div>
       <table id="submissionsTable">
         <thead>
           <tr>
-            <th>Student</th>
-            <th>Sport</th>
-            <th>Level</th>
-            <th>Submitted</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>Student</th><th>Sport</th><th>GPA</th><th>Date</th><th>Status</th><th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Student data will be populated here -->
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Discount Offers Tab -->
-    <div id="offers" class="tab-content">
-      <div class="tab-header">
-        <h2>Discount Offers</h2>
-        <button class="btn-primary" id="createOfferBtn">Create New Offer</button>
-      </div>
-      <div id="offersContainer">
-        <!-- Offer cards will be populated here -->
-      </div>
-    </div>
-
-    <!-- Available Students Tab -->
-    <div id="students" class="tab-content">
-      <h2>Available Students</h2>
-      <input type="text" id="studentSearch" class="search-box" placeholder="Search by name or sport...">
-      <table id="studentsTable">
-        <thead>
+          <?php foreach($submissions as $sub): ?>
           <tr>
-            <th>Student Name</th>
-            <th>Sport</th>
-            <th>Level</th>
-            <th>Status</th>
+            <td><?php echo htmlspecialchars($sub['Name']); ?></td>
+            <td><?php echo htmlspecialchars($sub['SportName']); ?></td>
+            <td><?php echo htmlspecialchars($sub['GPA']); ?></td>
+            <td>
+                <?php 
+                    // SQL Server returns DateTime object
+                    if(isset($sub['Submission_Date']) && is_object($sub['Submission_Date'])){
+                        echo $sub['Submission_Date']->format('Y-m-d');
+                    } else {
+                        echo htmlspecialchars($sub['Submission_Date']);
+                    }
+                ?>
+            </td>
+            <td><span class="status-badge status-<?php echo strtolower($sub['Status']); ?>"><?php echo $sub['Status']; ?></span></td>
+            <td>
+                <?php if($sub['Status'] == 'Pending'): ?>
+                    <button class="action-btn btn-review" 
+                        onclick="openReviewModal(
+                            '<?php echo $sub['App_ID']; ?>',
+                            '<?php echo htmlspecialchars($sub['Name']); ?>',
+                            '<?php echo htmlspecialchars($sub['SportName']); ?>',
+                            '<?php echo htmlspecialchars($sub['Bio'] ?? 'No bio'); ?>'
+                        )">Review</button>
+                <?php else: ?>
+                    <button class="action-btn btn-secondary" disabled>View</button>
+                <?php endif; ?>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <!-- Student data will be populated here -->
+          <?php endforeach; ?>
+          <?php if(empty($submissions)) echo "<tr><td colspan='6'>No submissions found.</td></tr>"; ?>
         </tbody>
       </table>
     </div>
 
-    <!-- Create Offer Tab -->
+    <div id="offers" class="tab-content">
+      <div class="tab-header"><h2>Discount Offers</h2></div>
+      <div id="offersContainer">
+        <?php foreach($offers as $offer): ?>
+        <div class="offer-card">
+            <div class="offer-header">
+                <div class="offer-title"><?php echo htmlspecialchars($offer['Title'] ?? 'Offer'); ?></div>
+                <div class="offer-discount"><?php echo floatval($offer['Percentage']); ?>%</div>
+            </div>
+            <div class="offer-description"><?php echo htmlspecialchars($offer['Description']); ?></div>
+            <div class="offer-details">
+                <div>Expires: 
+                    <?php 
+                        if(isset($offer['Deadline']) && is_object($offer['Deadline'])){
+                            echo $offer['Deadline']->format('Y-m-d');
+                        } else {
+                            echo htmlspecialchars($offer['Deadline']);
+                        }
+                    ?>
+                </div>
+                <div>Criteria: <?php echo substr($offer['Eligibility_Criteria'], 0, 25).'...'; ?></div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <?php if(empty($offers)) echo "<p>No offers created yet.</p>"; ?>
+      </div>
+    </div>
+
     <div id="create" class="tab-content">
-      <h2>Create New Offer</h2>
+      <h2>Create New Scholarship</h2>
       <form id="offerForm">
-        <div class="form-group">
-          <label class="form-label" for="offerTitle">Offer Title</label>
-          <input type="text" id="offerTitle" class="form-control" placeholder="e.g. 25% Tuition Discount" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="offerDiscount">Discount</label>
-          <input type="text" id="offerDiscount" class="form-control" placeholder="e.g. 25% OFF" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="offerDescription">Description</label>
-          <textarea id="offerDescription" class="form-control" placeholder="Describe the offer..." rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="offerValid">Valid Until</label>
-          <input type="date" id="offerValid" class="form-control" required>
-        </div>
-        <div class="scholarship-option">
-          <div class="checkbox-group">
-            <input type="checkbox" id="isScholarship">
-            <label for="isScholarship">This is a scholarship offer</label>
-          </div>
-          <div id="scholarshipDetails" class="scholarship-details">
-            <div class="form-group">
-              <label class="form-label" for="scholarshipAmount">Scholarship Amount</label>
-              <input type="text" id="scholarshipAmount" class="form-control" placeholder="e.g. $5,000">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="scholarshipCriteria">Eligibility Criteria</label>
-              <textarea id="scholarshipCriteria" class="form-control" placeholder="Describe eligibility criteria..." rows="3"></textarea>
-            </div>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary">Create Offer</button>
+        <div class="form-group"><label>Offer Title</label><input type="text" name="title" class="form-control" required></div>
+        <div class="form-group"><label>Percentage (%)</label><input type="number" name="percentage" class="form-control" required></div>
+        <div class="form-group"><label>Criteria</label><textarea name="criteria" class="form-control" rows="3" required></textarea></div>
+        <div class="form-group"><label>Description</label><textarea name="description" class="form-control" rows="3" required></textarea></div>
+        <div class="form-group"><label>Deadline</label><input type="date" name="deadline" class="form-control" required></div>
+        <button type="submit" class="btn-primary">Create Scholarship</button>
       </form>
     </div>
   </div>
 
-  <!-- Review Modal -->
   <div id="reviewModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Review Student Submission</h3>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="student-info">
-          <div class="info-row">
-            <div class="info-label">Student:</div>
-            <div class="info-value" id="modalStudentName">-</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Sport:</div>
-            <div class="info-value" id="modalStudentSport">-</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Level:</div>
-            <div class="info-value" id="modalStudentLevel">-</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Description:</div>
-            <div class="info-value" id="modalStudentDescription">-</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Submitted:</div>
-            <div class="info-value" id="modalStudentSubmitted">-</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Status:</div>
-            <div class="info-value" id="modalStudentStatus">-</div>
-          </div>
-        </div>
-      </div>
+      <span class="close-modal" onclick="closeReviewModal()">&times;</span>
+      <h3>Review Student</h3>
+      <p><strong>Student:</strong> <span id="mName"></span></p>
+      <p><strong>Sport:</strong> <span id="mSport"></span></p>
+      <p><strong>Bio:</strong> <span id="mBio"></span></p>
+      <input type="hidden" id="mAppID">
       <div class="modal-actions">
-        <button class="action-btn btn-success" id="approveBtn">Approve</button>
-        <button class="action-btn btn-danger" id="rejectBtn">Reject</button>
-        <button class="action-btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button class="action-btn btn-success" onclick="updateStatus('Approved')">Approve</button>
+        <button class="action-btn btn-danger" onclick="updateStatus('Rejected')">Reject</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer"></div>
-
   <script>
-    // Database simulation
-    const universityData = {
-      name: "Stanford University",
-      pendingCount: 2,
-      approvedCount: 1,
-      activeOffersCount: 2,
-      totalStudentsCount: 3
-    };
-
-    const studentSubmissions = [
-      { 
-        id: 1, 
-        name: "Sarah Johnson", 
-        sport: "Track & Field", 
-        level: "Varsity", 
-        description: "State champion in 400m hurdles",
-        submitted: "2025-03-01", 
-        status: "Pending" 
-      },
-      { 
-        id: 2, 
-        name: "Michael Chen", 
-        sport: "Soccer", 
-        level: "Club", 
-        description: "Team captain, 3 years experience",
-        submitted: "2025-03-05", 
-        status: "Pending" 
-      },
-      { 
-        id: 3, 
-        name: "Emma Davis", 
-        sport: "Volleyball", 
-        level: "Varsity", 
-        description: "All-state team member",
-        submitted: "2025-02-28", 
-        status: "Approved" 
-      }
-    ];
-
-    const availableStudents = [
-      { id: 1, name: "Sarah Johnson", sport: "Track & Field", level: "Varsity", status: "Pending Review" },
-      { id: 2, name: "Michael Chen", sport: "Soccer", level: "Club", status: "Pending Review" },
-      { id: 3, name: "Emma Davis", sport: "Volleyball", level: "Varsity", status: "Approved" },
-      { id: 4, name: "James Wilson", sport: "Basketball", level: "Varsity", status: "Approved" },
-      { id: 5, name: "Olivia Brown", sport: "Tennis", level: "Club", status: "Pending Review" }
-    ];
-
-    const discountOffers = [
-      { 
-        id: 1, 
-        title: "25% Tuition Discount", 
-        discount: "25% OFF", 
-        description: "For verified varsity athletes",
-        validUntil: "2025-08-30", 
-        studentsClaimed: 15, 
-        status: "Active",
-        isScholarship: false
-      },
-      { 
-        id: 2, 
-        title: "Free Athletic Facility Access", 
-        discount: "100% OFF", 
-        description: "Full access to all athletic facilities",
-        validUntil: "2025-12-31", 
-        studentsClaimed: 32, 
-        status: "Active",
-        isScholarship: false
-      }
-    ];
-
-    // DOM Elements
-    const universityNameElement = document.getElementById('universityName');
-    const pendingCountElement = document.getElementById('pendingCount');
-    const approvedCountElement = document.getElementById('approvedCount');
-    const activeOffersCountElement = document.getElementById('activeOffersCount');
-    const totalStudentsCountElement = document.getElementById('totalStudentsCount');
-    const submissionsTableBody = document.querySelector('#submissionsTable tbody');
-    const offersContainer = document.getElementById('offersContainer');
-    const studentsTableBody = document.querySelector('#studentsTable tbody');
-    const studentSearch = document.getElementById('studentSearch');
-    const offerForm = document.getElementById('offerForm');
-    const reviewModal = document.getElementById('reviewModal');
-    const closeModalBtn = document.querySelector('.close-modal');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const approveBtn = document.getElementById('approveBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const isScholarshipCheckbox = document.getElementById('isScholarship');
-    const scholarshipDetails = document.getElementById('scholarshipDetails');
-    const createOfferBtn = document.getElementById('createOfferBtn');
-    const pendingBadge = document.getElementById('pendingBadge');
-
-    // Current student being reviewed
-    let currentStudentReview = null;
-
-    // Initialize dashboard
-    function initDashboard() {
-      // Set university name
-      universityNameElement.textContent = universityData.name;
-      
-      // Update status cards
-      updateStatusCards();
-      
-      // Load student submissions
-      loadStudentSubmissions();
-      
-      // Load discount offers
-      loadDiscountOffers();
-      
-      // Load available students
-      loadAvailableStudents();
-      
-      // Set up event listeners
-      setupEventListeners();
-    }
-
-    // Update status cards
-    function updateStatusCards() {
-      pendingCountElement.textContent = universityData.pendingCount;
-      approvedCountElement.textContent = universityData.approvedCount;
-      activeOffersCountElement.textContent = universityData.activeOffersCount;
-      totalStudentsCountElement.textContent = universityData.totalStudentsCount;
-      
-      // Update pending badge
-      if (universityData.pendingCount > 0) {
-        pendingBadge.textContent = `${universityData.pendingCount} Pending Review`;
-        pendingBadge.style.display = 'inline-block';
-      } else {
-        pendingBadge.style.display = 'none';
-      }
-    }
-
-    // Load student submissions
-    function loadStudentSubmissions() {
-      submissionsTableBody.innerHTML = '';
-      
-      studentSubmissions.forEach(student => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${student.name}</td>
-          <td>${student.sport}</td>
-          <td>${student.level}</td>
-          <td>${student.submitted}</td>
-          <td><span class="status-badge ${student.status === 'Pending' ? 'status-pending' : 'status-approved'}">${student.status}</span></td>
-          <td><button class="action-btn btn-review" data-id="${student.id}">${student.status === 'Pending' ? 'Review' : 'View'}</button></td>
-        `;
-        submissionsTableBody.appendChild(row);
-      });
-      
-      // Add event listeners to review buttons
-      document.querySelectorAll('.btn-review').forEach(button => {
-        button.addEventListener('click', function() {
-          const studentId = parseInt(this.getAttribute('data-id'));
-          openReviewModal(studentId);
-        });
-      });
-    }
-
-    // Load discount offers
-    function loadDiscountOffers() {
-      offersContainer.innerHTML = '';
-      
-      discountOffers.forEach(offer => {
-        const offerCard = document.createElement('div');
-        offerCard.className = 'offer-card';
-        offerCard.innerHTML = `
-          <div class="offer-header">
-            <div class="offer-title">${offer.title}</div>
-            <div class="offer-discount">${offer.discount}</div>
-          </div>
-          <div class="offer-description">${offer.description}</div>
-          <div class="offer-details">
-            <div class="offer-detail-item">
-              <div class="detail-label">Students Claimed</div>
-              <div class="detail-value">${offer.studentsClaimed}</div>
-            </div>
-            <div class="offer-detail-item">
-              <div class="detail-label">Expires</div>
-              <div class="detail-value">${offer.validUntil}</div>
-            </div>
-          </div>
-          <div class="offer-actions">
-            <button class="action-btn btn-edit" data-id="${offer.id}">Edit</button>
-            <button class="action-btn btn-deactivate" data-id="${offer.id}">${offer.status === 'Active' ? 'Deactivate' : 'Activate'}</button>
-          </div>
-        `;
-        offersContainer.appendChild(offerCard);
-      });
-      
-      // Add event listeners to offer action buttons
-      document.querySelectorAll('.btn-edit').forEach(button => {
-        button.addEventListener('click', function() {
-          const offerId = parseInt(this.getAttribute('data-id'));
-          editOffer(offerId);
-        });
-      });
-      
-      document.querySelectorAll('.btn-deactivate').forEach(button => {
-        button.addEventListener('click', function() {
-          const offerId = parseInt(this.getAttribute('data-id'));
-          toggleOfferStatus(offerId);
-        });
-      });
-    }
-
-    // Load available students
-    function loadAvailableStudents() {
-      studentsTableBody.innerHTML = '';
-      
-      availableStudents.forEach(student => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${student.name}</td>
-          <td>${student.sport}</td>
-          <td>${student.level}</td>
-          <td><span class="status-badge ${student.status === 'Pending Review' ? 'status-pending' : 'status-approved'}">${student.status}</span></td>
-        `;
-        studentsTableBody.appendChild(row);
-      });
-    }
-
-    // Open review modal
-    function openReviewModal(studentId) {
-      const student = studentSubmissions.find(s => s.id === studentId);
-      if (!student) return;
-      
-      currentStudentReview = student;
-      
-      // Populate modal with student data
-      document.getElementById('modalStudentName').textContent = student.name;
-      document.getElementById('modalStudentSport').textContent = student.sport;
-      document.getElementById('modalStudentLevel').textContent = student.level;
-      document.getElementById('modalStudentDescription').textContent = student.description;
-      document.getElementById('modalStudentSubmitted').textContent = student.submitted;
-      document.getElementById('modalStudentStatus').textContent = student.status;
-      
-      // Show appropriate buttons based on status
-      if (student.status === 'Pending') {
-        approveBtn.style.display = 'inline-block';
-        rejectBtn.style.display = 'inline-block';
-      } else {
-        approveBtn.style.display = 'none';
-        rejectBtn.style.display = 'none';
-      }
-      
-      // Show modal
-      reviewModal.classList.add('active');
-    }
-
-    // Close review modal
-    function closeReviewModal() {
-      reviewModal.classList.remove('active');
-      currentStudentReview = null;
-    }
-
-    // Approve student
-    function approveStudent() {
-      if (!currentStudentReview) return;
-      
-      // Update student status
-      const studentIndex = studentSubmissions.findIndex(s => s.id === currentStudentReview.id);
-      if (studentIndex !== -1) {
-        studentSubmissions[studentIndex].status = 'Approved';
-      }
-      
-      // Update available students
-      const availableStudentIndex = availableStudents.findIndex(s => s.id === currentStudentReview.id);
-      if (availableStudentIndex !== -1) {
-        availableStudents[availableStudentIndex].status = 'Approved';
-      }
-      
-      // Update counts
-      universityData.pendingCount -= 1;
-      universityData.approvedCount += 1;
-      
-      // Reload data
-      updateStatusCards();
-      loadStudentSubmissions();
-      loadAvailableStudents();
-      
-      // Close modal
-      closeReviewModal();
-      
-      showToast('Student approved successfully!', 'success');
-    }
-
-    // Reject student
-    function rejectStudent() {
-      if (!currentStudentReview) return;
-      
-      // Remove student from submissions
-      const studentIndex = studentSubmissions.findIndex(s => s.id === currentStudentReview.id);
-      if (studentIndex !== -1) {
-        studentSubmissions.splice(studentIndex, 1);
-      }
-      
-      // Remove student from available students
-      const availableStudentIndex = availableStudents.findIndex(s => s.id === currentStudentReview.id);
-      if (availableStudentIndex !== -1) {
-        availableStudents.splice(availableStudentIndex, 1);
-      }
-      
-      // Update counts
-      universityData.pendingCount -= 1;
-      universityData.totalStudentsCount -= 1;
-      
-      // Reload data
-      updateStatusCards();
-      loadStudentSubmissions();
-      loadAvailableStudents();
-      
-      // Close modal
-      closeReviewModal();
-      
-      showToast('Student rejected successfully!', 'error');
-    }
-
-    // Edit offer
-    function editOffer(offerId) {
-      showToast(`Edit functionality for offer ${offerId} would be implemented here.`, 'info');
-    }
-
-    // Toggle offer status
-    function toggleOfferStatus(offerId) {
-      const action = confirm('Are you sure you want to change the status of this offer?');
-      if (!action) return;
-      
-      // Find and update offer status
-      const offerIndex = discountOffers.findIndex(o => o.id === offerId);
-      if (offerIndex !== -1) {
-        discountOffers[offerIndex].status = discountOffers[offerIndex].status === 'Active' ? 'Inactive' : 'Active';
-      }
-      
-      // Update counts
-      universityData.activeOffersCount = discountOffers.filter(o => o.status === 'Active').length;
-      
-      // Reload data
-      updateStatusCards();
-      loadDiscountOffers();
-      
-      showToast('Offer status updated successfully!', 'success');
-    }
-
-    // Create new offer
-    function createNewOffer(event) {
-      event.preventDefault();
-      
-      const title = document.getElementById('offerTitle').value;
-      const discount = document.getElementById('offerDiscount').value;
-      const description = document.getElementById('offerDescription').value;
-      const validUntil = document.getElementById('offerValid').value;
-      const isScholarship = document.getElementById('isScholarship').checked;
-      const scholarshipAmount = document.getElementById('scholarshipAmount').value;
-      const scholarshipCriteria = document.getElementById('scholarshipCriteria').value;
-      
-      // Create new offer object
-      const newOffer = {
-        id: discountOffers.length + 1,
-        title,
-        discount,
-        description,
-        validUntil,
-        studentsClaimed: 0,
-        status: 'Active',
-        isScholarship
-      };
-      
-      // Add scholarship details if applicable
-      if (isScholarship) {
-        newOffer.scholarshipAmount = scholarshipAmount;
-        newOffer.scholarshipCriteria = scholarshipCriteria;
-      }
-      
-      // Add to offers array
-      discountOffers.push(newOffer);
-      
-      // Update counts
-      universityData.activeOffersCount += 1;
-      
-      // Reload data
-      updateStatusCards();
-      loadDiscountOffers();
-      
-      // Reset form
-      offerForm.reset();
-      scholarshipDetails.classList.remove('active');
-      
-      // Switch to offers tab
-      switchTab('offers');
-      
-      showToast('Offer created successfully!', 'success');
-    }
-
-    // Filter students
-    function filterStudents() {
-      const query = studentSearch.value.toLowerCase();
-      const rows = document.querySelectorAll('#studentsTable tbody tr');
-      
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-      });
-    }
-
-    // Toggle scholarship details
-    function toggleScholarshipDetails() {
-      if (isScholarshipCheckbox.checked) {
-        scholarshipDetails.classList.add('active');
-      } else {
-        scholarshipDetails.classList.remove('active');
-      }
-    }
-
-    // Switch tab
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
-      document.getElementById(tabName).classList.add('active');
-    }
-
-    // Show toast message
-    function showToast(message, type = 'info') {
-      const toastContainer = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.textContent = message;
-      
-      toastContainer.appendChild(toast);
-      
-      // Show toast
-      setTimeout(() => {
-        toast.classList.add('show');
-      }, 100);
-      
-      // Hide toast after 3 seconds
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-          toastContainer.removeChild(toast);
-        }, 300);
-      }, 3000);
-    }
-
-    // Set up event listeners
-    function setupEventListeners() {
-      // Tab switching
-      document.querySelectorAll('.tab').forEach(tab => {
+    // --- TABS ---
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-          switchTab(tab.dataset.tab);
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
         });
-      });
-      
-      // Modal events
-      closeModalBtn.addEventListener('click', closeReviewModal);
-      cancelBtn.addEventListener('click', closeReviewModal);
-      approveBtn.addEventListener('click', approveStudent);
-      rejectBtn.addEventListener('click', rejectStudent);
-      
-      // Form submission
-      offerForm.addEventListener('submit', createNewOffer);
-      
-      // Student search
-      studentSearch.addEventListener('input', filterStudents);
-      
-      // Scholarship checkbox
-      isScholarshipCheckbox.addEventListener('change', toggleScholarshipDetails);
-      
-      // Create offer button
-      createOfferBtn.addEventListener('click', () => {
-        switchTab('create');
-      });
+    });
+
+    // --- MODAL ---
+    const modal = document.getElementById('reviewModal');
+    function openReviewModal(id, name, sport, bio) {
+        document.getElementById('mAppID').value = id;
+        document.getElementById('mName').textContent = name;
+        document.getElementById('mSport').textContent = sport;
+        document.getElementById('mBio').textContent = bio;
+        modal.style.display = 'flex';
+    }
+    function closeReviewModal() { modal.style.display = 'none'; }
+
+    // --- AJAX: Update Status ---
+    function updateStatus(status) {
+        const id = document.getElementById('mAppID').value;
+        const formData = new FormData();
+        formData.append('action', 'update_status');
+        formData.append('app_id', id);
+        formData.append('status', status);
+
+        // Fetch to SAME PAGE (empty string)
+        fetch('', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) { location.reload(); }
+            else { alert("Error: " + data.message); }
+        });
     }
 
-    // Initialize the dashboard when the page loads
-    document.addEventListener('DOMContentLoaded', initDashboard);
+    // --- AJAX: Create Offer ---
+    document.getElementById('offerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'create_offer');
+
+        fetch('', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) { alert("Offer Created!"); location.reload(); }
+            else { alert("Error: " + data.message); }
+        });
+    });
   </script>
 </body>
 </html>
