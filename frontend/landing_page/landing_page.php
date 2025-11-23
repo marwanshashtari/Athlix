@@ -23,12 +23,12 @@
     </div>
     <div class="login-buttons">
         <button type="button" class="btn btn-dark learn-more">More about us</button>
-      <form action="../backend/request_login_type.php" method="post">
+      <form action="../backend/login.php" method="post">
         <input type="hidden" name="login_type" value="student">
         <button class="btn btn-dark student-login">Student Login</button>
       </form>
 
-      <form action="../backend/request_login_type.php" method="post">
+      <form action="../backend/login.php" method="post">
         <input type="hidden" name="login_type" value="university">
         <button class="btn btn-dark university-login">University Login</button>
       </form>
