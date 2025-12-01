@@ -1,98 +1,96 @@
 <?php
-// Path: frontend/signup_page/signup.php
-
-// ==========================================
-// 1. CONFIG & SESSION
-// ==========================================
-// Path Correction: Up 2 levels to backend
+session_start();
 require_once '../../backend/config.php';
+$type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 'student');
 
-// Default type for the form view
-$type = isset($_POST['type']) ? $_POST['type'] : 'student';
-
-// ==========================================
-// 2. HANDLE SIGNUP SUBMISSION
-// ==========================================
-// We check for 'email' AND 'password' to ensure it's a real submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+// // ==========================================
+// // 2. HANDLE SIGNUP SUBMISSION
+// // ==========================================
+// // We check for 'email' AND 'password' to ensure it's a real submission
+// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     
-    $email = $_POST['email'];
-    $password = $_POST['password']; // In production, hash this!
-    $postedType = $_POST['type']; // student or university
+//     $email = $_POST['email'];
+//     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+//     $postedType = $_POST['type']; // student or university
     
-    // Role Bit: 0 = Student, 1 = University
-    $roleBit = ($postedType === 'student') ? 0 : 1;
+//     // Role Bit: 0 = Student, 1 = University
+//     $roleBit = ($postedType === 'student') ? 0 : 1;
     
-    try {
-        // A. Create User Login
-        q("INSERT INTO [User] (Email, Password, Role) VALUES (?, ?, ?)", [$email, $password, $roleBit]);
+//     try {
+//         // A. Create User Login
+//         q("INSERT INTO [User] (Email, Password, Role) VALUES (?, ?, ?)", [$email, $password, $roleBit]);
         
-        // B. Get the new User ID
-        $res = q_row("SELECT SCOPE_IDENTITY() as id");
-        $user_id = $res['id'];
+//         // B. Get the new User ID
+//         $res = q_row("SELECT SCOPE_IDENTITY() as id");
+//         $user_id = $res['id'];
         
-        // Set Session immediately
-        $_SESSION['user_id'] = $user_id;
-        $_SESSION['user_role'] = ($postedType === 'student') ? 'Student' : 'University';
+//         // Set Session immediately
+//         $_SESSION['user_id'] = $user_id;
+//         $_SESSION['user_role'] = ($postedType === 'student') ? 'Student' : 'University';
 
-        // C. Create Specific Profile
-        if ($postedType === 'student') {
-            $fname = $_POST['fname'];
-            $lname = $_POST['lname'];
-            $fullName = $fname . ' ' . $lname;
+//         // C. Create Specific Profile
+//         if ($postedType === 'student') {
+//             $fname = $_POST['fname'];
+//             $lname = $_POST['lname'];
+//             $fullName = $fname . ' ' . $lname;
             
-            // Format Date: YYYY-MM-DD
-            $dob = $_POST['birth_year'] . '-' . 
-                   str_pad($_POST['birth_month'], 2, '0', STR_PAD_LEFT) . '-' . 
-                   str_pad($_POST['birth_day'], 2, '0', STR_PAD_LEFT);
+            
+//             $month = (int)($_POST['birth_month'] ?? 0);
+//             $day   = (int)($_POST['birth_day'] ?? 0);
+//             $year  = (int)($_POST['birth_year'] ?? 0);
+
+//             if ($month < 1 || $month > 12 || $day < 1 || $day > 31 || $year < 1900) {
+//                 die("Invalid birth date");
+//             }
+
                    
-            $gender = ($_POST['gender'] == 'female') ? 1 : 0;
+//             $gender = ($_POST['gender'] == 'female') ? 1 : 0;
             
-            // Insert Student Profile
-            // Defaulting required NOT NULL fields like City, Phone, Major to generic values
-            $sql = "INSERT INTO Student 
-                    (User_ID, Name, Date_of_Birth, Gender, Height, Weight, Primary_Sport_ID, 
-                     GPA, School, City, Phone_Number, Expected_Graduation_Year, Student_Type, Major_1, Major_2, Major_3) 
-                    VALUES (?, ?, ?, ?, 0, 0, 1, 
-                            0.0, 'N/A', 'Amman', '+96200000000', 2025, 0, 'Undeclared', 'N/A', 'N/A')";
+//             // Insert Student Profile
+//             // Defaulting required NOT NULL fields like City, Phone, Major to generic values
+//             $sql = "INSERT INTO Student 
+//                     (User_ID, Name, Date_of_Birth, Gender, Height, Weight, Primary_Sport_ID, 
+//                      GPA, School, City, Phone_Number, Expected_Graduation_Year, Student_Type, Major_1, Major_2, Major_3) 
+//                     VALUES (?, ?, ?, ?, 0, 0, 1, 
+//                             0.0, 'N/A', 'Amman', '+96200000000', 2025, 0, 'Undeclared', 'N/A', 'N/A')";
             
-            q($sql, [$user_id, $fullName, $dob, $gender]);
+//             q($sql, [$user_id, $fullName, $dob, $gender]);
               
-            // Handle Sports Checkboxes
-            if(isset($_POST['sports']) && is_array($_POST['sports'])) {
-                foreach($_POST['sports'] as $sportName) {
-                    if($sportName == 'others') continue; 
+//             // Handle Sports Checkboxes
+//             if(isset($_POST['sports']) && is_array($_POST['sports'])) {
+//                 foreach($_POST['sports'] as $sportName) {
+//                     if($sportName == 'others') continue; 
                     
-                    // Check if sport exists
-                    $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
+//                     // Check if sport exists
+//                     $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
                     
-                    if($sRow) {
-                        // Link sport to student
-                        q("INSERT INTO Sports_Student (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
-                           VALUES (?, ?, 0, '', '', 0)", [$user_id, $sRow['Sport_ID']]);
-                    }
-                }
-            }
+//                     if($sRow) {
+//                         // Link sport to student
+//                         q("INSERT INTO Sports_Student (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
+//                            VALUES (?, ?, 0, '', '', 0)", [$user_id, $sRow['Sport_ID']]);
+//                     }
+//                 }
+//             }
 
-            // Redirect to Edit Profile to finish details
-            header("Location: ../edit_profile/edit_profile.php");
-            exit();
+//             // Redirect to Edit Profile to finish details
+//             header("Location: ../edit_profile/edit_profile.php");
+//             exit();
             
-        } else {
-            // University Signup
-            $uniName = $_POST['universities_menu'] ?? 'New University';
+//         } else {
+//             // University Signup
+//             $uniName = $_POST['universities_menu'] ?? 'New University';
             
-            // Create University Profile
-            q("INSERT INTO University_ (User_ID, Name) VALUES (?, ?)", [$user_id, $uniName]);
+//             // Create University Profile
+//             q("INSERT INTO University_ (User_ID, Name) VALUES (?, ?)", [$user_id, $uniName]);
             
-            header("Location: ../dashboards/university_dashboard/uni_dashboard.php");
-            exit();
-        }
+//             header("Location: ../dashboards/university_dashboard/uni_dashboard.php");
+//             exit();
+//         }
 
-    } catch (Exception $e) {
-        die("Signup Error: " . $e->getMessage());
-    }
-}
+//     } catch (Exception $e) {
+//         die("Signup Error: " . $e->getMessage());
+//     }
+// }
 ?>
 
 <!DOCTYPE html>
@@ -112,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_PO
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
-      <form action="login.php" method="post">
+      <form action="../../backend/login.php"  method="post">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         <button type="submit" class="btn btn-dark loginButton">I already have an account</button>
       </form>
@@ -136,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_PO
 
   <div class="signup-window">
     <div class="signup-form">
-      <form action="" method="post" enctype="multipart/form-data">
+      <form action="../../backend/signup_submit.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         
         <div class="input-div">
@@ -150,6 +148,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_PO
             <input class="text" type="password" id="signup_password" name="password" required>
         </div>
         <br>
+
+        <div class="input-div">
+            <label for="signup_password2">Confirm Password</label>
+            <input class="text" type="password" id="signup_password2" name="password2" required>
+        </div>
+        <br>
+
 
         <?php if ($type == 'student') { ?>
 

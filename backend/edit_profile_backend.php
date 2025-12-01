@@ -94,10 +94,10 @@ q(
 
 // Redirect back to appropriate dashboard
 if ($userRole === 'Student') {
-    header('Location: ../frontend/student_dashboard.php');
-} 
-else {
-    header('Location: ../frontend/uni_dashboard.php');
+    header('Location: ../frontend/dashboards/student_dashboard/student_dashboard.php');
+} else {
+    header('Location: ../frontend/dashboards/university_dashboard/uni_dashboard.php');
 }
+
 exit;
 

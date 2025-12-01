@@ -27,6 +27,7 @@ $stmt = q(
 );
 
 $offers = [];
+
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     // Convert Deadline (DateTime) to string if not null
     if (!empty($row['Deadline']) && $row['Deadline'] instanceof DateTimeInterface) {

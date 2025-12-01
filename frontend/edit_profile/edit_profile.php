@@ -5,12 +5,11 @@
 // 1. SETUP & DATABASE CONNECTION
 // ==========================================
 session_start();
-// Path correction: Up 2 levels to backend
 require_once '../../backend/config.php';
 
 // Security: Check if logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../landing_page/landing_page.html');
+    header('Location: ../../landing_page/landing_page.php');
     exit();
 }
 
@@ -85,13 +84,18 @@ try {
     // Calculate Age from DOB
     $age = '';
     if (!empty($student['Date_of_Birth'])) {
-        $dob = $student['Date_of_Birth'];
-        // Check if it's a DateTime object (sqlsrv usually returns objects for date columns)
-        if (is_object($dob)) {
-            $now = new DateTime();
-            $age = $now->diff($dob)->y;
+        $dobRaw = $student['Date_of_Birth'];
+
+        if ($dobRaw instanceof DateTimeInterface) {
+            $dob = $dobRaw;
+        } else {
+            $dob = new DateTime($dobRaw);
         }
+
+        $now = new DateTime();
+        $age = $now->diff($dob)->y;
     }
+
 
 } catch (Exception $e) {
     die("Error fetching data: " . $e->getMessage());
@@ -203,7 +207,7 @@ try {
                     
                     <div class="form-group">
                         <label for="gpa">GPA</label>
-                        <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="4.0" value="<?php echo htmlspecialchars($student['GPA'] ?? ''); ?>" placeholder="Enter your GPA">
+                        <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="100" value="<?php echo htmlspecialchars($student['GPA'] ?? ''); ?>" placeholder="Enter your GPA">
                     </div>
                     
                     <div class="form-group full-width">

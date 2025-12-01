@@ -23,12 +23,12 @@
     </div>
     <div class="login-buttons">
         <button type="button" class="btn btn-dark learn-more">More about us</button>
-      <form action="../backend/login.php" method="post">
+      <form action="../../backend/login.php" method="post">
         <input type="hidden" name="login_type" value="student">
         <button class="btn btn-dark student-login">Student Login</button>
       </form>
 
-      <form action="../backend/login.php" method="post">
+      <form action="../../backend/login.php" method="post">
         <input type="hidden" name="login_type" value="university">
         <button class="btn btn-dark university-login">University Login</button>
       </form>
@@ -40,7 +40,7 @@
   <div class="modal-content">
     <span class="close">&times;</span>
     <h2>Login</h2>
-    <form id="loginForm" action="../backend/request_login_type.php" method="post">
+      <form id="loginForm" action="../../backend/login.php" method="post">
       <input type="hidden" name="login_type" id="userType" value="">
       <label for="email">Email</label>
       <input type="email" name="email" id="email" placeholder="Enter your email" required>
@@ -68,13 +68,13 @@
       <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
       <div class="buttons-container">
            <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../sign_up/sign_up.php" method="post">
-        <input type="hidden" name="signup_type" value="student">
+      <form action="../../backend/request_signup_type.php" method="post">
+        <input type="hidden" name="type" value="student">
         <button class="btn btn-primary get-started-student">I'm a Student</button>
       </form>
          <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../sign_up/sign_up.php" method="post">
-        <input type="hidden" name="signup_type" value="university">
+      <form action="../../backend/request_signup_type.php" method="post">
+        <input type="hidden" name="type" value="university">
         <button class="btn btn-outline get-started-uni">I'm a University</button>
       </form>
       </div>
@@ -184,14 +184,16 @@
     <h2>Ready to Get Started?</h2>
     <p>Join hundreds of students and universities already using SportMatch.</p>
     <div class="motivation-buttons-container">
+   
     <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../sign_up/sign_up.php" method="post">
-        <input type="hidden" name="signup_type" value="student">
+      <form action="../../backend/request_signup_type.php" method="post">
+        <input type="hidden" name="type" value="student">
         <button class="btn btn-outline get-started-student">Sign Up as Student</button>
       </form>
-    <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../sign_up/sign_up.php" method="post">
-        <input type="hidden" name="signup_type" value="university">
+    
+      <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
+      <form action="../../backend/request_signup_type.php" method="post">
+        <input type="hidden" name="type" value="university">
         <button class="btn btn-primary get-started-uni">Sign Up as University</button>
       </form>
     </div>

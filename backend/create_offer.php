@@ -44,14 +44,17 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $expiry)) {
     exit('Invalid date format');
 }
 
+$criteria = trim($_POST['criteria'] ?? '');
+
 // Insert the new offer into the database
+
 q(
     'INSERT INTO [dbo].[Scholarship]
-        ([Uni_ID], [Percentage], [Active], [Deadline], [Eligibility_Criteria], [Description])
-     VALUES (?, ?, 1, ?, ?, ?)',
-    [$userId, $discount, $expiry, $description, $title]
+        ([Uni_ID], [Percentage], [Active], [Deadline], [Eligibility_Criteria], [Description], [Title])
+     VALUES (?, ?, 1, ?, ?, ?, ?)',
+    [$userId, $discount, $expiry, $criteria, $description, $title] 
 );
 
 
-header('Location: ../frontend/uni_dashboard.html');
+header('Location: ../frontend/dashboards/university_dashboard/uni_dashboard.php');
 exit;

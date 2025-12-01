@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+
 
 $server = 'localhost\\SQLEXPRESS';
 
@@ -10,6 +10,7 @@ $info = [
     'PWD'                   => 'manager123',
     'CharacterSet'          => 'UTF-8',
     'TrustServerCertificate'=> true,
+    'ReturnDatesAsStrings'  => true,
 ];
 
 $conn = sqlsrv_connect($server, $info);
@@ -17,11 +18,13 @@ $conn = sqlsrv_connect($server, $info);
 if (!$conn) {
     die('DB connection failed: ' . print_r(sqlsrv_errors(), true));
 }
+
 /* for testing connection
 else {
     echo "Connected to database successfully.";
 }
 */
+
 function q(string $sql, array $params = []) {
     global $conn;
     $stmt = sqlsrv_query($conn, $sql, $params);

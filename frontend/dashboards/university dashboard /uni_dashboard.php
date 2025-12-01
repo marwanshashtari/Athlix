@@ -9,10 +9,11 @@ session_start();
 require_once '../../../backend/config.php'; 
 
 // Security Check
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../landing_page/landing_page.html');
+if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'University') {
+    header('Location: ../../landing_page/landing_page.php');
     exit();
 }
+
 
 $user_id = $_SESSION['user_id'];
 
