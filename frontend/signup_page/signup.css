@@ -15,13 +15,23 @@
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, var(--grey) 0%, var(--darkgrey) 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--darkgrey) 100%);
   color: var(--darkgrey);
   line-height: 1.6;
 }
-
+legend{
+  font-size: larger; 
+  font-weight: bolder; 
+  color: var(--primary);
+   background-color: var(--secondary);
+    border: 2px solid var(--secondary);
+     border-radius: 10px; 
+     padding: 0 5px;
+      margin-bottom: 3px; 
+   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
 .navbar {
-  position: absolute;
+  position: fixed;
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
@@ -132,28 +142,40 @@ body {
   display: flex;
   gap: 1rem;
 }
+.head-title{
+    text-align: center;
+    background-color: #19183B;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 1);
+    width: 100%;
+    height: 13rem;
+    color: var(--secondary);
+}
+.head-title h1{
+    position: relative;
+    top: 50%;
+    left: auto;
+    margin: 0;
 
+}
 .signup-window {
-  background: linear-gradient(135deg, var(--grey) 0%, var(--darkgrey) 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 5rem;
-  min-height: 100vh;
-  margin: 3rem auto;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--darkgrey) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 3rem auto;
 }
 
 .signup-form {
-  background: var(--secondary);
-  border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  width: 100%;
-  max-width: 600px;
-  padding: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+     border-radius: 1rem;
+    width: 100%;
+    max-width: 600px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
 }
 
 
@@ -164,10 +186,62 @@ form {
 }
 
 .input-div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  transition: transform 0.3s ease;
+    gap: 0.5rem;
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: var(--secondary);
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.input-div:hover {
+  box-shadow: 0 0 10px var(--icon-color);
+}
+.submit{
+   gap: 0.5rem;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45%;
+    margin-left: auto;
+}
+
+.signup-window .fa-solid {
+  font-size: 3rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  transition: color 0.3s;
+  width: fit-content;
+  align-self: center;
+}
+
+
+.signup-window .fa-solid:hover {
+  color: #12112a;
+}
+
+ .fa-baseball{  color: rgb(71, 1, 1);
+}
+ .fa-basketball{  color: teal;
+}
+ .fa-football{  color: rgb(109, 109, 9);
+}
+ .fa-person-biking{   color: slateblue;
+}
+ .fa-volleyball{  color: rgb(63, 85, 20);
+}
+ .fa-table-tennis-paddle-ball{  color: rgb(68, 12, 68);
+}
+ .fa-bowling-ball{  color: rgb(26, 48, 66);
+}
+ .fa-golf-ball-tee{  color: rgb(57, 22, 22);
+}
+ .fa-person-running{  color: turquoise;
 }
 
 .input-div:hover {
@@ -188,12 +262,14 @@ form {
 }
 .input-div input,
 input[type="file"],
-select {
+select,
+.input-div textarea {
   padding: 0.5rem;
   border: 1px solid var(--secondary);
   border-radius: 0.5rem;
   font-size: 0.95rem;
   transition: all 0.3s ease;
+
 }
 
 .input-div input:focus,
@@ -207,7 +283,12 @@ label {
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--darkgrey);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: max-content;
 }
+
 
 label[for="file"]{
   border: 2px solid #332e2f;
@@ -218,6 +299,86 @@ label[for="file"]{
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   background-color: #fffbf9;
 
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: none; 
+}
+input[type="text"],input[type="email"], textarea{
+  width: 400px;
+}
+
+label[for="gender"], label[for="std_type"],label[for="status"]{
+      gap: 4rem;
+}
+
+label[for="sports-select"] {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--darkgrey);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 1rem;
+}
+
+
+label[for="volleyball"]:hover,
+label[for="football"]:hover,
+label[for="tennis"]:hover,
+label[for="basketball"]:hover,
+label[for="handball"]:hover,
+label[for="table-tennis"]:hover,
+label[for="others"]:hover,
+label[for="gender1"]:hover,
+label[for="gender0"]:hover,
+label[for="status1"]:hover,
+label[for="status0"]:hover,
+label[for="std0"]:hover,
+label[for="std1"]:hover,
+label[for="competition0"]:hover,
+label[for="competition1"]:hover {
+  background-color: var(--grey);
+  transform: translateY(-3px);
+  cursor: pointer;
+}
+
+
+label[for="volleyball"],
+label[for="football"],
+label[for="tennis"],
+label[for="basketball"],
+label[for="handball"],
+label[for="table-tennis"],
+label[for="others"],
+label[for="gender1"],
+label[for="gender0"],
+label[for="status1"],
+label[for="status0"],
+label[for="std1"],
+label[for="std0"],
+label[for="competition0"],
+label[for="competition1"]
+ {
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  transition: background-color 0.3s, transform 0.2s, color 0.3s;
+}
+
+
+input[type="checkbox"]:checked + label,
+input[type="radio"]:checked + label
+ {
+  background-color: var(--grey);
+  color: var(--secondary);
 }
 
 label[for="file"]:hover{
@@ -232,7 +393,7 @@ input[type="button"]{
   border-radius: 50px;
   padding: 5px 10px; 
   cursor: pointer;
-  width:100%;
+  width: 50rem;
   background-color: #fffbf9;
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   transition: all 0.3s ease;
@@ -245,16 +406,20 @@ input[type="button"]:hover{
   transform: translateY(-3px);
 
 }
-.gender-options, .sport-options, .height, .weight, .family-income,
-.exp-years {
+.gender-options, .sport-options, .height, .weight, .family-income
+.exp-years, .std_type_options, .status-options {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
 }
 
+.comp-options{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
 
-
-.gender-option, .sport-option {
+.gender-option, .sport-option, .comp-option, .std-option, .status-option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -265,14 +430,14 @@ input[type="button"]:hover{
 }
 
 
-/* Responsive */
+
 @media screen and (max-width: 500px) {
   .signup-form {
     width: 90%;
     padding: 2rem;
   }
 
-  .gender-options, .sport-options {
+  .gender-options, .sport-options, .comp-options, .std_type_options, .status-options {
     grid-template-columns: 1fr;
   }
 }
