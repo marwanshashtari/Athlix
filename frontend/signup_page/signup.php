@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require_once '../../backend/config.php';
@@ -100,76 +101,85 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign up with Athlix</title>
   <link rel="stylesheet" href="signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-
+<!--must do require('request_signup_type.php'); to know usertype -->
 <body>
-
+    <!--add logo-->
   <div class="navbar">
     <div class="logo">
-      <img src="../../landing_page/landing_images/logo_athlix.jpg" alt="logo" height="40">
+      <img src="/xampp/htdocs/Athlix-main/Athlix-main/frontend/landing_page/landing_images/logo_athlix.jpg" alt="logo" height="40">
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
-      <form action="../../backend/login.php"  method="post">
+    <form action="login.php" method="post">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         <button type="submit" class="btn btn-dark loginButton">I already have an account</button>
-      </form>
+    </form>
     </div>
   </div>
+    <div class="head-title"><h1>Sign up with Athlix</h1></div>
 
   <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Login</h2>
-      <form id="loginForm" action="../../backend/request_login_type.php" method="post">
-        <input type="hidden" name="type" id="userType" value="">
-        <label for="login_email">Email</label>
-        <input type="email" name="email" id="login_email" placeholder="Enter your email" required>
-        <label for="login_password">Password</label>
-        <input type="password" name="password" id="login_password" placeholder="Enter your password" required>
-        <button type="submit" class="btn btn-dark">Login</button>
-      </form>
-    </div>
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Login</h2>
+    <form id="loginForm" action="request_login_type.php" method="post">
+      <input type="hidden" name="type" id="userType" value="">
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" placeholder="Enter your email" required>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      <button type="submit" class="btn btn-dark">Login</button>
+    </form>
   </div>
+</div>
 
+  <!--I'll make two form right now but with the backend code, one will show and the other wont-->
   <div class="signup-window">
     <div class="signup-form">
       <form action="../../backend/signup_submit.php" method="post" enctype="multipart/form-data">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
-        
-        <div class="input-div">
-            <label for="email">Email</label>
-            <input class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
-        </div>
-        
-        <br>
-        <div class="input-div">
-            <label for="signup_password">Password</label>
-            <input class="text" type="password" id="signup_password" name="password" required>
-        </div>
-        <br>
-
-        <div class="input-div">
-            <label for="signup_password2">Confirm Password</label>
-            <input class="text" type="password" id="signup_password2" name="password2" required>
+         <?php if ($type == 'student') { ?>      
+        <fieldset style="border: none ">
+        <legend>Personal Information</legend>
+        <!--php code: check if type is student and open braces-->
+        <!-- email -->
+        <div class="input-div" style="--icon-color:rgb(109, 109, 9);">
+            <i class="fa-solid fa-football"></i>
+            <label for="email">Email
+            <input  class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
+            </label>
         </div>
         <br>
-
-
-        <?php if ($type == 'student') { ?>
-
-            <div class="input-div">
-                <label for="fname">First Name</label>
-                <input class="text" type="text" id="fname" name="fname" placeholder="jane doe" required>
+          <!-- fn -->
+        <div class="input-div" style="--icon-color: teal;">
+            <i class="fa-solid fa-basketball"></i>
+            <label for="fname">First Name
+            <input class="text" type="text" id="fname" name="fname" placeholder="jane doe" required></label>
+        </div>
+        <br>
+        <!-- ln -->
+        <div class="input-div" style="--icon-color: rgb(71, 1, 1);">
+            <i class="fa-solid fa-baseball"></i>
+            <label for="lname">Last Name
+            <input class="text" type="text" id="lname" name="lname" required></label>
+        </div>
+        <br>
+        <!-- gpa -->
+        <div class="input-div" style="--icon-color: slateblue;" >
+            <i class="fa-solid fa-person-biking"></i>
+            <div class="GPA">
+              <label for="GPA">GPA<input type="number" id="GPA">
             </div>
-            <br>
-            <div class="input-div">
-                <label for="lname">Last Name</label>
-                <input class="text" type="text" id="lname" name="lname" required>
-            </div>
-            <br>       
-            <div class="input-div">
-                <label for="birthdate">Date of birth</label>
+            </label>
+        </div>
+        <br>  
+        <!-- dob -->
+        <div class="input-div" style="--icon-color: rgb(63, 85, 20);">
+            <i class="fa-solid fa-volleyball"></i>
+            <label for="birthdate">date of birth
+            <div class="birthdate-selects">
                 <div class="birthdate-selects">
                     <select id="birth_month" name="birth_month" required>
                         <option value="0" selected>Month</option>
@@ -198,70 +208,220 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
                         <option value="">Year</option>
                     </select>
                 </div>
-            </div>
-            
-            <br>
-            <div class="input-div" style="display:none;"> 
-                <label for="file">Upload your CV</label>
-                <input class="file" type="file" id="file" name="file">
-            </div>
-            
-            <div class="input-div">
-                <label class="gender">Gender</label>
-                <div class="gender-options">
-                    <div class="gender-option">
-                        <input class="check" type="radio" id="female" name="gender" value="female">
-                        <label for="female">Female</label>
-                    </div>
-                    <div class="gender-option">
-                        <input class="check" type="radio" id="male" name="gender" value="male">
-                        <label for="male">Male</label>
-                    </div>
+              </label>
+        </div>
+        <br>
+        <!-- cv -->
+        <div class="input-div" style="--icon-color:  rgb(68, 12, 68);">
+            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+            <label for="file">Upload your CV
+            <input class="file" type="file" id="file" name="file" required hidden>
+            </label>
+        </div>
+        <br>
+        <!-- exppected grad year -->
+        <div class="input-div" style="--icon-color:  rgb(71, 1, 1);">
+            <i class="fa-solid fa-baseball"></i>
+            <label for="grad_year">Expected Graduation Year
+            <input class="text" type="text" id="Expected_Graduation_Year" name="Expected_Graduation_Year" placeholder="2030" required></label>
+            </label>
+        </div>
+        <br>
+        <!-- pn -->
+        <div class="input-div" style="--icon-color: teal;">
+            <i class="fa-solid fa-basketball"  ></i>
+            <label for="pn">Phone Number 
+            <input class="text" type="text" id="pn" name="pn" placeholder="+962..." required></label>
+        </div>
+        <br>
+        <!-- health -->
+        <div class="input-div" style="--icon-color: rgb(71, 1, 1);">
+            <i class="fa-solid fa-football"  ></i>
+            <label for="Health_Issues">Health Issues 
+            <input class="text" type="text" id="Health_Issues" name="Health_Issues" placeholder="asthma" required></label>
+        </div>
+        <br>
+        <!-- bio -->
+        <div class="input-div" style="--icon-color: slateblue;">
+            <i class="fa-solid fa-person-biking"></i>
+            <label for="bio">Bio
+            <textarea id="bio" name="bio" rows="5" cols="40" placeholder="Type your bio here..."></textarea>
+        </div>
+        <br>
+        <!-- gender -->
+        <div class="input-div" style="--icon-color: rgb(26, 48, 66);">
+            <i class="fa-solid fa-bowling-ball" ></i>
+            <label class="gender" for="gender">Gender
+            <div class="gender-options">
+                <div class="gender-option"><input class="check" type="radio" id="gender1" name="gender" value="female">
+                  <label for="gender1">female</label>
                 </div>
-            </div>
-            <br>
-            <div class="input-div">
-                <label>Select your sports</label>
-                <div class="sport-options">
-                    <div><input type="checkbox" id="football" name="sports[]" value="football"><label for="football">Football</label></div>
-                    <div><input type="checkbox" id="volleyball" name="sports[]" value="volleyball"><label for="volleyball">Volleyball</label></div>
-                    <div><input type="checkbox" id="tennis" name="sports[]" value="tennis"><label for="tennis">Tennis</label></div>
-                    <div><input type="checkbox" id="basketball" name="sports[]" value="basketball"><label for="basketball">Basketball</label></div>
-                    <div><input type="checkbox" id="handball" name="sports[]" value="handball"><label for="handball">Handball</label></div>
-                    <div><input type="checkbox" id="table-tennis" name="sports[]" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
-                    <div><input type="checkbox" id="others" value="others"><label for="others">Others</label></div>
-
-                    <div id="other-sports" style="display:none;">
-                        <label for="other-sport">What's your sport? </label>
-                        <input type="text" name="other_sport_text" id="other-sport">
-                    </div>
+                <div class="gender-option"><input class="check" type="radio" id="gender0" name="gender" value="male">
+                  <label for="gender0">male</label>
                 </div>
+              </div>
+              </label>
+          </div>
+        <br>
+        <!-- Status -->
+        <div class="input-div" style="--icon-color: rgb(26, 48, 66);">
+            <i class="fa-solid fa-bowling-ball"></i>
+            <label class="status" for="status">are you available for a scholarship
+            <div class="status-options">
+                <div class="status-option"><input class="check" type="radio" id="status1" name="status" value="status1">
+                  <label for="status1">yes</label>
+                </div>
+                <div class="status-option"><input class="check" type="radio" id="status0" name="status" value="status0">
+                  <label for="status0">no</label>
+                </div>
+              </div>
+              </label>
+          </div>
+        <br>        
+        <!-- student type -->
+        <div class="input-div" style="--icon-color: rgb(68, 12, 68);">
+            <i class="fa-solid fa-table-tennis-paddle-ball" ></i>
+            <label class="std_type" for="std_type">student type
+            <div class="std_type_options">
+                <div class="std-option"><input class="check" type="radio" id="std1" name="std_type" value="std1">
+                  <label for="std1">school student</label>
+                </div>
+                <div class="std-option"><input class="check" type="radio" id="std0" name="std_type" value="std0">
+                  <label for="std0">university student</label>
+                </div>
+              </div>
+              </label>
+          </div>
+        <br>
+      </fieldset>
+       <fieldset style="border: none ">
+        <legend>Sports Information</legend>
+            <!-- sports -->
+
+        <div class="input-div" style="--icon-color: rgb(57, 22, 22);">
+            <i class="fa-solid fa-golf-ball-tee"></i>
+            <label for="sports-select">Select your sports
+            <div class="sport-options">
+            <div><input type="checkbox" id="football" value="football"><label for="football">Football</label></div>
+            <div><input type="checkbox" id="volleyball" value="volleyball"><label for="volleyball">Volleyball</label></div>
+            <div><input type="checkbox" id="tennis" value="tennis"><label for="tennis">Tennis</label></div>
+            <div><input type="checkbox" id="basketball" value="basketball"><label for="basketball">Basketball</label></div>
+            <div><input type="checkbox" id="handball" value="handball"><label for="handball">Handball</label></div>
+            <div><input type="checkbox" id="table-tennis" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
+            <div><input type="checkbox" id="others" value="others"><label for="others">Others</label></div>
+
+            <div id="other-sports">
+                <label for="other-sport">What's your sport? </label>
+                <input type="text" id="other-sport">
             </div>
-            <br>
-
-        <?php } elseif ($type == 'university') { ?>
-
-            <div class="input-div">
-                <label for="universities_menu">Choose the university</label>
-                <select id="universities_menu" name="universities_menu">
-                    <option value="">Choose...</option>
-                    <option value="PSUT">Princess Sumaya University for Technology</option>
-                    <option value="GJU">German Jordanian University</option>
-                    <option value="JU">Jordanian University</option>
-                    <option value="JUST">Jordan University of Science and Technology</option>
-                </select>
+            </div></label>
+        </div>
+        <br>
+        <!-- height -->
+        <div class="input-div" style="--icon-color: slateblue;">
+            <i class="fa-solid fa-person-biking"></i>
+            <div class="height"><label for="height">Height<input type="number" id="height"></div></label>
+        </div>
+        <br>
+        <!-- weight -->
+        <div class="input-div" style="--icon-color: turquoise;">
+            <i class="fa-solid fa-person-running"></i>
+            <div class="weight"><label for="weight">Weight<input type="number" id="weight"></div></label>
+        </div>
+        <br>
+        <!-- exp-years -->
+       <div class="input-div" style="--icon-color: teal;">
+        <i class="fa-solid fa-basketball"></i>
+            <div class="exp-years"><label for="exp-years">How many years have you played sports<input type="number" id="exp-years"></div></label>
+        </div>
+        <br>
+        <!-- competition-years -->
+        <div class="input-div" style="--icon-color: rgb(68, 12, 68);">
+            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+            <label class="competition">Have you participated in competitions before
+            <div class="comp-options">
+                <div class="comp-option">
+                    <input class="check" type="radio" id="competition1" name="competition" value="yes">
+                    <label for="competition1">Yes</label>
+                </div>
+                <div class="comp-option">
+                    <input class="check" type="radio" id="competition0" name="competition" value="no">
+                    <label for="competition0">No</label>
+                </div>
+                </div>
+            </label>
             </div>
-            <br>
-
-        <?php } ?>
-
-        <input type="submit" value="Sign up">
-      </form>
-    </div>
+        <br>
+        <div class="submit">
+            <input type="button" value="Sign up">
+        </div>
+        <br>
+       </fieldset>
+    </form>
+  </div>
   </div>
 
+ <?php } elseif ($type == 'university') { ?>
+
+ <div class="signup-window">
+    <div class="signup-form">
+    <form id="loginForm" action="request_login_type.php" method="post">
+        <!-- uni name -->
+        <div class="input-div" style="--icon-color: teal;">
+            <i class="fa-solid fa-basketball"></i>
+            <label for="universities_menu">Choose the university
+                <select id="universities_menu" name="universities_menu">
+                    <option value="">Choose...</option>
+                    <option value="PSUT">princess sumaya university for technology</option>
+                    <option value="GJU">german jordanian university</option>
+                    <option value="JU">jordanian university</option>
+                    <option value="ASU">Applied Science Private University</option>
+                    <option value="hashmite">The Hashemite University</option>
+                    <option value="JUST">jordan university of science and technology</option>
+                    <option value="yarmouk">Yarmouk University</option>
+                    <option value="htu">AlHussein Technical University</option>
+                  </select>
+          </label>
+        </div>
+        <br>
+        <!-- uni email -->
+        <div class="input-div" style="--icon-color: rgb(109, 109, 9);">
+            <i class="fa-solid fa-football"></i>
+            <label for="email">Email
+            <input  class="text" type="email" id="email" name="email" placeholder="myemail@...mail.com" required>
+            </label>
+        </div>
+        <br>
+         <!-- uni location -->
+        <div class="input-div" style="--icon-color: slateblue;">
+            <i class="fa-solid fa-person-biking"></i>
+            <label for="Location">Location
+            <textarea id="Location" name="Location" rows="5" cols="40" placeholder="Type your location here..."></textarea>
+        </div>
+        <br>
+        <!-- web_url -->
+        <div class="input-div" style="--icon-color: rgb(63, 85, 20);">
+            <i class="fa-solid fa-volleyball"></i>
+            <label for="web_url">Website URL
+            <input class="text" type="url" id="web_url" name="web_url" placeholder="www.example.com" required></label>
+        </div>
+        <br>
+        <!--pn -->
+        <div class="input-div" style="--icon-color: rgb(68, 12, 68);">
+            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+            <label for="pn">Phone Number
+            <input class="number" type="number" id="pn" name="pn" placeholder="+962..." required></label>
+        </div>
+        <br>
+        <div class="submit">
+            <input type="button" value="Sign up">
+        </div>
+    </form>
+    </div>
+ </div>
+  <?php } ?>
 <script>
-    // --- DATE LOGIC ---
+// --- DATE LOGIC ---
     const yearSelect = document.getElementById("birth_year");
     
     if (yearSelect) {
@@ -320,4 +480,3 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
-</html>
