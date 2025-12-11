@@ -4,7 +4,6 @@
   $show_login_modal = !empty($login_error);
   unset($_SESSION['login_error']); // remove error after displaying it
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,23 +12,27 @@
   <title>Athlix</title>
   <link rel="stylesheet" href="landing_page.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 </head>
 
 <body>
+  <!--add logo-->
   <div class="navbar">
     <div class="logo">
-      <img src="landing_images/logo_athlix.jpg" alt="logo" height="40">
+      <img src="landing_images/logo_athlix.png" alt="logo" height="40">
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
         <button type="button" class="btn btn-dark learn-more">More about us</button>
-      <form action="../../backend/login.php" method="post">
-        <input type="hidden" name="login_type" value="student">
+      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
+      <form action="" method="post">
+        <input type="hidden" name="type" value="student">
         <button class="btn btn-dark student-login">Student Login</button>
       </form>
 
-      <form action="../../backend/login.php" method="post">
-        <input type="hidden" name="login_type" value="university">
+      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
+      <form action="" method="post">
+        <input type="hidden" name="type" value="university">
         <button class="btn btn-dark university-login">University Login</button>
       </form>
 
@@ -38,46 +41,57 @@
 
   <div id="loginModal" class="modal">
   <div class="modal-content">
+    <img src="landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
+    <hr>
     <span class="close">&times;</span>
     <h2>Login</h2>
-      <form id="loginForm" action="../../backend/login.php" method="post">
-      <input type="hidden" name="login_type" id="userType" value="">
+    <form id="loginForm" action="request_login_type.php" method="post">
+      <input type="hidden" name="type" id="userType" value="">
       <label for="email">Email</label>
       <input type="email" name="email" id="email" placeholder="Enter your email" required>
       <label for="password">Password</label>
       <input type="password" name="password" id="password" placeholder="Enter your password" required>
-      
-      <!--to show login error-->
+            <!--to show login error-->
       <?php if(!empty($login_error)): ?>
         <div class="login-error" style="color:red; margin-bottom:10px;">
           <?= htmlspecialchars($login_error) ?>
         </div>
       <?php endif; ?>
-      
       <button type="submit" class="btn btn-dark">Login</button>
     </form>
   </div>
 </div>
 
   <div class="intro-section">
-      <video autoplay muted loop playsinline class="bg-video">
-        <source src="landing_images/sample_video.mp4" type="video/mp4">
-      </video>
+    <div class="slideshow-intro">
+          <img src="landing_images/intro_slideshow1.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow2.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow3.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow4.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow5.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow6.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow7.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow8.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow9.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow10.jpg" alt="psut">
+          <img src="landing_images/intro_slideshow11.jpg" alt="psut">
+        </div>
       <div class="intro-content">
       <h1>Match Your Sports Achievement with University Discounts</h1>
       <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
-      <div class="buttons-container">
-           <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../backend/request_signup_type.php" method="post">
-        <input type="hidden" name="type" value="student">
-        <button class="btn btn-primary get-started-student">I'm a Student</button>
-      </form>
-         <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../backend/request_signup_type.php" method="post">
-        <input type="hidden" name="type" value="university">
-        <button class="btn btn-outline get-started-uni">I'm a University</button>
-      </form>
+          
+        <div class="buttons-container">
+          <form action="../signup_page/signup.php" method="post">
+              <input type="hidden" name="type" value="student">
+              <button class="btn btn-primary get-started-student">I'm a Student</button>
+          </form>
+          
+          <form action="../signup_page/signup.php" method="post">
+              <input type="hidden" name="type" value="university">
+              <button class="btn btn-outline get-started-uni">I'm a University</button>
+          </form>
       </div>
+
     </div>
   </div>
 
@@ -90,6 +104,34 @@
       <div class="university-logo psut">
         <div class="slideshow">
           <img src="landing_images/PSUT_Logo.png" alt="psut" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
+      </div>
+      <div class="university-logo asu">
+        <div class="slideshow">
+          <img src="landing_images/asu_logo.jpg" alt="asu" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
+      </div>
+      <div class="university-logo hashmite">
+        <div class="slideshow">
+          <img src="landing_images/Hashmite_logo.jpg" alt="hashmite" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
+      </div>
+      <div class="university-logo yarmouk">
+        <div class="slideshow">
+          <img src="landing_images/yarmouk_logo.png" alt="yarmouk" class="active">
+          <img src="landing_images/sport2.jpg">
+          <img src="landing_images/sport1.jpg">
+        </div>
+      </div>
+      <div class="university-logo just">
+        <div class="slideshow">
+          <img src="landing_images/JUST_logo.png" alt="just" class="active">
           <img src="landing_images/sport2.jpg">
           <img src="landing_images/sport1.jpg">
         </div>
@@ -118,9 +160,14 @@
     </div>
   </div>
 
+  <div class="our-offers">
 <div class="student-section">
+    <div class="student-image">
+      <img src="landing_images/student_sport_landing.bmp" alt="student sport image">
+    </div>
     <div class="student-content">
       <h2>For Students</h2>
+
       <div class="student-text">
         <ul>
           <li><i class="fa-solid fa-check"></i> Access exclusive university discounts</li>
@@ -132,12 +179,8 @@
         </ul>
       </div>
     </div>
-    <div class="student-image">
-      <img src="landing_images/student_sport_landing.bmp" alt="student sport image">
-    </div>
   </div>
-  
-  <div class="university-section">
+    <div class="university-section">
     <div class="university-image">
       <img src="landing_images/university_image_landing.jpg" alt="student sport image">
     </div>
@@ -154,9 +197,59 @@
         </ul>
       </div>
     </div>
+  </div>  
+</div>
+  
+<div class="reviews-section">
+  <div class="review">
+    <div class="stars">
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+    </div>
+    <p>"Amazing website! Very easy to use and intuitive."</p>
+    <p>- Alice</p>
   </div>
 
-  
+  <div class="review">
+    <div class="stars">
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+    </div>
+    <p>"Exceptional experience, would recommend to everyone."</p>
+    <p>- Bob</p>
+  </div>
+
+  <div class="review">
+    <div class="stars">
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+    </div>
+    <p>"Good, but could use some improvements in UI."</p>
+    <p>- Clara</p>
+  </div>
+
+  <div class="review">
+    <div class="stars">
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i>
+      <i class="fa-regular fa-star"></i>
+    </div>
+    <p>"Very helpful content, learned a lot from this site."</p>
+    <p>- Daniel</p>
+  </div>
+</div>
+
   <div class="how-it-works-section">
     <h2>Kickstart Your Athlete Journey!</h2>
     <p>Just three simple steps to connect our student athletes with their best opportunities</p>
@@ -183,27 +276,30 @@
   <div class="motivation-section">
     <h2>Ready to Get Started?</h2>
     <p>Join hundreds of students and universities already using SportMatch.</p>
-    <div class="motivation-buttons-container">
-   
-    <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../backend/request_signup_type.php" method="post">
-        <input type="hidden" name="type" value="student">
-        <button class="btn btn-outline get-started-student">Sign Up as Student</button>
-      </form>
     
-      <!--action must change to request_signup_type.php: a page that determines the user type from the form and saves it then redirects back to signup page-->
-      <form action="../../backend/request_signup_type.php" method="post">
-        <input type="hidden" name="type" value="university">
-        <button class="btn btn-primary get-started-uni">Sign Up as University</button>
-      </form>
+      <div class="motivation-buttons-container">
+        <form action="../signup_page/signup.php" method="post">
+            <input type="hidden" name="type" value="student">
+            <button class="btn btn-outline get-started-student">Sign Up as Student</button>
+        </form>
+        
+        <form action="../signup_page/signup.php" method="post">
+            <input type="hidden" name="type" value="university">
+            <button class="btn btn-primary get-started-uni">Sign Up as University</button>
+        </form>
     </div>
+    
   </div>
 
   <div class="footer-section">
       <h3><i></i> Athlix</h3>
     <div id="footer-container" class="footer-container">
+        <!--add icon-->
         <div class="about-us">
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
+          <img src="landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
+          <p>the printing and typesetting industry.</p>
+          <p>the printing and typesetting industry.</p>
+          <p>the printing and typesetting industry.</p>
         </div>
         <div class="contact-us">
           <p>instagram</p>
@@ -215,8 +311,8 @@
   </div>
 
   <script>
-    //scroll down button (about us)
-  document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', () => {
   const scrollBtn = document.querySelector('.learn-more');
   scrollBtn.addEventListener('click', () => {
     document.querySelector('.footer-container').scrollIntoView({ behavior: 'smooth'});
@@ -296,7 +392,7 @@
   }
 
   studentLoginBtn.addEventListener('click', (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     openModal('student');
   });
 
@@ -305,18 +401,44 @@
     openModal('university');
   });
 
-  // Close modal
   closeBtn.addEventListener('click', () => {
     modal.style.display = 'none';
   });
 
-  // Close when clicking outside modal content
   window.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.style.display = 'none';
     }
   });
 });
+const universitySection = document.querySelector('.university-section');
+const studentSection = document.querySelector('.student-section');
+const unigridsec = document.querySelector('.university-grid-section');
+
+window.addEventListener('scroll', () => {
+  const triggerPoint = unigridsec.getBoundingClientRect().bottom  +100 ;
+
+  if (triggerPoint <= 0) {
+    universitySection.style.transform = 'translate(-50%, 0)';
+    universitySection.style.opacity = '1';
+    studentSection.classList.add('fade-out');
+  } else {
+    universitySection.style.transform = 'translate(-50%, 100px)';
+    universitySection.style.opacity = '0';
+    studentSection.classList.remove('fade-out');
+  }
+});
+
+const reviews = document.querySelectorAll('.review');
+let currentIndex = 0;
+
+reviews[currentIndex].style.opacity = '1';
+
+setInterval(() => {
+  reviews[currentIndex].style.opacity = '0';
+  currentIndex = (currentIndex + 1) % reviews.length;
+  reviews[currentIndex].style.opacity = '1';
+}, 1500);
 
 //to keep the login modal open if there is an error
 document.addEventListener('DOMContentLoaded', () => {
