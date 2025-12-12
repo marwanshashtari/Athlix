@@ -118,7 +118,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     </form>
     </div>
   </div>
-    <div class="head-title"><h1>Sign up with Athlix</h1></div>
+    <div class="head-title"><h1>Sign up with Athlix!</h1></div>
 
   <div id="loginModal" class="modal">
   <div class="modal-content">
@@ -480,3 +480,4 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
+
