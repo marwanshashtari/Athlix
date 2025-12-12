@@ -20,15 +20,12 @@ body {
   line-height: 1.6;
 }
 legend{
-  font-size: larger; 
+  font-size: 24px; 
   font-weight: bolder; 
   color: var(--primary);
-   background-color: var(--secondary);
-    border: 2px solid var(--secondary);
-     border-radius: 10px; 
-     padding: 0 5px;
-      margin-bottom: 3px; 
-   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  background-color: transparent;
+  padding: 0 5px;
+  margin-bottom: 3px; 
 }
 .navbar {
   position: fixed;
@@ -155,6 +152,7 @@ legend{
     top: 50%;
     left: auto;
     margin: 0;
+    font-size: 50px;
 
 }
 .signup-window {
@@ -200,13 +198,12 @@ form {
   box-shadow: 0 0 10px var(--icon-color);
 }
 .submit{
-   gap: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px;
     transition: transform 0.3s ease;
     border-radius: 10px;
     background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 45%;
     margin-left: auto;
 }
@@ -393,11 +390,9 @@ input[type="button"]{
   border-radius: 50px;
   padding: 5px 10px; 
   cursor: pointer;
-  width: 50rem;
   background-color: #fffbf9;
   box-shadow: 0 4px 8px rgba(0,0,0,0.5);
   transition: all 0.3s ease;
-  margin:5px;
 }
 
 input[type="button"]:hover{
