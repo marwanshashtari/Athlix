@@ -1,457 +1,775 @@
-<?php
-  session_start();
-  $login_error = $_SESSION['login_error'] ?? '';
-  $show_login_modal = !empty($login_error);
-  unset($_SESSION['login_error']); // remove error after displaying it
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athlix</title>
-  <link rel="stylesheet" href="landing_page.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-</head>
-
-<body>
-  <!--add logo-->
-  <div class="navbar">
-    <div class="logo">
-      <img src="landing_images/logo_athlix.png" alt="logo" height="40">
-      <div class="logo-text">Athlix</div>
-    </div>
-    <div class="login-buttons">
-        <button type="button" class="btn btn-dark learn-more">More about us</button>
-      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="" method="post">
-        <input type="hidden" name="type" value="student">
-        <button class="btn btn-dark student-login">Student Login</button>
-      </form>
-
-      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="" method="post">
-        <input type="hidden" name="type" value="university">
-        <button class="btn btn-dark university-login">University Login</button>
-      </form>
-
-    </div>
-  </div>
-
-  <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <i class="fa-solid fa-person-running"></i>
-    <hr>
-    <span class="close">&times;</span>
-    <h2>Login</h2>
-    <div class="login-grid">
-      <form id="loginForm" action="../../login.php" method="post">
-        <input type="hidden" name="type" id="userType" value="">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Enter your email" required>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Enter your password" required>
-              <!--to show login error-->
-        <?php if(!empty($login_error)): ?>
-          <div class="login-error" style="color:red; margin-bottom:10px;">
-            <?= htmlspecialchars($login_error) ?>
-          </div>
-        <?php endif; ?>
-        <button type="submit" class="btn btn-dark">Login</button>
-      </form>
-      <div class="picture-modal" style="width: inherit; height: inherit;">
-        <img src="../landing_page/landing_images/person_lefting_login.jpg">
-      </div>      
-    </div>
-  </div>
-</div>
-
-  <div class="intro-section">
-    <div class="slideshow-intro">
-          <img src="landing_images/intro_slideshow1.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow2.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow3.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow4.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow5.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow6.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow7.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow8.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow9.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow10.jpg" alt="psut">
-          <img src="landing_images/intro_slideshow11.jpg" alt="psut">
-        </div>
-      <div class="intro-content">
-      <h1>Match Your Sports Achievement with University Discounts</h1>
-      <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
-          
-        <div class="buttons-container">
-          <form action="../signup_page/signup.php" method="post">
-              <input type="hidden" name="type" value="student">
-              <button class="btn btn-primary get-started-student">I'm a Student</button>
-          </form>
-          
-          <form action="../signup_page/signup.php" method="post">
-              <input type="hidden" name="type" value="university">
-              <button class="btn btn-outline get-started-uni">I'm a University</button>
-          </form>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="university-grid-text">
-    <h1 >Enroll to your dream university</h1>
-  </div>
-  <div class="university-grid-section">
-    <div class="university-grid-content">
-      <div class="university-logo psut">
-        <div class="slideshow">
-          <img src="landing_images/PSUT_Logo.png" alt="psut" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo asu">
-        <div class="slideshow">
-          <img src="landing_images/asu_logo.jpg" alt="asu" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo hashmite">
-        <div class="slideshow">
-          <img src="landing_images/Hashmite_logo.jpg" alt="hashmite" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo yarmouk">
-        <div class="slideshow">
-          <img src="landing_images/yarmouk_logo.png" alt="yarmouk" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo just">
-        <div class="slideshow">
-          <img src="landing_images/JUST_logo.png" alt="just" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo gju">
-        <div class="slideshow">
-          <img src="landing_images/GJU_Logo.png" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo ju">
-        <div class="slideshow">
-          <img src="landing_images/JU_Logo.png" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div>
-      </div>
-      <div class="university-logo htu">
-        <div class="slideshow">
-          <img src="landing_images/htu_logo.ico" alt="htu" class="active">
-          <img src="landing_images/sport2.jpg">
-          <img src="landing_images/sport1.jpg">
-        </div> 
-      </div>
-    </div>
-  </div>
-
-  <div class="our-offers">
-<div class="student-section">
-    <div class="student-image">
-      <img src="landing_images/student_sport_landing.bmp" alt="student sport image">
-    </div>
-    <div class="student-content">
-      <h2>For Students</h2>
-
-      <div class="student-text">
-        <ul>
-          <li><i class="fa-solid fa-check"></i> Access exclusive university discounts</li>
-          <li><i class="fa-solid fa-check"></i> Get rewarded for your athlete achievements</li>
-          <li><i class="fa-solid fa-check"></i> Simple verification process</li>
-          <li><i class="fa-solid fa-check"></i> Upload proof once, use everywhere</li>
-          <li><i class="fa-solid fa-check"></i> Track all your offers in one place</li>
-          <li><i class="fa-solid fa-check"></i> Easy dashboard to manage benefits</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    <div class="university-section">
-    <div class="university-image">
-      <img src="landing_images/university_image_landing.jpg" alt="student sport image">
-    </div>
-    <div class="university-content">
-      <h2>For Universities</h2>
-      <div class="university-text">
-        <ul>
-          <li><i class="fa-solid fa-check"></i> Attract top athlete talent</li>
-          <li><i class="fa-solid fa-check"></i> Connect with student athletes who meet your criteria</li>
-          <li><i class="fa-solid fa-check"></i> Streamlined verification system</li>
-          <li><i class="fa-solid fa-check"></i> Easily review and approve student credentials</li>
-          <li><i class="fa-solid fa-check"></i> Manage discount programs</li>
-          <li><i class="fa-solid fa-check"></i> Create and track your offers from one dashboard</li>
-        </ul>
-      </div>
-    </div>
-  </div>  
-</div>
+:root {
+    --primary: #19183B;
+    --secondary: #E7F2EF;
+    --third: #A1C2BD;
+    --grey: #708993;
+    --darkgrey:#1b1b1b;
+    --font-weight-primary: 900;
+  }
   
-<div class="reviews-section">
-  <div class="review">
-    <div class="stars">
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-    </div>
-    <p>"Amazing website! Very easy to use and intuitive."</p>
-    <p>- Alice</p>
-  </div>
+  * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-  <div class="review">
-    <div class="stars">
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-    </div>
-    <p>"Exceptional experience, would recommend to everyone."</p>
-    <p>- Bob</p>
-  </div>
+  }
+  
+  body {
+    margin: 0;
+    background-color: var(--secondary);
+    color: var(--darkgrey);
+    line-height: 1.6;
 
-  <div class="review">
-    <div class="stars">
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-    </div>
-    <p>"Good, but could use some improvements in UI."</p>
-    <p>- Clara</p>
-  </div>
+    height: 100vh;
+    padding-top: 50px;
+    margin: 0;
+  }
+  
+  h1, h2, h3, h4 {
+    margin: 0;
+    font-weight: var(--font-weight-primary);
+  }
+  
+  p {
+    margin: 1rem 0;
+  }
+  
 
-  <div class="review">
-    <div class="stars">
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-solid fa-star"></i>
-      <i class="fa-regular fa-star"></i>
-    </div>
-    <p>"Very helpful content, learned a lot from this site."</p>
-    <p>- Daniel</p>
-  </div>
-</div>
+  .btn {
+    padding: 0.70rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--secondary);
+    color: var(--darkgrey);
+  }
+  
+  .btn:hover {
+    background: var(--third);
+    color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
 
-  <div class="how-it-works-section">
-    <h2 style="color: rgb(197, 51, 7);">Kickstart Your Athlete Journey!</h2>
-    <p>Just three simple steps to connect our student athletes with their best opportunities</p>
-    <div class="steps-container">
-      <div class="step">
-        <i class="fa-solid fa-file-upload" style="color: rgb(238, 238, 39);"></i>
-        <h3>Students Submit Proof</h3>
-        <p>Upload evidence of your sports participation, achievements, or team membership</p>
-      </div>
-      <div class="step">
-        <i class="fa-solid fa-magnifying-glass" style="color: rgb(182, 20, 20);"></i>
-        <h3>Universities Verify</h3>
-        <p>Partner universities review and verify your sports credentials securely</p>
-      </div>
-      <div class="step">
-        <i class="fa-solid fa-graduation-cap" style="color: rgb(14, 165, 11);"></i>
-        <h3>Unlock Discounts</h3>
-        <p>Get matched with exclusive university discounts and special offers</p>
-      </div>
-    </div>
-  </div>
+  .developer-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
 
-  <div class="motivation-section">
-    <h2>Ready to Get Started?</h2>
-    <p>Join hundreds of students and universities already using SportMatch.</p>
+  .btn-outline {
+    background: transparent;
+    color:var(--secondary);
+    border: 2px solid var(--secondary);
+    border-radius: 50px;
+  }
+  
+  .btn-outline:hover {
+    background: var(--secondary);
+    color: var(--primary);
+  }
+
+  .btn-dark, .learn-more {
+    background-color: var(--primary);
+    color: var(--secondary);
+    border:2px solid var(--primary);
+    border-radius: 50px;
+  }
+  
+  .btn-dark:hover {
+    background-color: var(--third);
+    color: var(--secondary);
+  }
+ 
+ .navbar{
+  position:fixed;
+  top: 0.5rem;
+  z-index: 1000;
+  margin: 0 auto 0 3rem;
+  width: 93%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.1rem;
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius:1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+ }
+
+
+  .logo {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding:0.15rem 1rem;
+  }
+  
+  .logo img {
+    height: 40px;
+  }
+  
+  .logo-text {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    color: var(--white);
+  }
+  
+  .login-buttons {
+    display: flex;
+    gap: 10px;
+    padding: 0 1.85rem;
+
+  }
+
+  .intro-section {
+    position: relative;
+    padding: 120px 2rem 0px;
+    color: var(--secondary);
+    display: flex;
+    position: relative;
+    align-items: end;
+    gap: 3rem;
+    justify-content: left;
+    min-height: 80vh;
+    width: 93%;
+    margin: 3rem auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn 1s ease-out forwards;
+ }
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  .intro-content {
+    position: relative;
+    z-index: 2;
+    color: var(--secondary);
+    top: 50%;
+    width: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+    margin: 15rem 0 0 0;
+  }
+  
+  .intro-section h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .intro-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
     
-      <div class="motivation-buttons-container">
-        <form action="../signup_page/signup.php" method="post">
-            <input type="hidden" name="type" value="student">
-            <button class="btn btn-outline get-started-student">Sign Up as Student</button>
-        </form>
-        
-        <form action="../signup_page/signup.php" method="post">
-            <input type="hidden" name="type" value="university">
-            <button class="btn btn-primary get-started-uni">Sign Up as University</button>
-        </form>
-    </div>
-    
-  </div>
+  }
+  
+  .slideshow-intro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0; /* Behind the text */
+      border-radius: 10px;
 
-  <div class="footer-section">
-      <h3><i></i> Athlix</h3>
-    <div id="footer-container" class="footer-container">
-        <!--add icon-->
-        <div class="about-us">
-          <img src="landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
-          <p>the printing and typesetting industry.</p>
-          <p>the printing and typesetting industry.</p>
-          <p>the printing and typesetting industry.</p>
-        </div>
-        <div class="contact-us">
-          <p>instagram</p>
-          <p>facebook</p>
-          <p>email</p>
-        </div>
-      </div>
-       <p>© 2025 Athlix. Connecting athletes with opportunities.</p>
-  </div>
+}
 
-  <script>
+.slideshow-intro img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Makes sure images fill the area */
+  opacity: 0;
+  animation: slideShow 33s infinite; /* 11 images × 3s each = 33s */
+      border-radius: 10px;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const scrollBtn = document.querySelector('.learn-more');
-  scrollBtn.addEventListener('click', () => {
-    document.querySelector('.footer-container').scrollIntoView({ behavior: 'smooth'});
-  });
+}
 
-   const contents = document.querySelectorAll('.student-content, .university-content, .motivation-section');
-  const images = document.querySelectorAll('.student-image, .university-image');
+/* Delay each image */
+.slideshow-intro img:nth-child(1) { animation-delay: 0s; }
+.slideshow-intro img:nth-child(2) { animation-delay: 3s; }
+.slideshow-intro img:nth-child(3) { animation-delay: 6s; }
+.slideshow-intro img:nth-child(4) { animation-delay: 9s; }
+.slideshow-intro img:nth-child(5) { animation-delay: 12s; }
+.slideshow-intro img:nth-child(6) { animation-delay: 15s; }
+.slideshow-intro img:nth-child(7) { animation-delay: 18s; }
+.slideshow-intro img:nth-child(8) { animation-delay: 21s; }
+.slideshow-intro img:nth-child(9) { animation-delay: 24s; }
+.slideshow-intro img:nth-child(10) { animation-delay: 27s; }
+.slideshow-intro img:nth-child(11) { animation-delay: 30s; }
 
-  function checkSlide() {
-    const trigger = window.innerHeight * 0.85;
+/* Fade animation */
+@keyframes slideShow {
+  0% { opacity: 0; }
+  8% { opacity: 1; }   /* Fade in */
+  25% { opacity: 1; }  /* Stay visible */
+  33% { opacity: 0; }  /* Fade out */
+  100% { opacity: 0; }
+}
 
-    
-    contents.forEach(content => {
-      if(content.getBoundingClientRect().top < trigger){
-        content.classList.add('active');
+  .buttons-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 2000; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.6); 
+}
+
+.fa-person-running {
+ font-size: 2.5rem;
+}
+.login-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.picture-modal img{
+  width: 50%;
+  height: 100%;
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 850px;
+    max-height: 1000px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: center;
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: var(--darkgrey);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal input[type="email"],
+.modal input[type="password"] {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0 1rem 0;
+  border: 1px solid var(--grey);
+  border-radius: 20px;
+}
+
+.modal label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+  
+  .university-grid-text{
+    text-align: center;
+    margin:10rem 0 0 0;
+    font-size: 2rem;
+    color: var(--primary);
+  }
+
+  .university-grid-section{
+    display:flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    padding:10px;
+    width: 70%;
+    height: 100%;
+    margin: 0 auto 10rem;
+  }
+
+  .university-grid-content{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr ;
+    width: 100%;
+    height: 90%;
+  }
+
+  .university-logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    border: solid 1px var(--secondary);
+    border-radius: 5px;
+    margin: 5px;
+    background-color: var(--secondary);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+
+  .university-logo:hover{
+    transform: translateY(-10px);
+  }
+
+/*STARTS HERE*/
+    .slideshow img {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    transition: opacity 1s ease; 
+  }
+
+  .slideshow img.active {
+    opacity: 1;
+  }
+
+  .slideshow {
+    width: 100%;
+    height: 100%; 
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+  }
+  /*ENDS HERE*/
+  .how-it-works-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    min-height: 80vh;
+    width: 93%;
+    margin: 0 auto;
+    padding: 2.4rem 60px;
+    color:var(--primary);
+
+
+  }
+  
+  .how-it-works-section h2 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .how-it-works-section > p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+  
+  .steps-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .step {
+    width: 300px;
+    padding: 1.5rem;
+    background: var(--primary);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    color: var(--secondary);
+    transition: background-color 0.5s ease-out;
+  }
+  
+  .step:hover{
+    background-color: var(--third);
+    color:var(--darkgrey);
+  }
+  
+  .step:hover {
+    transform: translateY(-5px);
+
+  }
+
+  .step i {
+    font-size: 2.5rem;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+  }
+  
+  .step:hover i{
+    color: var(--primary);
+
+  }
+  .step h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .our-offers{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: auto;
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 3rem;
+    padding: 2rem 0;
+    overflow: visible; 
+  }
+
+  .student-section,
+.university-section {
+    width: 56%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    background: var(--secondary);
+    box-sizing: border-box;
+}
+
+.university-section {
+  position: absolute; 
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 100px); 
+  opacity: 0;
+  z-index: 2;
+  transition: transform 0.9s ease-out, opacity 0.9s ease-out;
+}
+.student-section.fade-out {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+.student-image,
+.student-content,
+.university-image,
+.university-content {
+
+  transition: transform 700ms cubic-bezier(.2,.9,.2,1), opacity 700ms ease;
+}
+  .student-image{
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(100px);
+  }
+  .student-content {
+    flex: 1;
+    text-align: left;
+    display: table-row;
+    margin: 0 auto 2.5rem;
+    opacity: 0; 
+    position: relative;
+    transition: all 1s ease-out;
+    transform: translateX(-100px);
+  }
+    .student-content.active, .student-image.active {
+  transform: translateX(0);
+  opacity: 1;
+}
+    .university-content.active, .university-image.active {
+  transform: translateX(0);
+  opacity: 1;
+}
+.motivation-section.active{
+  transform: scaleX(1);
+  opacity: 1; 
+}
+
+  .student-section h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  .student-text ul {
+    list-style: none;
+    padding: 0;
+  } 
+  .student-text li {
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+  }
+  .student-text li i {
+    color: var(--primary);
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  .student-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 5px;
+    margin: 0 auto 2.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
+  } 
+  .university-content {
+    flex: 1;
+    text-align: right;
+    display: table-row;
+    margin: 0 auto 2.5rem;
+
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(-100px);
+  }
+    .university-image {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    margin: 0 auto 2.5rem;
+
+    opacity: 0; 
+    transition: all 1s ease-out;
+    position: relative;
+    transform: translateX(100px);
+  } 
+  .university-section h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  .university-text ul {
+    list-style: none;
+    padding: 0;
+  }
+  .university-text li {
+    margin: 1.5rem 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .university-text li i {
+    color: var(--primary);
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  .university-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
+  }
+  
+.reviews-section {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 200px;
+    margin: 5rem auto;
+    overflow: hidden;
+    background-color: var(--primary);
+    border-radius: 10px;
+    border: solid 1px var(--primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 1);
+}
+
+.review {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  background: var(--primary);
+  padding: 1.5rem;
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-align: center;
+  color: var(--secondary)
+}
+
+.review .stars {
+  color: gold;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.review p {
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.review span {
+  font-weight: bold;
+  color: var(--darkgrey);
+}
+.motivation-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-image: url(../landing_page/landing_images/trackfield_coloured.jpeg);
+    color: var(--secondary);
+    width: 93%;
+    height:23rem ;
+    opacity: 0;
+    transition: all 1s ease-out;
+    transform: translateX(-100px);
+    margin: 50px auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,1);
+  }
+  
+  .motivation-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .motivation-section p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+  
+  .motivation-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+.step i {
+  transition: color 0.3s ease;
+}
+
+.steps-container .step:nth-child(1):hover i {
+  color: #5f0505;  
+}
+
+
+.steps-container .step:nth-child(2):hover i {
+  color: #083a1d;  
+}
+
+.steps-container .step:nth-child(3):hover i {
+  color: #021a3e;   
+}
+  .footer-section {
+    background: var(--primary);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  
+  .footer-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-container h3 {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .footer-container h4 {
+    margin: 2rem 0 1rem;
+    font-size: 1.3rem;
+  }
+  .logo-footer{
+    margin: 0 auto;
+  }
+  .about-us{
+    display: flex;
+    gap: 10rem;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+  .contact-us{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20rem;
+    text-align: left;
+    margin-left: 5px;
+    width: 50%;
+    padding-left: 50px;
+    margin: 0 auto;
+    margin-top: 10px;
+    border-top: solid black 2px;
+  }
+
+  @media (max-width: 768px) {
+    .intro-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 100px 1rem 40px;
+        gap: 2rem;
       }
-    });
-
-    images.forEach(image => {
-      if(image.getBoundingClientRect().top < trigger){
-        image.classList.add('active');
+      
+      .intro-content {
+        text-align: center;
+        max-width: 100%;
       }
-    });
+      
+      .intro-section h1 {
+        font-size: 2rem;
+      }
+      
+      .buttons-container {
+        justify-content: center;
+      }
+      .student-section,
+      .university-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+      }
+      
+      .student-content,
+      .university-content {
+        text-align: center;
+      }
+      
+      .student-section h2,
+      .university-section h2 {
+        text-align: center;
+      }
+      
+      .university-section {
+        flex-direction: column-reverse;
+      }
+      .developers-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      
+      .developer-card {
+        padding: 1rem;
+      }
   }
-
-  window.addEventListener('scroll', checkSlide);
-  checkSlide();
-
-  const logos = document.querySelectorAll('.university-logo');
-
-  logos.forEach(unilogo => {
-    const slideshow = unilogo.querySelector('.slideshow');
-    const slideImages = slideshow.querySelectorAll('img');
-    let current = 0;
-    let interval = null;
-
-    function startSlideshow() {
-     let firstCycle = true;
-
-    interval = setTimeout(() => {
-    slideImages[current].classList.remove('active');
-    current = 1;
-    slideImages[current].classList.add('active');
-
-    interval = setInterval(() => {
-      slideImages[current].classList.remove('active');
-      current++;
-      if (current >= slideImages.length) current = 1; 
-      slideImages[current].classList.add('active');
-    }, 2000); 
-    }, 1000); 
-    }
-
-    function stopSlideshow() {
-    clearInterval(interval);
-    slideImages[current].classList.remove('active');
-    current = 0;
-    slideImages[current].classList.add('active');    }
-
-    unilogo.addEventListener('mouseenter', startSlideshow);
-    unilogo.addEventListener('mouseleave', stopSlideshow);
-  });
- });
-
- document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('loginModal');
-  const closeBtn = modal.querySelector('.close');
-  const userTypeInput = document.getElementById('userType');
-
-
-  const studentLoginBtn = document.querySelector('.student-login');
-  const universityLoginBtn = document.querySelector('.university-login');
-
-  function openModal(type) {
-    userTypeInput.value = type; 
-    modal.style.display = 'block';
-  }
-
-  studentLoginBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('student');
-  });
-
-  universityLoginBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('university');
-  });
-
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
-});
-const universitySection = document.querySelector('.university-section');
-const studentSection = document.querySelector('.student-section');
-const unigridsec = document.querySelector('.university-grid-section');
-
-window.addEventListener('scroll', () => {
-  const triggerPoint = unigridsec.getBoundingClientRect().bottom  +100 ;
-
-  if (triggerPoint <= 0) {
-    universitySection.style.transform = 'translate(-50%, 0)';
-    universitySection.style.opacity = '1';
-    studentSection.classList.add('fade-out');
-  } else {
-    universitySection.style.transform = 'translate(-50%, 100px)';
-    universitySection.style.opacity = '0';
-    studentSection.classList.remove('fade-out');
-  }
-});
-
-const reviews = document.querySelectorAll('.review');
-let currentIndex = 0;
-
-reviews[currentIndex].style.opacity = '1';
-
-setInterval(() => {
-  reviews[currentIndex].style.opacity = '0';
-  currentIndex = (currentIndex + 1) % reviews.length;
-  reviews[currentIndex].style.opacity = '1';
-}, 1500);
-
-//to keep the login modal open if there is an error
-document.addEventListener('DOMContentLoaded', () => {
-    <?php if($show_login_modal): ?>
-        const modal = document.getElementById('loginModal');
-        modal.style.display = 'block';
-    <?php endif; ?>
-});
-
-</script>
-</body>
-</html>
