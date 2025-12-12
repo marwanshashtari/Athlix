@@ -112,7 +112,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
       <div class="logo-text">Athlix</div>
     </div>
     <div class="login-buttons">
-    <form action="login.php" method="post">
+    <form action="../../backend/login.php" method="post">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
         <button type="submit" class="btn btn-dark loginButton">I already have an account</button>
     </form>
@@ -126,7 +126,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     <hr>
     <span class="close">&times;</span>
     <h2>Login</h2>
-    <form id="loginForm" action="request_login_type.php" method="post">
+    <form id="loginForm" action="../../backend/request_login_type.php" method="post">
       <input type="hidden" name="type" id="userType" value="">
       <label for="email">Email</label>
       <input type="email" name="email" id="email" placeholder="Enter your email" required>
@@ -368,7 +368,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
 
  <div class="signup-window">
     <div class="signup-form">
-    <form id="loginForm" action="request_login_type.php" method="post">
+    <form id="loginForm" action="../../backend/request_login_type.php" method="post">
         <!-- uni name -->
         <div class="input-div" style="--icon-color: teal;">
             <i class="fa-solid fa-basketball"></i>
@@ -484,5 +484,6 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
+
 
 
