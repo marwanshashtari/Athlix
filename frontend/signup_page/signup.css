@@ -270,7 +270,6 @@ form {
   background-color: var(--secondary);
 }
 .input-div input,
-input[type="file"],
 select,
 .input-div textarea {
   padding: 0.5rem;
@@ -296,18 +295,6 @@ label {
     align-items: center;
     gap: 1rem;
     width: max-content;
-}
-
-
-label[for="file"]{
-  border: 2px solid #332e2f;
-  border-radius: 50px;
-  padding: 5px 10px; 
-  cursor: pointer;
-  width:fit-content;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-  background-color: #fffbf9;
-
 }
 
 input[type="checkbox"],
@@ -344,8 +331,11 @@ label[for="football"]:hover,
 label[for="tennis"]:hover,
 label[for="basketball"]:hover,
 label[for="handball"]:hover,
+label[for="karate"]:hover,
+label[for="jiu-jitsu"]:hover,
 label[for="table-tennis"]:hover,
-label[for="others"]:hover,
+label[for="taekewondo"]:hover,
+label[for="badminton"]:hover,
 label[for="gender1"]:hover,
 label[for="gender0"]:hover,
 label[for="status1"]:hover,
@@ -366,8 +356,11 @@ label[for="tennis"],
 label[for="basketball"],
 label[for="handball"],
 label[for="table-tennis"],
-label[for="others"],
-label[for="gender1"],
+label[for="karate"],
+label[for="jiu-jitsu"],
+label[for="taekewondo"],
+label[for="badminton"]
+,label[for="gender1"],
 label[for="gender0"],
 label[for="status1"],
 label[for="status0"],
@@ -387,11 +380,6 @@ input[type="checkbox"]:checked + label,
 input[type="radio"]:checked + label
  {
   background-color: var(--grey);
-  color: var(--secondary);
-}
-
-label[for="file"]:hover{
-  background-color: var(--darkgrey);
   color: var(--secondary);
 }
 
