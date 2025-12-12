@@ -122,6 +122,8 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
 
   <div id="loginModal" class="modal">
   <div class="modal-content">
+    <img src="../landing_page/landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
+    <hr>
     <span class="close">&times;</span>
     <h2>Login</h2>
     <form id="loginForm" action="request_login_type.php" method="post">
@@ -354,6 +356,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
         <br>
         <div class="submit">
             <input type="button" value="Sign up">
+            <input type="button" value="Cancel">
         </div>
         <br>
        </fieldset>
@@ -415,6 +418,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
         <br>
         <div class="submit">
             <input type="button" value="Sign up">
+            <input type="button" value="Cancel">
         </div>
     </form>
     </div>
@@ -480,4 +484,5 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
+
 
