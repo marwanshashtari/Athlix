@@ -122,21 +122,31 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
 
   <div id="loginModal" class="modal">
   <div class="modal-content">
-    <img src="../landing_page/landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
+    <i class="fa-solid fa-person-running" style="color: var(--primary)"></i>
     <hr>
     <span class="close">&times;</span>
     <h2>Login</h2>
-    <form id="loginForm" action="../../backend/request_login_type.php" method="post">
-      <input type="hidden" name="type" id="userType" value="">
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" placeholder="Enter your email" required>
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" placeholder="Enter your password" required>
-      <button type="submit" class="btn btn-dark">Login</button>
-    </form>
+    <div class="login-grid">
+      <form id="loginForm" action="../../backend/login.php" method="post">
+        <input type="hidden" name="type" id="userType" value="">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+              <!--to show login error-->
+        <?php if(!empty($login_error)): ?>
+          <div class="login-error" style="color:red; margin-bottom:10px;">
+            <?= htmlspecialchars($login_error) ?>
+          </div>
+        <?php endif; ?>
+        <button type="submit" class="btn btn-dark">Login</button>
+      </form>
+      <div class="picture-modal" style="width: inherit; height: inherit;">
+        <img src="../landing_page/landing_images/person_lefting_login.jpg">
+      </div>      
+    </div>
   </div>
 </div>
-
   <!--I'll make two form right now but with the backend code, one will show and the other wont-->
   <div class="signup-window">
     <div class="signup-form">
@@ -484,6 +494,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
+
 
 
 
