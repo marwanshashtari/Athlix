@@ -46,7 +46,7 @@
     <span class="close">&times;</span>
     <h2>Login</h2>
     <div class="login-grid">
-      <form id="loginForm" action="../../login.php" method="post">
+      <form id="loginForm" action="../../backend/login.php" method="post">
         <input type="hidden" name="type" id="userType" value="">
         <label for="email">Email</label>
         <input type="email" name="email" id="email" placeholder="Enter your email" required>
