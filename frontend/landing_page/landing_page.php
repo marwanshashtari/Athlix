@@ -41,24 +41,29 @@
 
   <div id="loginModal" class="modal">
   <div class="modal-content">
-    <img src="landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
+    <i class="fa-solid fa-person-running"></i>
     <hr>
     <span class="close">&times;</span>
     <h2>Login</h2>
-    <form id="loginForm" action="request_login_type.php" method="post">
-      <input type="hidden" name="type" id="userType" value="">
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" placeholder="Enter your email" required>
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" placeholder="Enter your password" required>
-            <!--to show login error-->
-      <?php if(!empty($login_error)): ?>
-        <div class="login-error" style="color:red; margin-bottom:10px;">
-          <?= htmlspecialchars($login_error) ?>
-        </div>
-      <?php endif; ?>
-      <button type="submit" class="btn btn-dark">Login</button>
-    </form>
+    <div class="login-grid">
+      <form id="loginForm" action="../../login.php" method="post">
+        <input type="hidden" name="type" id="userType" value="">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+              <!--to show login error-->
+        <?php if(!empty($login_error)): ?>
+          <div class="login-error" style="color:red; margin-bottom:10px;">
+            <?= htmlspecialchars($login_error) ?>
+          </div>
+        <?php endif; ?>
+        <button type="submit" class="btn btn-dark">Login</button>
+      </form>
+      <div class="picture-modal" style="width: inherit; height: inherit;">
+        <img src="../landing_page/landing_images/person_lefting_login.jpg">
+      </div>      
+    </div>
   </div>
 </div>
 
@@ -251,27 +256,26 @@
 </div>
 
   <div class="how-it-works-section">
-    <h2>Kickstart Your Athlete Journey!</h2>
+    <h2 style="color: rgb(197, 51, 7);">Kickstart Your Athlete Journey!</h2>
     <p>Just three simple steps to connect our student athletes with their best opportunities</p>
     <div class="steps-container">
       <div class="step">
-        <i class="fa-solid fa-file-upload"></i>
+        <i class="fa-solid fa-file-upload" style="color: rgb(238, 238, 39);"></i>
         <h3>Students Submit Proof</h3>
         <p>Upload evidence of your sports participation, achievements, or team membership</p>
       </div>
       <div class="step">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-magnifying-glass" style="color: rgb(182, 20, 20);"></i>
         <h3>Universities Verify</h3>
         <p>Partner universities review and verify your sports credentials securely</p>
       </div>
       <div class="step">
-        <i class="fa-solid fa-graduation-cap"></i>
+        <i class="fa-solid fa-graduation-cap" style="color: rgb(14, 165, 11);"></i>
         <h3>Unlock Discounts</h3>
         <p>Get matched with exclusive university discounts and special offers</p>
       </div>
     </div>
   </div>
-
 
   <div class="motivation-section">
     <h2>Ready to Get Started?</h2>
