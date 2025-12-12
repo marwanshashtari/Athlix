@@ -44,7 +44,6 @@ legend{
 }
 
 
-
 .modal {
   display: none; 
   position: fixed;
@@ -57,14 +56,26 @@ legend{
   background-color: rgba(0,0,0,0.6); 
 }
 
+.fa-person-running {
+ font-size: 2.5rem;
+}
+.login-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.picture-modal img{
+  width: 50%;
+  height: 100%;
+}
 
 .modal-content {
-  background-color: var(--secondary);
+  background-color: white;
   margin: 10% auto;
   padding: 2rem;
   border-radius: 10px;
   width: 90%;
-  max-width: 400px;
+  max-width: 850px;
+    max-height: 1000px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   text-align: center;
   position: relative;
@@ -95,6 +106,7 @@ legend{
   font-weight: 600;
   margin-top: 1rem;
 }
+
 
 .logo {
   display: flex;
