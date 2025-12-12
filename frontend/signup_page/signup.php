@@ -223,14 +223,6 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
               </label>
         </div>
         <br>
-        <!-- cv -->
-        <div class="input-div" style="--icon-color:  rgb(68, 12, 68);">
-            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-            <label for="file">Upload your CV
-            <input class="file" type="file" id="file" name="file" required hidden>
-            </label>
-        </div>
-        <br>
         <!-- exppected grad year -->
         <div class="input-div" style="--icon-color:  rgb(71, 1, 1);">
             <i class="fa-solid fa-baseball"></i>
@@ -320,12 +312,10 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             <div><input type="checkbox" id="basketball" value="basketball"><label for="basketball">Basketball</label></div>
             <div><input type="checkbox" id="handball" value="handball"><label for="handball">Handball</label></div>
             <div><input type="checkbox" id="table-tennis" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
-            <div><input type="checkbox" id="others" value="others"><label for="others">Others</label></div>
-
-            <div id="other-sports">
-                <label for="other-sport">What's your sport? </label>
-                <input type="text" id="other-sport">
-            </div>
+            <div><input type="checkbox" id="karate" value="karate"><label for="karate">karate</label></div>
+            <div><input type="checkbox" id="jiu-jitsu" value="jiu-jitsu"><label for="jiu-jitsu">jiu jitsu</label></div>
+            <div><input type="checkbox" id="taekewondo" value="taekewondo"><label for="taekewondo">taekewondo</label></div>
+            <div><input type="checkbox" id="badminton" value="badminton"><label for="badminton">badminton</label></div>
             </div></label>
         </div>
         <br>
@@ -460,17 +450,6 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             }
         });
     }
-
-    // --- OTHER SPORT LOGIC ---
-    const textother = document.getElementById("others");
-    if (textother) {
-        const othersport = document.getElementById("other-sports");
-        
-        textother.addEventListener("change", function() {
-            othersport.style.display = textother.checked ? 'block' : 'none';
-        });
-    }
-
     // --- MODAL LOGIC ---
     const loginBtn = document.querySelector('.loginButton');
     const modal = document.getElementById('loginModal');
@@ -494,6 +473,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
     });
 </script>
 </body>
+
 
 
 
