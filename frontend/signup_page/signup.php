@@ -3,95 +3,10 @@
 session_start();
 require_once '../../backend/config.php';
 $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 'student');
-
-// // ==========================================
-// // 2. HANDLE SIGNUP SUBMISSION
-// // ==========================================
-// // We check for 'email' AND 'password' to ensure it's a real submission
-// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
-    
-//     $email = $_POST['email'];
-//     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-//     $postedType = $_POST['type']; // student or university
-    
-//     // Role Bit: 0 = Student, 1 = University
-//     $roleBit = ($postedType === 'student') ? 0 : 1;
-    
-//     try {
-//         // A. Create User Login
-//         q("INSERT INTO [User] (Email, Password, Role) VALUES (?, ?, ?)", [$email, $password, $roleBit]);
-        
-//         // B. Get the new User ID
-//         $res = q_row("SELECT SCOPE_IDENTITY() as id");
-//         $user_id = $res['id'];
-        
-//         // Set Session immediately
-//         $_SESSION['user_id'] = $user_id;
-//         $_SESSION['user_role'] = ($postedType === 'student') ? 'Student' : 'University';
-
-//         // C. Create Specific Profile
-//         if ($postedType === 'student') {
-//             $fname = $_POST['fname'];
-//             $lname = $_POST['lname'];
-//             $fullName = $fname . ' ' . $lname;
-            
-            
-//             $month = (int)($_POST['birth_month'] ?? 0);
-//             $day   = (int)($_POST['birth_day'] ?? 0);
-//             $year  = (int)($_POST['birth_year'] ?? 0);
-
-//             if ($month < 1 || $month > 12 || $day < 1 || $day > 31 || $year < 1900) {
-//                 die("Invalid birth date");
-//             }
-
-                   
-//             $gender = ($_POST['gender'] == 'female') ? 1 : 0;
-            
-//             // Insert Student Profile
-//             // Defaulting required NOT NULL fields like City, Phone, Major to generic values
-//             $sql = "INSERT INTO Student 
-//                     (User_ID, Name, Date_of_Birth, Gender, Height, Weight, Primary_Sport_ID, 
-//                      GPA, School, City, Phone_Number, Expected_Graduation_Year, Student_Type, Major_1, Major_2, Major_3) 
-//                     VALUES (?, ?, ?, ?, 0, 0, 1, 
-//                             0.0, 'N/A', 'Amman', '+96200000000', 2025, 0, 'Undeclared', 'N/A', 'N/A')";
-            
-//             q($sql, [$user_id, $fullName, $dob, $gender]);
-              
-//             // Handle Sports Checkboxes
-//             if(isset($_POST['sports']) && is_array($_POST['sports'])) {
-//                 foreach($_POST['sports'] as $sportName) {
-//                     if($sportName == 'others') continue; 
-                    
-//                     // Check if sport exists
-//                     $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
-                    
-//                     if($sRow) {
-//                         // Link sport to student
-//                         q("INSERT INTO Sports_Student (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
-//                            VALUES (?, ?, 0, '', '', 0)", [$user_id, $sRow['Sport_ID']]);
-//                     }
-//                 }
-//             }
-
-//             // Redirect to Edit Profile to finish details
-//             header("Location: ../edit_profile/edit_profile.php");
-//             exit();
-            
-//         } else {
-//             // University Signup
-//             $uniName = $_POST['universities_menu'] ?? 'New University';
-            
-//             // Create University Profile
-//             q("INSERT INTO University_ (User_ID, Name) VALUES (?, ?)", [$user_id, $uniName]);
-            
-//             header("Location: ../dashboards/university_dashboard/uni_dashboard.php");
-//             exit();
-//         }
-
-//     } catch (Exception $e) {
-//         die("Signup Error: " . $e->getMessage());
-//     }
-// }
+$_SESSION['user_type'] = $type;
+$login_error = $_SESSION['login_error'] ?? '';
+$show_login_modal = !empty($login_error);
+unset($_SESSION['login_error']); // remove error after displaying it
 ?>
 
 <!DOCTYPE html>
@@ -164,6 +79,13 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             </label>
         </div>
         <br>
+        <!-- password -->
+        <div class="input-div" style="--icon-color: rgb(68, 12, 68);">
+           <i class="fa-solid fa-baseball"></i>
+            <label for="signup_password">Password</label>
+            <input class="text" type="password" id="signup_password" name="password" required>
+        </div>
+        <br>
           <!-- fn -->
         <div class="input-div" style="--icon-color: teal;">
             <i class="fa-solid fa-basketball"></i>
@@ -182,7 +104,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
         <div class="input-div" style="--icon-color: slateblue;" >
             <i class="fa-solid fa-person-biking"></i>
             <div class="GPA">
-              <label for="GPA">GPA<input type="number" id="GPA">
+              <label for="GPA">GPA<input type="number" name="GPA" min=0 max=100 id="GPA">
             </div>
             </label>
         </div>
@@ -257,10 +179,10 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             <i class="fa-solid fa-bowling-ball" ></i>
             <label class="gender" for="gender">Gender
             <div class="gender-options">
-                <div class="gender-option"><input class="check" type="radio" id="gender1" name="gender" value="female">
+                <div class="gender-option"><input class="check" type="radio" id="gender1" name="gender" value="1">
                   <label for="gender1">female</label>
                 </div>
-                <div class="gender-option"><input class="check" type="radio" id="gender0" name="gender" value="male">
+                <div class="gender-option"><input class="check" type="radio" id="gender0" name="gender" value="0">
                   <label for="gender0">male</label>
                 </div>
               </div>
@@ -270,13 +192,13 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
         <!-- Status -->
         <div class="input-div" style="--icon-color: rgb(26, 48, 66);">
             <i class="fa-solid fa-bowling-ball"></i>
-            <label class="status" for="status">are you available for a scholarship
+            <label class="status" for="status">are you available for a scholarship?
             <div class="status-options">
-                <div class="status-option"><input class="check" type="radio" id="status1" name="status" value="status1">
-                  <label for="status1">yes</label>
+                <div class="status-option"><input class="check" type="radio" id="status0" name="status" value="0">
+                  <label for="status0">yes</label>
                 </div>
-                <div class="status-option"><input class="check" type="radio" id="status0" name="status" value="status0">
-                  <label for="status0">no</label>
+                <div class="status-option"><input class="check" type="radio" id="status1" name="status" value="1">
+                  <label for="status1">no</label>
                 </div>
               </div>
               </label>
@@ -287,11 +209,11 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             <i class="fa-solid fa-table-tennis-paddle-ball" ></i>
             <label class="std_type" for="std_type">student type
             <div class="std_type_options">
-                <div class="std-option"><input class="check" type="radio" id="std1" name="std_type" value="std1">
-                  <label for="std1">school student</label>
+                <div class="std-option"><input class="check" type="radio" id="std0" name="std_type" value="0">
+                  <label for="std0">school student</label>
                 </div>
-                <div class="std-option"><input class="check" type="radio" id="std0" name="std_type" value="std0">
-                  <label for="std0">university student</label>
+                <div class="std-option"><input class="check" type="radio" id="std1" name="std_type" value="1">
+                  <label for="std1">university student</label>
                 </div>
               </div>
               </label>
@@ -306,35 +228,35 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             <i class="fa-solid fa-golf-ball-tee"></i>
             <label for="sports-select">Select your sports
             <div class="sport-options">
-            <div><input type="checkbox" id="football" value="football"><label for="football">Football</label></div>
-            <div><input type="checkbox" id="volleyball" value="volleyball"><label for="volleyball">Volleyball</label></div>
-            <div><input type="checkbox" id="tennis" value="tennis"><label for="tennis">Tennis</label></div>
-            <div><input type="checkbox" id="basketball" value="basketball"><label for="basketball">Basketball</label></div>
-            <div><input type="checkbox" id="handball" value="handball"><label for="handball">Handball</label></div>
-            <div><input type="checkbox" id="table-tennis" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
-            <div><input type="checkbox" id="karate" value="karate"><label for="karate">karate</label></div>
-            <div><input type="checkbox" id="jiu-jitsu" value="jiu-jitsu"><label for="jiu-jitsu">jiu jitsu</label></div>
-            <div><input type="checkbox" id="taekewondo" value="taekewondo"><label for="taekewondo">taekewondo</label></div>
-            <div><input type="checkbox" id="badminton" value="badminton"><label for="badminton">badminton</label></div>
+            <div><input type="checkbox" id="football" name="sports[]" value="football"><label for="football">Football</label></div>
+            <div><input type="checkbox" id="volleyball" name="sports[]" value="volleyball"><label for="volleyball">Volleyball</label></div>
+            <div><input type="checkbox" id="tennis" name="sports[]" value="tennis"><label for="tennis">Tennis</label></div>
+            <div><input type="checkbox" id="basketball" name="sports[]" value="basketball"><label for="basketball">Basketball</label></div>
+            <div><input type="checkbox" id="handball" name="sports[]" value="handball"><label for="handball">Handball</label></div>
+            <div><input type="checkbox" id="table-tennis" name="sports[]" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
+            <div><input type="checkbox" id="karate" name="sports[]" value="karate"><label for="karate">karate</label></div>
+            <div><input type="checkbox" id="jiu-jitsu" name="sports[]" value="jiu-jitsu"><label for="jiu-jitsu">jiu jitsu</label></div>
+            <div><input type="checkbox" id="taekewondo" name="sports[]" value="taekewondo"><label for="taekewondo">taekewondo</label></div>
+            <div><input type="checkbox" id="badminton" name="sports[]" value="badminton"><label for="badminton">badminton</label></div>
             </div></label>
         </div>
         <br>
         <!-- height -->
         <div class="input-div" style="--icon-color: slateblue;">
             <i class="fa-solid fa-person-biking"></i>
-            <div class="height"><label for="height">Height<input type="number" id="height"></div></label>
+            <div class="height"><label for="height">Height<input type="number" name="height" id="height"></div></label>
         </div>
         <br>
         <!-- weight -->
         <div class="input-div" style="--icon-color: turquoise;">
             <i class="fa-solid fa-person-running"></i>
-            <div class="weight"><label for="weight">Weight<input type="number" id="weight"></div></label>
+            <div class="weight"><label for="weight">Weight<input type="number" name="weight" id="weight"></div></label>
         </div>
         <br>
         <!-- exp-years -->
        <div class="input-div" style="--icon-color: teal;">
         <i class="fa-solid fa-basketball"></i>
-            <div class="exp-years"><label for="exp-years">How many years have you played sports<input type="number" id="exp-years"></div></label>
+            <div class="exp-years"><label for="exp-years">How many years have you played sports<input type="number" name="exp_years" id="exp-years"></div></label>
         </div>
         <br>
         <!-- competition-years -->
@@ -355,8 +277,8 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
             </div>
         <br>
         <div class="submit">
-            <input type="button" value="Sign up">
-            <input type="button" value="Cancel">
+            <input type="submit" value="Sign up">
+            <input type="reset" value="Cancel">
         </div>
         <br>
        </fieldset>
@@ -368,7 +290,7 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
 
  <div class="signup-window">
     <div class="signup-form">
-    <form id="loginForm" action="../../backend/request_login_type.php" method="post">
+    <form id="loginForm" action="../../backend/signup_submit.php" method="post">
         <!-- uni name -->
         <div class="input-div" style="--icon-color: teal;">
             <i class="fa-solid fa-basketball"></i>
@@ -417,8 +339,8 @@ $type = $_POST['type'] ?? $_POST['signup_type'] ?? ($_SESSION['user_type'] ?? 's
         </div>
         <br>
         <div class="submit">
-            <input type="button" value="Sign up">
-            <input type="button" value="Cancel">
+            <input type="submit" value="Sign up">
+            <input type="reset" value="Cancel">
         </div>
     </form>
     </div>

@@ -117,7 +117,7 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
                 <form action="../../edit_profile/edit_profile.php" method="post">
                     <button type="submit" class="btn btn-dark loginButton">Edit profile</button>
                 </form>
-                <form action="../landing_page/landing_page.php" method="post">
+                <form action="../../../backend/logout.php" method="post"> 
                     <input type="hidden" name="type">
                     <button type="submit" class="btn btn-dark logOutButton">Log Out</button>
                 </form>

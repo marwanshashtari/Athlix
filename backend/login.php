@@ -2,13 +2,13 @@
 session_start();
 require_once __DIR__ . '/config.php';
 
-if(isset($_POST['login_type'], $_POST['email'], $_POST['password'])) {
-    $loginType = $_POST['login_type'];
+if(isset($_POST['type'], $_POST['email'], $_POST['password'])) {
+    $loginType = $_POST['type'];
     $email = strtolower(trim($_POST['email']));
     $password = trim($_POST['password']);
 
     // Store login type in session to use later
-    $_SESSION['login_type'] = $loginType;
+    $_SESSION['type'] = $loginType;
     $role = ($loginType === 'Student') ? 0 : 1;
 
     //authenticate user

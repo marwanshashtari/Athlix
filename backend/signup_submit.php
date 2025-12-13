@@ -34,7 +34,7 @@ else {
 // inputs
 $email = strtolower(trim($_POST['email'] ?? ''));
 $pass  = $_POST['password']  ?? '';
-$pass2 = $_POST['password2'] ?? '';
+//$pass2 = $_POST['password2'] ?? '';
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     bad('Invalid email');
@@ -42,9 +42,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 if (strlen($pass) < 8) {
     bad('Password must be at least 8 characters');
 }
-if ($pass !== $pass2) {
-    bad('Passwords do not match');
-}
+// if ($pass !== $pass2) {
+//     bad('Passwords do not match');
+// }
 
 // check unique email
 if (q_row('SELECT 1 FROM [dbo].[User] WHERE [Email] = ?', [$email])) {
@@ -78,28 +78,40 @@ if ($roleLabel === 'Student') {
     $birthYear  = (int)($_POST['birth_year'] ?? 0);
     $birthMonth = (int)($_POST['birth_month'] ?? 0);
     $birthDay   = (int)($_POST['birth_day'] ?? 0);
-
-    if ($fname === '' || $lname === '') {
-        bad('First and last name are required');
-    }
-    if ($birthYear < 1900 || $birthMonth < 1 || $birthMonth > 12 || $birthDay < 1 || $birthDay > 31) {
-        bad('Invalid birth date');
-    }
-
     $dob = sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay);
 
     $genderInput = $_POST['gender'] ?? 'male';
     $genderBit = ($genderInput === 'female') ? 1 : 0;
+    
+    $gpa = floatval($_POST['GPA'] ?? 0);
+    if ($gpa < 0 || $gpa > 100) $gpa = 0;
+
+    $school = trim($_POST['school'] ?? 'N/A');
+    $city   = trim($_POST['city'] ?? 'Amman');
+    $height = floatval($_POST['height'] ?? 0);
+    $weight = floatval($_POST['weight'] ?? 0);
+    $status = (int)($_POST['status'] ?? 0);
+    $phone  = trim($_POST['pn'] ?? '+962000000000');
+    $bio    = trim($_POST['bio'] ?? '');
+    $expectedGradYear = (int)($_POST['Expected_Graduation_Year'] ?? (date('Y') + 4));
+    $studentType = (int)($_POST['std_type'] ?? 0);
+    $health = trim($_POST['Health_Issues'] ?? 'None');
+
+    //
+    // Primary sport default
+    $primarySportId = 1;
+    if (!empty($_POST['sports']) && is_array($_POST['sports'])) {
+        $firstSport = $_POST['sports'][0];
+        $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$firstSport]);
+        if ($sRow) $primarySportId = (int)$sRow['Sport_ID'];
+    }
 
     // Insert student with safe defaults to satisfy NOT NULL columns
-    q(
-        "INSERT INTO Student 
-         (User_ID, Name, Date_of_Birth, Gender, Height, Weight, Primary_Sport_ID, 
-          GPA, School, City, Phone_Number, Expected_Graduation_Year, Student_Type, 
-          Major_1, Major_2, Major_3)
-         VALUES (?, ?, ?, ?, 0, 0, 1,
-                 0.0, 'N/A', 'Amman', '+962000000000', 2025, 0, 'Undeclared', 'N/A', 'N/A')",
-        [$userId, $fullName, $dob, $genderBit]
+     q(
+        "INSERT INTO Student
+        (User_ID, Name, Date_of_Birth, Gender, GPA, School, City, Weight, Height, Status, Phone_Number, Bio, Expected_Graduation_Year, Student_Type, Primary_Sport_ID, Health_Issues, Major_1, Major_2, Major_3)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Undeclared', 'N/A', 'N/A')",
+        [$userId, $fullName, $dob, $genderBit, $gpa, $school, $city, $weight, $height, $status, $phone, $bio, $expectedGradYear, $studentType, $primarySportId, $health]
     );
 
     // Link selected sports (if any) from checkboxes
@@ -125,14 +137,17 @@ if ($roleLabel === 'Student') {
     }
 
 } else { // University signup
-    $uniName = $_POST['universities_menu'] ?? 'New University';
+    $uniName = trim($_POST['universities_menu'] ?? 'New University');
+    $location = trim($_POST['Location'] ?? 'Unknown');
+    $website = trim($_POST['web_url'] ?? 'https://unknown.com');
+    $phone = trim($_POST['pn'] ?? '+962000000000');
 
     // Insert university profile with defaults for NOT NULL fields
     q(
         "INSERT INTO University_
-         (User_ID, Name, Location, Website_URL, Contact_Number, Contact_Email)
-         VALUES (?, ?, 'Unknown', 'https://unknown.com', '+962000000000', ?)",
-        [$userId, $uniName, $email]
+        (User_ID, Name, Location, Website_URL, Contact_Number, Contact_Email, Scholarship_Available)
+        VALUES (?, ?, ?, ?, ?, ?, 0)",
+        [$userId, $uniName, $location, $website, $phone, $email]
     );
 }
 
