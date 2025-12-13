@@ -114,27 +114,6 @@ if ($roleLabel === 'student') {
         [$userId, $fullName, $dob, $genderBit, $gpa, $school, $city, $weight, $height, $status, $phone, $bio, $expectedGradYear, $studentType, $primarySportId, $health]
     );
 
-    // Link selected sports (if any) from checkboxes
-    // if (!empty($_POST['sports']) && is_array($_POST['sports'])) {
-    //     foreach ($_POST['sports'] as $sportName) {
-    //         if ($sportName === 'others') {
-    //             continue;
-    //         }
-
-    //         // Ensure the sport exists in Sports table and make sure lower letter to match db
-    //         $sportNameDb = ucfirst(strtolower($sportName));
-    //         $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportNameDb]);
-
-    //         if ($sRow) {
-    //             q(
-    //                 "INSERT INTO Sports_Student
-    //                  (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience)
-    //                  VALUES (?, ?, 0, '', '', ?)",
-    //                 [$userId, $sRow['Sport_ID'], $yearsOfExperience]
-    //             );
-    //         }
-    //     }
-    // }
     if (!empty($_POST['sports']) && is_array($_POST['sports'])) {
         // Delete old sports first
         q("DELETE FROM Sports_Student WHERE Std_ID = ?", [$userId]);
@@ -166,7 +145,7 @@ if ($roleLabel === 'student') {
 
 // start session as this user (login)
 $_SESSION['user_id']   = $userId;
-$_SESSION['user_role'] = $roleLabel;   // 'Student' or 'University'
+$_SESSION['user_role'] = $roleLabel;   // 'student' or 'university'
 
 
 

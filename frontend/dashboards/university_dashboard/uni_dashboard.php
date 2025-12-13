@@ -244,7 +244,7 @@ while ($r = sqlsrv_fetch_array($stmt_off, SQLSRV_FETCH_ASSOC)) {
               <option value="Handball">Handball</option>
               <option value="Table Tennis">Table Tennis</option>
               <option value="Karate">Karate</option>
-              <option value="Jiu Jitsu">Jiu Jitsu</option>
+              <option value="Jiu-Jitsu">Jiu Jitsu</option>
               <option value="Taekwondo">Taekwondo</option>
               <option value="Badminton">Badminton</option>
             </select>
