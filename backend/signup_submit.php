@@ -115,23 +115,36 @@ if ($roleLabel === 'student') {
     );
 
     // Link selected sports (if any) from checkboxes
+    // if (!empty($_POST['sports']) && is_array($_POST['sports'])) {
+    //     foreach ($_POST['sports'] as $sportName) {
+    //         if ($sportName === 'others') {
+    //             continue;
+    //         }
+
+    //         // Ensure the sport exists in Sports table and make sure lower letter to match db
+    //         $sportNameDb = ucfirst(strtolower($sportName));
+    //         $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportNameDb]);
+
+    //         if ($sRow) {
+    //             q(
+    //                 "INSERT INTO Sports_Student
+    //                  (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience)
+    //                  VALUES (?, ?, 0, '', '', ?)",
+    //                 [$userId, $sRow['Sport_ID'], $yearsOfExperience]
+    //             );
+    //         }
+    //     }
+    // }
     if (!empty($_POST['sports']) && is_array($_POST['sports'])) {
+        // Delete old sports first
+        q("DELETE FROM Sports_Student WHERE Std_ID = ?", [$userId]);
+
         foreach ($_POST['sports'] as $sportName) {
-            if ($sportName === 'others') {
-                continue;
-            }
-
-            // Ensure the sport exists in Sports table and make sure lower letter to match db
-            $sportNameDb = ucfirst(strtolower($sportName));
-            $sRow = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportNameDb]);
-
-            if ($sRow) {
-                q(
-                    "INSERT INTO Sports_Student
-                     (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience)
-                     VALUES (?, ?, 0, '', '', ?)",
-                    [$userId, $sRow['Sport_ID'], $yearsOfExperience]
-                );
+            $sportNameDb = ucfirst(strtolower($sportName)); // normalize name
+            $sport = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportNameDb]);
+            if ($sport) {
+                q("INSERT INTO Sports_Student (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience)
+                   VALUES (?, ?, 0, '', '', ?)", [$userId, $sport['Sport_ID'], $yearsOfExperience]);
             }
         }
     }

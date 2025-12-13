@@ -228,16 +228,16 @@ unset($_SESSION['login_error']); // remove error after displaying it
             <i class="fa-solid fa-golf-ball-tee"></i>
             <label for="sports-select">Select your sports
             <div class="sport-options">
-            <div><input type="checkbox" id="football" name="sports[]" value="football"><label for="football">Football</label></div>
-            <div><input type="checkbox" id="volleyball" name="sports[]" value="volleyball"><label for="volleyball">Volleyball</label></div>
-            <div><input type="checkbox" id="tennis" name="sports[]" value="tennis"><label for="tennis">Tennis</label></div>
-            <div><input type="checkbox" id="basketball" name="sports[]" value="basketball"><label for="basketball">Basketball</label></div>
-            <div><input type="checkbox" id="handball" name="sports[]" value="handball"><label for="handball">Handball</label></div>
-            <div><input type="checkbox" id="table-tennis" name="sports[]" value="table-tennis"><label for="table-tennis">Table Tennis</label></div>
-            <div><input type="checkbox" id="karate" name="sports[]" value="karate"><label for="karate">karate</label></div>
-            <div><input type="checkbox" id="jiu-jitsu" name="sports[]" value="jiu-jitsu"><label for="jiu-jitsu">jiu jitsu</label></div>
-            <div><input type="checkbox" id="taekewondo" name="sports[]" value="taekewondo"><label for="taekewondo">taekewondo</label></div>
-            <div><input type="checkbox" id="badminton" name="sports[]" value="badminton"><label for="badminton">badminton</label></div>
+            <div><input type="checkbox" id="football" name="sports[]" value="Football"><label for="football">Football</label></div>
+            <div><input type="checkbox" id="volleyball" name="sports[]" value="Volleyball"><label for="volleyball">Volleyball</label></div>
+            <div><input type="checkbox" id="tennis" name="sports[]" value="Tennis"><label for="tennis">Tennis</label></div>
+            <div><input type="checkbox" id="basketball" name="sports[]" value="Basketball"><label for="basketball">Basketball</label></div>
+            <div><input type="checkbox" id="handball" name="sports[]" value="Handball"><label for="handball">Handball</label></div>
+            <div><input type="checkbox" id="table-tennis" name="sports[]" value="Table Tennis"><label for="table-tennis">Table Tennis</label></div>
+            <div><input type="checkbox" id="karate" name="sports[]" value="Karate"><label for="karate">karate</label></div>
+            <div><input type="checkbox" id="jiu-jitsu" name="sports[]" value="Jiu-Jitsu"><label for="jiu-jitsu">jiu jitsu</label></div>
+            <div><input type="checkbox" id="taekewondo" name="sports[]" value="Taekewondo"><label for="taekewondo">taekewondo</label></div>
+            <div><input type="checkbox" id="badminton" name="sports[]" value="Badminton"><label for="badminton">badminton</label></div>
             </div></label>
         </div>
         <br>

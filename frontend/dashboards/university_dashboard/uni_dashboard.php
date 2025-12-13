@@ -71,7 +71,7 @@ $activeOffersCount = q_row("SELECT COUNT(*) as c FROM [Scholarship] WHERE Uni_ID
 $totalStudents = q_row("SELECT COUNT(*) as c FROM [Student]")['c'];
 
 // C. Get All Student Athletes (Directory)
-$sql_students = "SELECT s.Name, s.GPA, s.City, 
+$sql_students = "SELECT s.Name, s.GPA, s.City, s.Phone_Number,
                         sp.Name AS SportName, 
                         ss.Years_of_Experience,
                         ss.Number_of_Tournaments_Won,
@@ -83,7 +83,6 @@ $sql_students = "SELECT s.Name, s.GPA, s.City,
                  ORDER BY 
                         ss.Number_of_Tournaments_Won DESC,
                         ss.Years_of_Experience DESC";
-
                  
 $stmt_stds = q($sql_students);
 
@@ -180,6 +179,7 @@ while ($r = sqlsrv_fetch_array($stmt_off, SQLSRV_FETCH_ASSOC)) {
                     <button class="action-btn btn-review" 
                         onclick="openViewModal(
                             '<?php echo htmlspecialchars($std['Name']); ?>',
+                            '<?php echo htmlspecialchars($std['Phone_Number']); ?>',
                             '<?php echo htmlspecialchars($std['SportName']); ?>',
                             '<?php echo htmlspecialchars($std['Number_of_Tournaments_Won']); ?>',
                             '<?php echo htmlspecialchars($std['Achievements'] ?? 'No details provided'); ?>'
@@ -303,6 +303,11 @@ while ($r = sqlsrv_fetch_array($stmt_off, SQLSRV_FETCH_ASSOC)) {
     </div>
 
     <div class="info-row">
+      <div class="info-label">Phone Number</div>
+      <div class="info-value" id="mPhone"></div>
+    </div>
+
+    <div class="info-row">
       <div class="info-label">Sport</div>
       <div class="info-value" id="mSport"></div>
     </div>
@@ -372,8 +377,9 @@ while ($r = sqlsrv_fetch_array($stmt_off, SQLSRV_FETCH_ASSOC)) {
     
     const modal = document.getElementById('reviewModal');
 
-  function openViewModal(name, sport, tournaments, bio) {
+  function openViewModal(name, pn, sport, tournaments, bio) {
     document.getElementById('mName').textContent = name;
+    document.getElementById('mPhone').textContent = pn;
     document.getElementById('mSport').textContent = sport;
     document.getElementById('mTournament').textContent = tournaments;
     document.getElementById('mBio').textContent = bio;
