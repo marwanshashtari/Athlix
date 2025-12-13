@@ -26,7 +26,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit('Invalid email format');
 }
 
-if ($phone !== '' && !preg_match('/^\+962\d{8}$/', $phone)) {
+if ($phone !== '' && !preg_match('/^\+962\d{9}$/', $phone)) {
     http_response_code(400);
     exit('Invalid phone number format. Must start with +962 and contain 8 digits.');
 }

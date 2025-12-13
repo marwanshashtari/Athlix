@@ -1,8 +1,17 @@
 <?php
   session_start();
+  
+  // 1. Get the error message if it exists
   $login_error = $_SESSION['login_error'] ?? '';
+  
+  // 2. Get the previous login type (student/university) so we know which one failed
+  $previous_type = $_SESSION['type'] ?? ''; 
+  
   $show_login_modal = !empty($login_error);
-  unset($_SESSION['login_error']); // remove error after displaying it
+  
+  // 3. Clear session variables so errors don't persist on refresh
+  unset($_SESSION['login_error']); 
+  unset($_SESSION['type']); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +21,9 @@
   <title>Athlix</title>
   <link rel="stylesheet" href="landing_page.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
 </head>
 
 <body>
-  <!--add logo-->
   <div class="navbar">
     <div class="logo">
       <img src="landing_images/logo_athlix.png" alt="logo" height="40">
@@ -24,48 +31,43 @@
     </div>
     <div class="login-buttons">
         <button type="button" class="btn btn-dark learn-more">More about us</button>
-      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="" method="post">
-        <input type="hidden" name="type" value="student">
+      
         <button class="btn btn-dark student-login">Student Login</button>
-      </form>
-
-      <!--action must change to request_login_type.php: a page that determines the user type from the form and saves it then redirects back to login page-->
-      <form action="" method="post">
-        <input type="hidden" name="type" value="university">
         <button class="btn btn-dark university-login">University Login</button>
-      </form>
-
     </div>
   </div>
 
   <div id="loginModal" class="modal">
-  <div class="modal-content">
-    <i class="fa-solid fa-person-running"></i>
-    <hr>
-    <span class="close">&times;</span>
-    <h2>Login</h2>
-    <div class="login-grid">
-      <form id="loginForm" action="../../backend/login.php" method="post">
-        <input type="hidden" name="type" id="userType" value="">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="Enter your email" required>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Enter your password" required>
-              <!--to show login error-->
-        <?php if(!empty($login_error)): ?>
-          <div class="login-error" style="color:red; margin-bottom:10px;">
-            <?= htmlspecialchars($login_error) ?>
-          </div>
-        <?php endif; ?>
-        <button type="submit" class="btn btn-dark">Login</button>
-      </form>
-      <div class="picture-modal" style="width: inherit; height: inherit;">
-        <img src="../landing_page/landing_images/person_lefting_login.jpg">
-      </div>      
+    <div class="modal-content">
+      <i class="fa-solid fa-person-running"></i>
+      <hr>
+      <span class="close">&times;</span>
+      <h2>Login</h2>
+      <div class="login-grid">
+        <form id="loginForm" action="../../backend/login.php" method="post">
+          
+          <input type="hidden" name="type" id="userType" value="">
+          
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="Enter your email" required>
+          
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="Enter your password" required>
+          
+          <?php if(!empty($login_error)): ?>
+            <div class="login-error" style="color:red; margin-bottom:10px; font-weight: bold;">
+              <?= htmlspecialchars($login_error) ?>
+            </div>
+          <?php endif; ?>
+          
+          <button type="submit" class="btn btn-dark">Login</button>
+        </form>
+        <div class="picture-modal" style="width: inherit; height: inherit;">
+          <img src="../landing_page/landing_images/person_lefting_login.jpg">
+        </div>      
+      </div>
     </div>
   </div>
-</div>
 
   <div class="intro-section">
     <div class="slideshow-intro">
@@ -84,13 +86,13 @@
       <div class="intro-content">
       <h1>Match Your Sports Achievement with University Discounts</h1>
       <p>Connect student athletes with universities offering exclusive discounts. Verify your sports participation and unlock benefits.</p>
-          
+           
         <div class="buttons-container">
           <form action="../signup_page/signup.php" method="post">
               <input type="hidden" name="type" value="student">
               <button class="btn btn-primary get-started-student">I'm a Student</button>
           </form>
-          
+           
           <form action="../signup_page/signup.php" method="post">
               <input type="hidden" name="type" value="university">
               <button class="btn btn-outline get-started-uni">I'm a University</button>
@@ -204,7 +206,7 @@
     </div>
   </div>  
 </div>
-  
+   
 <div class="reviews-section">
   <div class="review">
     <div class="stars">
@@ -298,7 +300,6 @@
   <div class="footer-section">
       <h3><i></i> Athlix</h3>
     <div id="footer-container" class="footer-container">
-        <!--add icon-->
         <div class="about-us">
           <img src="landing_images/logo_athlix.png" alt="logo" height="100" class="logo-footer">
           <p>the printing and typesetting industry.</p>
@@ -314,7 +315,7 @@
        <p>© 2025 Athlix. Connecting athletes with opportunities.</p>
   </div>
 
-  <script>
+<script>
 
 document.addEventListener('DOMContentLoaded', () => {
   const scrollBtn = document.querySelector('.learn-more');
@@ -444,10 +445,16 @@ setInterval(() => {
   reviews[currentIndex].style.opacity = '1';
 }, 1500);
 
-//to keep the login modal open if there is an error
+// FIXED: Logic to re-open modal on error and remember the type
 document.addEventListener('DOMContentLoaded', () => {
     <?php if($show_login_modal): ?>
         const modal = document.getElementById('loginModal');
+        const userTypeInput = document.getElementById('userType');
+        
+        // This injects the previous login type (student/university) into the hidden field
+        // so if the user clicks Login again, the backend still knows their type.
+        userTypeInput.value = "<?php echo htmlspecialchars($previous_type); ?>";
+        
         modal.style.display = 'block';
     <?php endif; ?>
 });

@@ -3,37 +3,41 @@ session_start();
 require_once __DIR__ . '/config.php';
 
 if(isset($_POST['type'], $_POST['email'], $_POST['password'])) {
+    
     $loginType = $_POST['type'];
     $email = strtolower(trim($_POST['email']));
     $password = trim($_POST['password']);
 
     // Store login type in session to use later
     $_SESSION['type'] = $loginType;
-    $role = ($loginType === 'Student') ? 0 : 1;
+    $role = ($loginType == 'student') ? 0 : 1;
 
     //authenticate user
-    $sql = "SELECT [User_ID], [Email], [Password], [Role]
-            FROM [dbo].[User]
-            WHERE [Email] = ? AND [Role] = ?";
-    $params = [$email, $role]; 
+    // $sql = "SELECT [User_ID], [Email], [Password], [Role]
+    //         FROM [dbo].[User]
+    //         WHERE [Email] = ? AND [Role] = ?";
+    // $params = [$email, $role]; 
+    // $user = q_row($sql, $params);
+    $sql = "SELECT [User_ID], [Email], [Password], [Role] FROM [dbo].[User] WHERE [Email] = ?";
+    $params = [$email];
     $user = q_row($sql, $params);
-    
+
     if($user) {
         //valid login info
         if(password_verify($password, $user['Password'])) {
             //successful login
             $_SESSION['user_id'] = $user['User_ID'];
             $_SESSION['email'] = $user['Email'];
-            $_SESSION['user_role'] = $role === 0 ? 'Student' : 'University';
+            $_SESSION['user_role'] = $user['Role'] == 0 ? 'student' : 'university';
             // Redirect based on login type
-            if ($role === 0) {
+            // Redirect based on database role, not $role
+            if ($user['Role'] == 0) {
                 header('Location: ../frontend/dashboards/student_dashboard/student_dashboard.php');
                 exit();
-            } 
-            else {
+            } else {
                 header('Location: ../frontend/dashboards/university_dashboard/uni_dashboard.php');
                 exit();
-            }
+        }
 
         } else {
             //invalid password

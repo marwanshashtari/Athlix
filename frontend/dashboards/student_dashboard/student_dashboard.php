@@ -1,5 +1,5 @@
 <?php
-//Path: frontend/dashboards/student_dashboard/student_dashboard.php
+// Path: frontend/dashboards/student_dashboard/student_dashboard.php
 
 // ==========================================
 // 1. CONFIG & SESSION
@@ -10,7 +10,7 @@ session_start();
 require_once '../../../backend/config.php';
 
 // Security Check
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Student') {
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
     header('Location: ../../landing_page/landing_page.php');
     exit();
 }
@@ -21,49 +21,50 @@ $user_id = $_SESSION['user_id'];
 // 2. HANDLE "ADD NEW SPORT" FORM SUBMISSION
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_sport') {
-    $sportName = trim($_POST['sport']);
-    $level = $_POST['level']; 
-    $description = $_POST['description'];
-    
-    // Combine Level and Description
-    $fullAchievements = "Level: $level. " . $description;
-    
-    // A. Check if Sport exists using helper q_row()
-    $row = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
+    // Collect and validate form data
+    // *** CAPTURING SPORT NAME FROM DROPDOWN ***
+    $sportName = $_POST['sport_name'] ?? null; 
+    $achievements = trim($_POST['achievements'] ?? '');
+    $numTournamentsWon = (int)($_POST['num_tournaments_won'] ?? 0); 
+    $tournamentsDescription = trim($_POST['tournaments_description'] ?? ''); 
+    $yearsExperience = (int)($_POST['years_of_experience'] ?? 0); 
 
-    if ($row) {
-        $sportID = $row['Sport_ID'];
-    } else {
-        // Insert Sport using helper q()
-        q("INSERT INTO Sports (Name) VALUES (?)", [$sportName]);
-        
-        // Get the ID (SQL Server specific: SCOPE_IDENTITY)
-        $idRes = q_row("SELECT SCOPE_IDENTITY() as id");
-        $sportID = $idRes['id'];
+    if ($sportName) {
+        // A. Check if Sport exists or insert it (since we are using the Name now)
+        // Ensure the sport name is properly formatted/cased for lookup if needed, though this logic handles existence.
+        $row = q_row("SELECT Sport_ID FROM Sports WHERE Name = ?", [$sportName]);
+
+        if ($row) {
+            $sportID = $row['Sport_ID'];
+        } else {
+            // Insert Sport if it doesn't exist (e.g., if you change the list later)
+            q("INSERT INTO Sports (Name) VALUES (?)", [$sportName]);
+            
+            // Get the newly inserted ID
+            $idRes = q_row("SELECT SCOPE_IDENTITY() as id");
+            $sportID = $idRes['id'];
+        }
+
+        // B. Link to Student
+        $success = q("INSERT INTO Sports_Student 
+            (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
+            VALUES (?, ?, ?, ?, ?, ?)", 
+            [$user_id, $sportID, $numTournamentsWon, $tournamentsDescription, $achievements, $yearsExperience]
+        );
     }
-
-    // B. Link to Student
-    q("INSERT INTO Sports_Student 
-       (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience) 
-       VALUES (?, ?, 0, '', ?, 0)", 
-       [$user_id, $sportID, $fullAchievements]
-    );
 
     // Refresh page
     header("Location: student_dashboard.php");
     exit();
 }
 
-// ==========================================
-// 3. FETCH DATA FOR DASHBOARD
-// ==========================================
 
-// A. Get Student Name
+// Get Student Name
 $row = q_row("SELECT Name FROM Student WHERE User_ID = ?", [$user_id]);
 $studentName = $row['Name'] ?? 'Student';
 $firstName = explode(' ', trim($studentName))[0];
 
-// B. Get Student's Sports Submissions
+// Get Student's Sports Submissions
 $sql_subs = "SELECT ss.*, s.Name as SportName 
              FROM Sports_Student ss 
              JOIN Sports s ON ss.Sport_ID = s.Sport_ID 
@@ -73,16 +74,15 @@ $sql_subs = "SELECT ss.*, s.Name as SportName
 $stmt_subs = q($sql_subs, [$user_id]);
 
 $mySubmissions = [];
-// Use sqlsrv_fetch_array instead of PDO fetch
 while ($r = sqlsrv_fetch_array($stmt_subs, SQLSRV_FETCH_ASSOC)) {
     $mySubmissions[] = $r;
 }
 
-// C. Get Available Discounts (Active Scholarships)
+// Get Available Discounts (Active Scholarships)
 $sql_offers = "SELECT sch.*, u.Name as UniName 
-               FROM Scholarship sch 
-               JOIN University_ u ON sch.Uni_ID = u.User_ID 
-               WHERE sch.Active = 1";
+                FROM Scholarship sch 
+                JOIN University_ u ON sch.Uni_ID = u.User_ID 
+                WHERE sch.Active = 1";
 $stmt_offers = q($sql_offers);
 
 $availableDiscounts = [];
@@ -90,10 +90,10 @@ while ($r = sqlsrv_fetch_array($stmt_offers, SQLSRV_FETCH_ASSOC)) {
     $availableDiscounts[] = $r;
 }
 
-// D. Calculate Stats
+// Calculate Stats
 $totalSubs = count($mySubmissions);
 $activeDiscountCount = count($availableDiscounts);
-$approvedCount = 0; // Logic for counting approved status can be added here later
+
 ?>
 
 <!DOCTYPE html>
@@ -141,15 +141,7 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
                         <div class="text-2xl" id="total-submissions"><?php echo $totalSubs; ?></div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header flex items-center justify-between">
-                        <div class="card-title text-sm">Approved</div>
-                        <i class="fas fa-check-circle text-green-600"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="text-2xl text-green-600" id="approved-count"><?php echo $approvedCount; ?></div>
-                    </div>
-                </div>
+
                 <div class="card">
                     <div class="card-header flex items-center justify-between">
                         <div class="card-title text-sm">Available Discounts</div>
@@ -198,7 +190,10 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
                                     </div>
                                     <div class="card-content">
                                         <p class="text-sm text-gray-600 mb-2">
-                                            <?php echo htmlspecialchars($sub['Achievements'] ?: 'No details provided.'); ?>
+                                            Achievements: <?php echo htmlspecialchars($sub['Achievements'] ?: 'No details provided.'); ?>
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            Tournaments Won: <?php echo htmlspecialchars($sub['Number_of_Tournaments_Won']); ?> (Details: <?php echo htmlspecialchars($sub['Tournaments_Description'] ?: 'None'); ?>)
                                         </p>
                                     </div>
                                 </div>
@@ -229,11 +224,10 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
                                     <div class="card-content flex justify-between items-center">
                                         <span class="text-sm text-gray-500">
                                             Expires: <?php 
-                                                // Your config has "ReturnDatesAsStrings" => true, so we just echo it
-                                                echo htmlspecialchars($offer['Deadline']); 
+                                                 echo htmlspecialchars($offer['Deadline']); 
                                             ?>
                                         </span>
-                                        <button class="btn btn-primary btn-sm">Claim Discount</button>
+                                        <!-- <button class="btn btn-primary btn-sm">Claim Discount</button> -->
                                     </div>
                                 </div>
                                 <?php endforeach; ?>
@@ -250,7 +244,7 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
             <div class="modal-header">
                 <h3 class="modal-title">Submit Sport Participation</h3>
                 <p class="modal-description">
-                    Upload proof of your sports achievement or participation.
+                    Provide details of your sports achievement and experience.
                 </p>
             </div>
             
@@ -258,32 +252,46 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
                 <input type="hidden" name="action" value="add_sport">
                 
                 <div class="form-group">
-                    <label for="sport">Sport</label>
-                    <input type="text" id="sport" name="sport" class="input" placeholder="e.g., Basketball" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="level">Level</label>
-                    <select id="level" name="level" class="select" required>
-                        <option value="">Select level</option>
-                        <option value="Recreational">Recreational</option>
-                        <option value="Club">Club</option>
-                        <option value="Varsity">Varsity</option>
-                        <option value="Professional">Professional</option>
+                    <label for="sport_name">Sport</label>
+                    <select id="sport_name" name="sport_name" class="select" required>
+                        <option value="">Select a Sport</option>
+                        <option value="Football">Football</option>
+                        <option value="Volleyball">Volleyball</option>
+                        <option value="Tennis">Tennis</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Handball">Handball</option>
+                        <option value="Table Tennis">Table Tennis</option>
+                        <option value="Karate">Karate</option>
+                        <option value="Jiu Jitsu">Jiu Jitsu</option>
+                        <option value="Taekwondo">Taekwondo</option>
+                        <option value="Badminton">Badminton</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="description">Description / Achievements</label>
-                    <textarea id="description" name="description" class="textarea" placeholder="Describe your role and achievements..." rows="4" required></textarea>
+                    <label for="years_of_experience">Years of Experience</label>
+                    <input type="number" id="years_of_experience" name="years_of_experience" class="input" 
+                        placeholder="e.g., 3" min="0" value="0" required>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="proof">Upload Proof (Optional)</label>
-                    <input type="file" id="proof" name="proof" class="input" accept="image/*,.pdf">
-                    <p class="text-sm text-gray-500 mt-1">
-                        Upload certificates or photos.
-                    </p>
+                    <label for="achievements">Personal Achievements / Awards</label>
+                    <textarea id="achievements" name="achievements" class="textarea" 
+                        placeholder="e.g., Captain of the team, All-State selection, Most Valuable Player..." 
+                        rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="num_tournaments_won">Number of Tournaments Won</label>
+                    <input type="number" id="num_tournaments_won" name="num_tournaments_won" class="input" 
+                        placeholder="0" min="0" value="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tournaments_description">Tournaments/Competitions Description</label>
+                    <textarea id="tournaments_description" name="tournaments_description" class="textarea" 
+                        placeholder="List the names or details of competitions you participated in..." 
+                        rows="3"></textarea>
                 </div>
                 
                 <div class="form-actions">
@@ -293,7 +301,6 @@ $approvedCount = 0; // Logic for counting approved status can be added here late
             </form>
         </div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Tab Switching Logic

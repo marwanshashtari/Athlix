@@ -1,105 +1,57 @@
 <?php
 // Path: frontend/edit_profile/edit_profile.php
-
-// ==========================================
-// 1. SETUP & DATABASE CONNECTION
-// ==========================================
 session_start();
 require_once '../../backend/config.php';
 
-// Security: Check if logged in
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../../landing_page/landing_page.php');
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$userId = (int)$_SESSION['user_id'];
 $message = "";
 
-// ==========================================
-// 2. HANDLE FORM SUBMISSION (UPDATE)
-// ==========================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1. Collect Data from Form
-    $fName = $_POST['firstName'] ?? '';
-    $lName = $_POST['lastName'] ?? '';
-    $fullName = trim($fName . ' ' . $lName);
-    
-    $phone = $_POST['phone'] ?? '';
-    $bio = $_POST['bio'] ?? '';
-    
-    // Academic Info
-    $university = $_POST['university'] ?? '';
-    $major = $_POST['major'] ?? '';
-    $gpa = $_POST['gpa'] ?? 0.0;
-    
-    // 2. Update Database
-    try {
-        // Using q() helper from config.php
-        $sql = "UPDATE Student SET 
-                Name = ?, 
-                Phone_Number = ?, 
-                Bio = ?, 
-                University = ?, 
-                Major_1 = ?, 
-                GPA = ?
-                WHERE User_ID = ?";
-        
-        $params = [
-            $fullName, 
-            $phone, 
-            $bio, 
-            $university, 
-            $major, 
-            $gpa, 
-            $user_id
-        ];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $fName = trim($_POST['firstName'] ?? '');
+        $lName = trim($_POST['lastName'] ?? '');
+        $fullName = trim($fName . ' ' . $lName);
+
+        $phone = trim($_POST['phone'] ?? '');
+        $bio   = trim($_POST['bio'] ?? '');
+        $university = trim($_POST['university'] ?? '');
+        $major = trim($_POST['major'] ?? '');
+        $gpa = isset($_POST['gpa']) ? floatval($_POST['gpa']) : 0;
+
+        // VALIDATION
+        if ($fName === '' || $lName === '') throw new Exception('First and Last Name required.');
+        if ($gpa < 0 || $gpa > 100) throw new Exception('GPA must be between 0 and 100.');
+        if ($phone !== '' && !preg_match('/^\+962\d{9}$/', $phone)) throw new Exception('Phone must start with +962 and have 8 digits.');
+
+        // UPDATE QUERY
+        $sql = "UPDATE Student
+                SET Name = ?, GPA = ?, Phone_Number = ?, Bio = ?, University = ?, Major_1 = ?
+                WHERE User_ID = ?";
+        $params = [$fullName, $gpa, $phone, $bio, $university, $major, $userId];
         q($sql, $params);
 
-        // 3. Redirect to Dashboard on Success
+        // SUCCESS: redirect to dashboard
         header("Location: ../dashboards/student_dashboard/student_dashboard.php");
         exit();
 
     } catch (Exception $e) {
-        $message = "Error updating profile: " . $e->getMessage();
+        $message = $e->getMessage();
     }
 }
 
-// ==========================================
-// 3. FETCH EXISTING DATA (PRE-FILL)
-// ==========================================
-try {
-    // Fetch Student Details using q_row helper
-    $student = q_row("SELECT * FROM Student WHERE User_ID = ?", [$user_id]);
+$student = q_row("SELECT * FROM Student WHERE User_ID = ?", [$userId]);
+$user = q_row("SELECT Email FROM [User] WHERE User_ID = ?", [$userId]);
 
-    // Fetch Email from User table using q_row helper
-    $user = q_row("SELECT Email FROM [User] WHERE User_ID = ?", [$user_id]);
-
-    // Split Name into First and Last
-    $nameParts = explode(' ', $student['Name'] ?? '');
-    $currentFName = $nameParts[0] ?? '';
-    $currentLName = isset($nameParts[1]) ? implode(' ', array_slice($nameParts, 1)) : '';
-
-    // Calculate Age from DOB
-    $age = '';
-    if (!empty($student['Date_of_Birth'])) {
-        $dobRaw = $student['Date_of_Birth'];
-
-        if ($dobRaw instanceof DateTimeInterface) {
-            $dob = $dobRaw;
-        } else {
-            $dob = new DateTime($dobRaw);
-        }
-
-        $now = new DateTime();
-        $age = $now->diff($dob)->y;
-    }
-
-
-} catch (Exception $e) {
-    die("Error fetching data: " . $e->getMessage());
-}
+$nameParts = explode(' ', $student['Name'] ?? '');
+$currentFName = $nameParts[0] ?? '';
+$currentLName = isset($nameParts[1]) ? implode(' ', array_slice($nameParts, 1)) : '';
 ?>
 
 <!DOCTYPE html>
@@ -165,18 +117,18 @@ try {
                         <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($student['Phone_Number'] ?? ''); ?>">
                     </div>
                     
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="age">Age (Calculated from DOB)</label>
                         <input type="number" id="age" value="<?php echo $age; ?>" readonly style="background-color: #f0f0f0;">
-                    </div>
+                    </div> -->
                     
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="gender">Gender</label>
                         <select id="gender" name="gender" disabled style="background-color: #f0f0f0;">
                             <option value="male" <?php echo ($student['Gender'] == 0) ? 'selected' : ''; ?>>Male</option>
                             <option value="female" <?php echo ($student['Gender'] == 1) ? 'selected' : ''; ?>>Female</option>
                         </select>
-                    </div>
+                    </div> -->
                     
                     <div class="form-group full-width">
                         <label for="bio">Bio</label>
@@ -210,10 +162,10 @@ try {
                         <input type="number" id="gpa" name="gpa" step="0.01" min="0" max="100" value="<?php echo htmlspecialchars($student['GPA'] ?? ''); ?>" placeholder="Enter your GPA">
                     </div>
                     
-                    <div class="form-group full-width">
+                    <!-- <div class="form-group full-width">
                         <label for="academicAchievements">Academic Achievements</label>
                         <textarea id="academicAchievements" name="academicAchievements" placeholder="List your academic achievements"></textarea>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             

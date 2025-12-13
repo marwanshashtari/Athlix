@@ -21,11 +21,11 @@ $type = $_POST['type'] ?? '';
 // 
 if ($type === 'student') {
     $roleBit   = 0;          
-    $roleLabel = 'Student';   
+    $roleLabel = 'student';   
 } 
 elseif ($type === 'university') {
     $roleBit   = 1;
-    $roleLabel = 'University';
+    $roleLabel = 'university';
 } 
 else {
     bad('Invalid signup type');
@@ -69,7 +69,7 @@ if (!$row || empty($row['User_ID'])) {
 $userId = (int)$row['User_ID'];
 
 
-if ($roleLabel === 'Student') {
+if ($roleLabel === 'student') {
     // Get extra fields from form
     $fname = trim($_POST['fname'] ?? '');
     $lname = trim($_POST['lname'] ?? '');
@@ -96,7 +96,7 @@ if ($roleLabel === 'Student') {
     $expectedGradYear = (int)($_POST['Expected_Graduation_Year'] ?? (date('Y') + 4));
     $studentType = (int)($_POST['std_type'] ?? 0);
     $health = trim($_POST['Health_Issues'] ?? 'None');
-
+    $yearsOfExperience = (int)($_POST['exp_years'] ?? 0);
     //
     // Primary sport default
     $primarySportId = 1;
@@ -129,8 +129,8 @@ if ($roleLabel === 'Student') {
                 q(
                     "INSERT INTO Sports_Student
                      (Std_ID, Sport_ID, Number_of_Tournaments_Won, Tournaments_Description, Achievements, Years_of_Experience)
-                     VALUES (?, ?, 0, '', '', 0)",
-                    [$userId, $sRow['Sport_ID']]
+                     VALUES (?, ?, 0, '', '', ?)",
+                    [$userId, $sRow['Sport_ID'], $yearsOfExperience]
                 );
             }
         }
@@ -157,7 +157,7 @@ $_SESSION['user_role'] = $roleLabel;   // 'Student' or 'University'
 
 
 
-if ($roleLabel === 'Student') {
+if ($roleLabel === 'student') {
     header('Location: ../frontend/dashboards/student_dashboard/student_dashboard.php');
 } 
 else {

@@ -361,28 +361,115 @@ tr:hover {
   color: var(--dark-gray);
 }
 
-.modal-body {
-  margin-bottom: 20px;
-}
-
 .student-info {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .info-row {
   display: flex;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-row.full {
+  flex-direction: column;
 }
 
 .info-label {
-  width: 120px;
-  font-weight: 500;
-  color: var(--dark-gray);
+  font-weight: 600;
+  color: var(--secondary);
+  min-width: 120px;
 }
 
 .info-value {
-  flex: 1;
+  color: #333;
+  font-size: 14px;
 }
+
+.bio-box {
+  background: var(--light-gray);
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Close button improvement */
+.close-modal {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--dark-gray);
+}
+
+.close-modal:hover {
+  color: var(--danger);
+}
+
+/* Select Wrapper */
+.select {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  color: #111827;
+  background-color: #ffffff;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  outline: none;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover */
+.select:hover {
+  border-color: var(--primary);
+}
+
+/* Focus */
+.select:focus {
+  border-color: var(--primary);
+}
+
+/* Disabled */
+.select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  color: #6b7280;
+}
+
+/* Option Styling */
+.select option {
+  padding: 10px;
+  font-size: 15px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: "▾";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 14px;
+  color: #6b7280;
+}
+
 
 .modal-actions {
   display: flex;

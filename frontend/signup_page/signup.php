@@ -338,6 +338,12 @@ unset($_SESSION['login_error']); // remove error after displaying it
             <input class="number" type="number" id="pn" name="pn" placeholder="+962..." required></label>
         </div>
         <br>
+        <div class="input-div" style="--icon-color: rgb(68, 12, 68);">
+           <i class="fa-solid fa-baseball"></i>
+            <label for="signup_password">Password</label>
+            <input class="text" type="password" id="signup_password" name="password" required>
+        </div>
+        <br>
         <div class="submit">
             <input type="submit" value="Sign up">
             <input type="reset" value="Cancel">
